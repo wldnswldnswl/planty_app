@@ -1,6 +1,8 @@
 import React from 'react';
 import {Component} from 'react'; 
- import { 
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { 
      View,
      Image, 
      Text, 
@@ -8,27 +10,58 @@ import {Component} from 'react';
      TouchableOpacity, 
      StyleSheet 
  } from 'react-native'; 
- import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen'; 
- 
- 
+import common from '../../../styles/common'; // common styles
+import styles from './style';
+
+
  export default class LoginScreen extends Component{ 
-      
-     static navigationOptions = { 
-         header: null, 
-     }; 
- 
+    
+
+    //functions
+
+    /*
+        name: _doLogin
+        description: show Login Screen
+    */
      _doLogin(){ 
          // do something 
-         this.props.navigation.replace('TabNavigator') 
+         this.props.navigation.navigate('Home'); 
+
      } 
  
+    /*
+        name: _doNaverLogin
+        description: login with Naver account
+    */
+    _doNaverLogin(){
+        this.props.navigation.navigate('Home'); // 임시로 써놓음. 네이버연동 알아보는 사람이 알아서 만들기,,
+    }
 
+     /*
+        name: _goJoinScreen
+        description: show Join Screen
+    */
+     _goJoinScreen(){
+        this.props.navigation.navigate('Join'); 
+     }
+
+    /*
+        name: _goFindScreen
+        description: show FindInfo Screen
+    */
+     _goFindScreen(){
+        this.props.navigation.navigate('FindInfo'); 
+     }
+
+     /*
+        Login Screen
+     */
      render(){ 
          return ( 
             <View style={styles.container}> 
                  <View style={styles.titleArea}> 
                  {/* 로고 이미지 삽입 */}
-                     <Image source = {require('./dry-clean.png')} 
+                     <Image source = {require('../../../assets/dry-clean.png')} 
                             style={{width:200, height:200}}/>
                 </View> 
                  <View style={styles.formArea}> 
@@ -38,61 +71,36 @@ import {Component} from 'react';
                      <TextInput  
                          style={styles.textForm}  
                          placeholder={"비밀번호"}/> 
+                    <Text style={styles.smallText}>비밀번호를 잊어버리셨나요? 
+                        <Text 
+                            style = {common.linkEffect}
+                            onPress = {this._goFindScreen.bind(this)}
+                            >비밀번호 찾기</Text>
+                    </Text> 
                  </View> 
+                 
                  <View style={styles.buttonArea}> 
                      <TouchableOpacity  
-                         style={styles.button} 
+                         style={[styles.button, styles.blue]} 
                          onPress={this._doLogin.bind(this)}> 
                          <Text style={styles.buttonTitle}>로그인</Text> 
                      </TouchableOpacity> 
+                     <TouchableOpacity  
+                         style={[styles.button,styles.green]} > 
+                         <Text style={styles.buttonTitle}
+                         onPress={this._doNaverLogin.bind(this)}> 
+                         네이버 아이디로 로그인</Text> 
+                     </TouchableOpacity>
+                     <Text style={[styles.smallText, common.mt2_5]}>아직 회원이 아니신가요? 
+                         <Text 
+                         style = {common.linkEffect}
+                         onPress ={this._goJoinScreen.bind(this)}>회원가입</Text>
+                     </Text> 
                  </View> 
+                 
              </View> 
          ); 
      } 
  } 
  
 
- const styles = StyleSheet.create({ 
-    container: { 
-         flex: 1, 
-         backgroundColor: 'white', 
-        paddingLeft: wp('10%'), 
-         paddingRight: wp('10%'), 
-         justifyContent: 'center', 
-     }, 
-     titleArea: { 
-         width: '100%', 
-         marginBottom : wp('30%'),
-         alignItems: 'center', 
-     }, 
-     title: { 
-         fontSize: wp('10%'), 
-     }, 
-     formArea: { 
-         width: '100%', 
-         paddingBottom: wp('10%'), 
-     }, 
-     textForm: { 
-         borderWidth: 0.5, 
-         borderColor: '#888', 
-         width: '100%', 
-         height: hp('6%'), 
-         paddingLeft: 5, 
-         paddingRight: 5, 
-         marginBottom: 5
-        }, 
-     buttonArea: { 
-         width: '100%', 
-         height: hp('6%'), 
-    }, 
-     button: { 
-         backgroundColor: "#3498db", 
-         width: "100%", 
-         height: "100%", 
-         justifyContent: 'center', 
-         alignItems: 'center', 
-     }, 
-     buttonTitle: { 
-         color: 'white', 
-     }, 
- }) 
