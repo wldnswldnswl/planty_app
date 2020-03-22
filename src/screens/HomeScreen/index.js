@@ -1,21 +1,22 @@
 import React from 'react';
 import {Component} from 'react'; 
- import { 
+import { 
      View, 
      Text, 
      Button,
      Image,
-     TouchableHighlight,
-     StyleSheet 
- } from 'react-native'; 
- import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen'; 
+     TouchableHighlight
+} from 'react-native'; 
+
+//styles
+import common from '../../../styles/common'; 
+import styles from './style';
+import {Calendar} from 'react-native-calendars';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen'; 
 import Icon from 'react-native-vector-icons/Ionicons';
 import Colors from '../../../styles/colors';
 
- //styles
- import common from '../../../styles/common'; 
- import styles from './style';
- import {Calendar} from 'react-native-calendars';
+// import { createStackNavigator } from '@react-navigation/drawer';
 
  export default class HomeScreen extends Component{ 
      
@@ -25,6 +26,7 @@ import Colors from '../../../styles/colors';
         this.state = {
           selected: undefined
         };
+
       }
     
       onDayPress = (day) => {
@@ -39,10 +41,17 @@ import Colors from '../../../styles/colors';
         description: show Add Screen
     */
     gotoAddScreen(){
-        this.props.navigation.navigate("Add",{
-            itemId: 0 // 일정(0)추가
-        });    
+        this.props.navigation.navigate("Add");    
     }
+
+     /*
+        name:  gotoSideNav
+        description: show Setting Nav
+    */
+    gotoSideNav(){
+        // this.props.navigation.openDrawer();
+    }
+
 
 
     // HomeScreen : 캘린더
@@ -51,7 +60,9 @@ import Colors from '../../../styles/colors';
              
             <View style = {styles.container}>
                 <View style = {styles.nav}>
-                    <Icon name="ios-menu" size={30} color={Colors.gray}></Icon>
+                    <Icon name="ios-menu" size={30} color={Colors.gray}
+                        onPress={this.gotoSideNav.bind(this)}
+                    ></Icon>
                     <Text style={[common.font_title, {color:Colors.gray}]}>년/월</Text>
 
                     {/* 먼슬리 -> 위클리 전환 */}

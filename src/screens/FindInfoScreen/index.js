@@ -1,21 +1,19 @@
 import React from 'react';
 import {Component} from 'react'; 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 
- import { 
+import { 
      View,
      Image, 
      Text, 
      TextInput, 
      TouchableOpacity, 
      StyleSheet 
- } from 'react-native'; 
- import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen'; 
- import Colors from '../../../styles/colors'
- //styles
- import common from '../../../styles/common'; 
- import styles from './style';
+} from 'react-native'; 
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen'; 
+import Colors from '../../../styles/colors'
+//styles
+import common from '../../../styles/common'; 
+import styles from './style';
 
 
  export default class FindInfoScreen extends Component{ 
