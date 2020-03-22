@@ -15,10 +15,22 @@ import Colors from '../../../styles/colors';
  //styles
  import common from '../../../styles/common'; 
  import styles from './style';
-
+ import {Calendar} from 'react-native-calendars';
 
  export default class HomeScreen extends Component{ 
-
+     
+    constructor(props) {
+        super(props);
+        
+        this.state = {
+          selected: undefined
+        };
+      }
+    
+      onDayPress = (day) => {
+        this.setState({selected: day.dateString});
+      }
+    
 
      // functions
 
@@ -49,7 +61,18 @@ import Colors from '../../../styles/colors';
                     {/* 모듈 업데이트되면서 아이콘 사라짐;; */}
                 </View>
                 <View style = {styles.content}>
-                    <Text>캘린더 모듈 사용하기</Text>
+                    <Calendar
+                        style={styles.calendar}
+                        hideExtraDays
+                        onDayPress={this.onDayPress}
+                        markedDates={{
+                            [this.state.selected]: {
+                            selected: true, 
+                            disableTouchEvent: true, 
+                            selectedDotColor: 'orange'
+                            }
+                        }}
+                    />
                     <TouchableHighlight style={common.addButton}
                         underlayColor={Colors.clicked} onPress={this.gotoAddScreen.bind(this)}>
                         <Text style={{fontSize: 50, color: 'white'}}>+</Text>

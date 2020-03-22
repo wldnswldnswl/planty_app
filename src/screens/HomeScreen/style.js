@@ -13,6 +13,7 @@ import Colors from '../../../styles/colors'
         paddingHorizontal: wp('3%'),
         backgroundColor: 'white'
     }, 
+
     nav: { 
         flex: 1,
         width: wp('90%'), 
@@ -22,10 +23,15 @@ import Colors from '../../../styles/colors'
         paddingVertical: wp('3%'), 
         flexDirection: 'row'   
     }, 
+
     content: { 
         flex: 10,
         width: "100%", 
         height: "100%", 
+    },
+
+    calendar: {
+        // marginBottom: 10
     }
 }) 
 

@@ -9,16 +9,20 @@ import React from 'react';
  import JoinScreen from './JoinScreen'; 
  import FindInfoScreen from './FindInfoScreen'; 
  import HomeScreen from './HomeScreen'; 
-
+ import ToDoListScreen from './ToDoListScreen'
  import AddScreen from './AddScreen';
  import SettingScreen from './SettingScreen'; 
  import SomethingScreen from './SomethingScreen'; 
+ import * as Common from '../common/common' 
+
 import { NavigationContainer } from '@react-navigation/native';
- 
+import { DrawerActions } from 'react-navigation-drawer';
 
 const Stack = createStackNavigator();
+Common.setCalendarConfig(); // react-native-calendars 환경설정
 
 export default function MyStack() {
+
     return (
         // 화면목록
         <Stack.Navigator
@@ -36,6 +40,10 @@ export default function MyStack() {
 
             {/* 3. 할일 화면 */}
 
+            {/* 4. 환경설정 */}
+            {/* <DrawerActions.Navigator initialRoutName="Setting">
+                <DrawerActions.Screen name="ToDoList" component={ToDoListScreen} />
+            </DrawerActions.Navigator> */}
         </Stack.Navigator>
 
     )
