@@ -14,25 +14,21 @@ import Colors from '../../../styles/colors'
         backgroundColor: 'white'
     }, 
 
-    nav: { 
-        flex: 1,
-        width: wp('90%'), 
-        height: wp('90%'), 
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingVertical: wp('3%'), 
-        flexDirection: 'row'   
-    }, 
-
     content: { 
         flex: 10,
         width: "100%", 
         height: "100%", 
-    },
+        paddingHorizontal: wp('3%'),
 
-    calendar: {
-        // marginBottom: 10
-    }
+    },
+    
+    list: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 20,
+        borderColor: '#000',
+        borderBottomWidth: 1
+      }
 }) 
 
 

@@ -1,7 +1,5 @@
 import React from 'react';
 import {Component} from 'react'; 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 import { 
      View,
      Image, 

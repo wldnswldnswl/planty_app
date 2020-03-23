@@ -9,6 +9,7 @@ import {Component} from 'react';
  } from 'react-native'; 
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen'; 
 import Icon from 'react-native-vector-icons/Ionicons';
+import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Colors from '../../../styles/colors';
 
  //styles
@@ -59,7 +60,7 @@ import Colors from '../../../styles/colors';
 
                     <View style = {styles.content_element_sub}>
                         {/* 아이콘 바꿔야 함 */}
-                        <Icon name="ios-document" size={30} color={Colors.gray}></Icon> 
+                        <MIcon name="file-document-outline" size={30} color={Colors.gray}></MIcon> 
                         <TextInput style={[common.font_small, styles.descriptionForm]} placeholder={'설명'}></TextInput>
                     </View>
 

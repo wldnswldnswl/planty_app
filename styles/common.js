@@ -25,8 +25,24 @@ import Colors from './colors';
         color: Colors.gray
     },
 
+    font_orange:{
+        color: "orange"
+    },
+
+    font_darkGray:{
+        color: Colors.darkgray
+    },
+
     font_bold:{
         fontWeight:'bold'
+    },
+
+    mb1: {
+        marginBottom : hp('1%')
+    },
+
+    mv1: {
+        marginVertical : hp('1%')
     },
 
     // margin 
@@ -60,6 +76,9 @@ import Colors from './colors';
         marginVertical : hp('4%')
     },
 
+    ml4:{
+        marginLeft: wp('4%')
+    },
      // 6% 간격
     mt6:{
         marginTop: hp('6%')

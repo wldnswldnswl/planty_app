@@ -14,24 +14,35 @@ import Colors from '../../../styles/colors'
         backgroundColor: 'white'
     }, 
 
-    nav: { 
-        flex: 1,
-        width: wp('90%'), 
-        height: wp('90%'), 
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingVertical: wp('3%'), 
-        flexDirection: 'row'   
-    }, 
-
     content: { 
         flex: 10,
         width: "100%", 
         height: "100%", 
+        paddingHorizontal: wp('3%')
+    },
+    
+    theme_btn : {
+       borderWidth : 1,
+       borderColor : Colors._10,
+       width : 25,
+       height : 25,
+       backgroundColor : Colors._10,
+       borderRadius : 50,
+       right : wp('-79%'),
+       alignItems : 'center'
+      
     },
 
-    calendar: {
-        // marginBottom: 10
+    theme_toggle : {
+        alignItems : 'center',
+        right : wp('-60%')
+        
+    },
+
+    selectWeek : {
+        flexDirection : 'row',
+        alignItems : 'center',
+        right : wp('-60%')     
     }
 }) 
 

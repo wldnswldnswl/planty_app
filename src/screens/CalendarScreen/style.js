@@ -10,7 +10,7 @@ import Colors from '../../../styles/colors'
         // padding: wp('5%'), 
         marginBottom: hp('2%'),
         alignItems: "center",
-        // paddingHorizontal: wp('3%'),
+        paddingHorizontal: wp('3%'),
         backgroundColor: 'white'
     }, 
 

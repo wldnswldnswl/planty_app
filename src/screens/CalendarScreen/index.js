@@ -3,22 +3,19 @@ import {Component} from 'react';
 import { 
      View, 
      Text, 
-     Button,
-     Image,
      TouchableHighlight
 } from 'react-native'; 
 
 //styles
 import common from '../../../styles/common'; 
 import styles from './style';
-import {Calendar} from 'react-native-calendars';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import IonIcon from 'react-native-vector-icons/Ionicons';
 import Colors from '../../../styles/colors';
 
-import { createStackNavigator } from '@react-navigation/drawer';
 import { DrawerActions } from 'react-navigation-drawer';
-
-import Drawer from '../drawer';
+import {Calendar} from 'react-native-calendars';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen'; 
 
  export default class HomeScreen extends Component{ 
      
@@ -51,7 +48,7 @@ import Drawer from '../drawer';
         description: show Setting Nav
     */
     gotoSideNav(){
-        this.props.navigation.toggleDrawer();
+        this.props.navigation.dispatch(DrawerActions.openDrawer());
     }
 
 
@@ -60,18 +57,19 @@ import Drawer from '../drawer';
      render(){ 
          return ( 
             <View style = {styles.container}>
+
                 <View style = {styles.nav}>
-                    <Icon name="ios-menu" size={30} color={Colors.gray}
+                    <IonIcon name="ios-menu" size={30} color={Colors.gray}
                         onPress={this.gotoSideNav.bind(this)}
-                    ></Icon>
+                    ></IonIcon>
                     <Text style={[common.font_title, {color:Colors.gray}]}>년/월</Text>
 
-                    {/* 먼슬리 -> 위클리 전환 */}
-                    <Icon name="ios-calendar" size={30} color={Colors.gray}></Icon>
+                    {/* 먼슬리 */}
+                    <Icon name="calendar-o" size={30} color={Colors.gray}></Icon>
 
-                    {/* 위클리 -> 먼슬리 전환 */}
-                    {/* 모듈 업데이트되면서 아이콘 사라짐;; */}
+                    {/* 위클리: "calendar" */}
                 </View>
+
                 <View style = {styles.content}>
                     <Calendar
                         style={styles.calendar}
@@ -90,6 +88,7 @@ import Drawer from '../drawer';
                         <Text style={{fontSize: 50, color: 'white'}}>+</Text>
                     </TouchableHighlight>
                 </View>
+                
             </View>            
          ); 
      } 
