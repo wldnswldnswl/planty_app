@@ -35,7 +35,19 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
         padding: 20,
         borderColor: '#000',
         borderBottomWidth: 1
-      }
+      },
+
+      //추가한거 지워
+      button: {
+          width:250,
+          height:50,
+          backgroundColor:'#330066',
+          borderRadius:30,
+          justifyContent:'center',
+          marginTop:15
+      },
+
+      
 }) 
 
 

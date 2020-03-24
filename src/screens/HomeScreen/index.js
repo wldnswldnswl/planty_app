@@ -81,7 +81,7 @@ import Drawer from '../drawer';
                             [this.state.selected]: {
                             selected: true, 
                             disableTouchEvent: true, 
-                            selectedDotColor: 'orange'
+                            selectedDotColor: "orange"
                             }
                         }}
                     />
