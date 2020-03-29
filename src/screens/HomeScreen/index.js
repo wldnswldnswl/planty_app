@@ -1,70 +1,162 @@
 import React from 'react';
-import {Component} from 'react'; 
-import { 
-     View, 
-     Text, 
-     Button,
-     Image,
-     TouchableHighlight
-} from 'react-native'; 
+import { Component } from 'react';
+import {
+    View,
+    Text,
+    Button,
+    Image,
+    TouchableHighlight,
+} from 'react-native';
+import Modal from 'react-native-modal';
 
 //styles
-import common from '../../../styles/common'; 
+import common from '../../../styles/common';
 import styles from './style';
-import {Calendar} from 'react-native-calendars';
+import { Calendar } from 'react-native-calendars';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Colors from '../../../styles/colors';
+import ScrollPicker from 'react-native-wheel-scroll-picker';
 
 import { createStackNavigator } from '@react-navigation/drawer';
 import { DrawerActions } from 'react-navigation-drawer';
 
 import Drawer from '../drawer';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
- export default class HomeScreen extends Component{ 
-     
+export default class HomeScreen extends Component {
+
     constructor(props) {
         super(props);
-        
+
+        selected: undefined
         this.state = {
-          selected: undefined
-        };
+            isModalVisible: false,
+            pickerSelection: 'default'
+        }
 
-      }
-    
-      onDayPress = (day) => {
-        this.setState({selected: day.dateString});
-      }
-    
+    };
 
-     // functions
 
-     /*
-        name:  gotoAddScreen
-        description: show Add Screen
-    */
-    gotoAddScreen(){
-        this.props.navigation.navigate("Add");    
+
+    /*  //year_month modal 화면 상태 설정
+     state = { modalVisible: false } */
+
+
+    onDayPress = (day) => {
+        this.setState({ selected: day.dateString });
     }
 
-     /*
-        name:  gotoSideNav
-        description: show Setting Nav
-    */
-    gotoSideNav(){
+
+    // functions
+
+    /*
+       name:  gotoAddScreen
+       description: show Add Screen
+   */
+    gotoAddScreen() {
+        this.props.navigation.navigate("Add");
+    }
+
+    /*
+       name:  gotoSideNav
+       description: show Setting Nav
+   */
+    gotoSideNav() {
         this.props.navigation.toggleDrawer();
     }
 
+    /*
+        name:  toggleModal
+        description: show yearmonthday picker
+    */
+    toggleModal = () => {
+        this.setState({ isModalVisible: !this.state.isModalVisible });
+    }
 
 
     // HomeScreen : 캘린더
-     render(){ 
-         return ( 
-            <View style = {styles.container}>
-                <View style = {styles.nav}>
+    render() {
+        //현재 년도 저장
+        var year = new Date().getFullYear();
+        //현재 월 저장
+        var month = new Date().getMonth() + 1;
+        //년도들을 저장하는 배열 생성
+        const years = [];
+
+        for (let i=0; i<200; i++) {
+            j = year-100+i
+            years.push(<li>j</li>)
+        }
+        
+
+        /*  const [modalVisible, setModalVisible] = useState(false);
+         const [modalOutput, setModalOutput] = useState("년/월"); */
+
+        return (
+            <View style={styles.container}>
+                <View style={styles.nav}>
                     <Icon name="ios-menu" size={30} color={Colors.gray}
                         onPress={this.gotoSideNav.bind(this)}
                     ></Icon>
-                    <Text style={[common.font_title, {color:Colors.gray}]}>년/월</Text>
+                    {/*  <Modal animationType={"slide"} transparent={false}
+                        isVisible={false}>
+                        <View style={styles.modal_container}>
+                            <Text style={styles.text}>Modal is open!</Text>
+
+                            <TouchableHighlight onPress={() => {
+                                this.toggleModal(!this.state.modalVisible)
+                            }}>
+
+                                <Text style={styles.text}>Close Modal</Text>
+                            </TouchableHighlight>
+                            {/* <DatePicker
+                                mode="datetime"
+                                use12Hours
+                                minuteInterval={1}
+                            /> 
+                        </View>
+                    </Modal> */}
+                    <TouchableHighlight onPress={() => { this.toggleModal() }}>
+                        <Text style={[common.font_title, { color: Colors.gray }]}>{year}.{month}</Text>
+                    </TouchableHighlight>
+                    <Modal isVisible={this.state.isModalVisible} >
+                        <View style={styles.modal_container}>
+                            <View style={styles.modalheader}>
+                            </View>
+                            <View style={styles.modalyearmonth}>
+                                <TouchableHighlight /* onPress={() => { this.toggleModal() }} */>
+                                    <Text style={[common.font_title, { color: Colors.darkPrimary }, { fontSize: 45 }]}>{year}</Text>
+                                </TouchableHighlight>
+                                <TouchableHighlight /* onPress={() => { this.toggleModal() }} */>
+                                    <Text style={[common.font_title, { color: 'black' }, { fontSize: 30 }]}>{month}월</Text>
+                                </TouchableHighlight>
+                            </View>
+                            <View style={styles.modalContent}>
+                                <ScrollPicker
+                                    dataSource={years.slice()}
+                                    selectedIndex={3}
+                                    itemHeight={50}
+                                    wrapperWidth={370}
+                                    wrapperHeight={280}
+                                    wrapperBackground={Colors.lightgray}
+                                    highlightColor={Colors.gray}
+                                    highlightBorderWidth={1}
+                                    activeItemColor={"white"}
+                                    itemColor={Colors.darkPrimary}
+                                />
+                            </View>
+                            <View style={styles.modalButton}>
+                                <TouchableHighlight onPress={() => { this.toggleModal() }}>
+                                    <Text style={[common.font_mid, { color: Colors.darkPrimary }]}>완료</Text>
+                                </TouchableHighlight>
+                            </View>
+
+                            {/* <Text>Hello!</Text>
+                            <Button title="Hide modal" onPress={this.toggleModal} /> */}
+                        </View>
+                    </Modal>
+
+
 
                     {/* 먼슬리 -> 위클리 전환 */}
                     <Icon name="ios-calendar" size={30} color={Colors.gray}></Icon>
@@ -72,25 +164,31 @@ import Drawer from '../drawer';
                     {/* 위클리 -> 먼슬리 전환 */}
                     {/* 모듈 업데이트되면서 아이콘 사라짐;; */}
                 </View>
-                <View style = {styles.content}>
+                <View style={styles.content}>
                     <Calendar
                         style={styles.calendar}
                         hideExtraDays
                         onDayPress={this.onDayPress}
                         markedDates={{
                             [this.state.selected]: {
-                            selected: true, 
-                            disableTouchEvent: true, 
-                            selectedDotColor: "orange"
+                                selected: true,
+                                disableTouchEvent: true,
+                                selectedDotColor: "orange"
                             }
                         }}
                     />
                     <TouchableHighlight style={common.addButton}
                         underlayColor={Colors.clicked} onPress={this.gotoAddScreen.bind(this)}>
-                        <Text style={{fontSize: 50, color: 'white'}}>+</Text>
+                        <Text style={{ fontSize: 50, color: 'white' }}>+</Text>
                     </TouchableHighlight>
                 </View>
-            </View>            
-         ); 
-     } 
- } 
+            </View>
+
+
+        );
+
+
+
+
+    }
+} 

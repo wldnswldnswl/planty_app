@@ -6,6 +6,7 @@ const Colors = {
     // darkPrimary:'#dec4ff',
     gray : '#6F6280',
     darkgray : '#313340',
+    lightgray: '#e0e0e0',
     clicked : '#D7B8FF',
     todolist : '#c4cbff',
 

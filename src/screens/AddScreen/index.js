@@ -12,7 +12,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Colors from '../../../styles/colors';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import ReactNativePickerModule  from 'react-native-picker-module';
+import ReactNativePickerModule from 'react-native-picker-module';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 //styles
@@ -27,7 +27,17 @@ export default class AddScreen extends Component {
     constructor() {
         super()
         this.state = {
-            isVisible: false
+            isVisible: false,
+            selectedValue: null,
+            data: [
+                "설정 안함",
+                "5분전",
+                "10분전",
+                "15분전",
+                "30분전",
+                "45분전",
+                "1시간전"
+            ]
         }
     }
 
@@ -160,10 +170,10 @@ export default class AddScreen extends Component {
                     <View style={styles.content_element_sub}>
                         <Icon name="ios-alarm" size={30} color={Colors.gray}></Icon>
                         {/*알람설정 부분*/}
-                       {/*  <TouchableOpacity onPress={() => { this.pickerRef.show() }}>
+                        <TouchableOpacity onPress={() => { this.pickerRef.show() }}>
                             <Text style={[common.font_small, common.ml2, { paddingVertical: 1 }]}>반복 안함</Text>
                         </TouchableOpacity>
-                        <ReactNativePickerModule 
+                        <ReactNativePickerModule
                             pickerRef={e => this.pickerRef = e}
                             value={this.state.selectedValue}
                             title={"알람 설정"}
@@ -172,7 +182,7 @@ export default class AddScreen extends Component {
                                 this.setState({
                                     selectedValue: index
                                 })
-                            }} /> */}
+                            }} />
                     </View>
 
                     <View style={styles.content_element_sub}>

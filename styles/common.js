@@ -10,7 +10,8 @@ import Colors from './colors';
 
     // 폰트 사이즈
     font_title: { 
-        fontSize: wp('8%'), 
+        fontSize: wp('8%'),
+        fontWeight: 'bold' 
     }, 
 
     font_mid:{

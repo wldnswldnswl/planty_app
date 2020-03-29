@@ -21,7 +21,7 @@ import Colors from '../../../styles/colors'
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingVertical: wp('3%'), 
-        flexDirection: 'row'   
+        flexDirection: 'row'
     }, 
 
     content: { 
@@ -32,7 +32,54 @@ import Colors from '../../../styles/colors'
 
     calendar: {
         // marginBottom: 10
+    },
+
+    modal_container: {
+        alignItems:"center",
+        width:370,
+        height:500,
+        backgroundColor: 'white',
+        borderRadius: 10,
+    },
+
+    modalheader: {
+        width:370,
+        height:'5%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderTopLeftRadius: 10,
+        borderTopRightRadius:10,
+        backgroundColor:Colors.darkPrimary
+    },
+    
+    modalyearmonth: {
+        width : 370,
+        height: '27%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor:'white'
+    },
+
+    modalContent: {
+        width : 370,
+        height: '56%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor:/* Colors.lightgray */'white'
+    },
+
+    modalButton: {
+        width : 370,
+        height: '10%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderBottomLeftRadius: 10,
+        borderBottomRightRadius:10,
+        backgroundColor:'white'
     }
+
+
+
 }) 
 
 
