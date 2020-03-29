@@ -4,7 +4,6 @@ import JoinScreen from './JoinScreen';
 import FindInfoScreen from './FindInfoScreen'; 
 import HomeScreen from './HomeScreen'; 
 import ToDoListScreen from './ToDoListScreen'
-import ToDoScreen from './ToDoScreen';
 import AddScreen from './AddScreen';
 import DrawerScreen from './drawer';
 
@@ -35,7 +34,6 @@ export default function MyStack() {
                 <Stack.Screen name = "Add" component={AddScreen} /> 
 
                 {/* 3. 할일 화면 */}
-                <Stack.Screen name = "ToDo" component={ToDoScreen} /> 
 
                 {/* 4. 환경설정 메뉴바 */}
                 {/* <Stack.Screen name="ToDoList" component={ToDoListScreen} /> */}
