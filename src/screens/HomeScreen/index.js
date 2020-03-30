@@ -23,7 +23,24 @@ import { DrawerActions } from 'react-navigation-drawer';
 import Drawer from '../drawer';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
+//현재 년도 저장
+var year = new Date().getFullYear();
+//현재 월 저장
+var month = new Date().getMonth() + 1;
+//년도들을 저장하는 배열 생성
+var years = new Array();
+//월들을 저장하는 배열 생성
+var months = new Array();
+//년도, 월별 화면 선택위한 변수
+var select = true;
+//년도 색깔 설정
+var year_color = "pink" ;
+//월 색깔 설정
+var month_color  ;
+
+
 export default class HomeScreen extends Component {
+
 
     constructor(props) {
         super(props);
@@ -34,12 +51,21 @@ export default class HomeScreen extends Component {
             pickerSelection: 'default'
         }
 
+        for (var i = 0; i < 20; i++) {
+            var j = String(year - 10 + i)
+            years.push(j)
+        }
+
+        for (var i = 0; i < 12; i++) {
+            var j = String(i + 1)
+            months.push(j)
+        }
+
     };
 
 
-
     /*  //year_month modal 화면 상태 설정
-     state = { modalVisible: false } */
+    state = { modalVisible: false } */
 
 
     onDayPress = (day) => {
@@ -73,21 +99,39 @@ export default class HomeScreen extends Component {
         this.setState({ isModalVisible: !this.state.isModalVisible });
     }
 
+    /*
+        name: selyearmonth
+        description: set select for yearmonth picker
+    */
+    selyearmonth(sel) {
+        select = sel;
+    }
+
+    /*
+        name: selyearcolor
+        description: change year's color, month's color in picker
+    */
+    selyearcolor = () => {
+        year_color = Colors.darkPrimary;
+        month_color = "black";
+    }
+
+    /*
+        name: selmonthcolor
+        description: change year's color, month's color in picker
+    */
+   selmonthcolor = () => {
+        year_color = "black";
+        month_color = Colors.darkPrimary;
+    }
 
     // HomeScreen : 캘린더
     render() {
-        //현재 년도 저장
-        var year = new Date().getFullYear();
-        //현재 월 저장
-        var month = new Date().getMonth() + 1;
-        //년도들을 저장하는 배열 생성
-        const years = [];
 
-        for (let i=0; i<200; i++) {
-            j = year-100+i
-            years.push(<li>j</li>)
-        }
-        
+
+
+
+
 
         /*  const [modalVisible, setModalVisible] = useState(false);
          const [modalOutput, setModalOutput] = useState("년/월"); */
@@ -120,21 +164,29 @@ export default class HomeScreen extends Component {
                         <Text style={[common.font_title, { color: Colors.gray }]}>{year}.{month}</Text>
                     </TouchableHighlight>
                     <Modal isVisible={this.state.isModalVisible} >
+
                         <View style={styles.modal_container}>
                             <View style={styles.modalheader}>
                             </View>
+
                             <View style={styles.modalyearmonth}>
-                                <TouchableHighlight /* onPress={() => { this.toggleModal() }} */>
-                                    <Text style={[common.font_title, { color: Colors.darkPrimary }, { fontSize: 45 }]}>{year}</Text>
+
+                                <TouchableHighlight /* onPress={this.selyearcolor()} */>
+
+                                    <Text style={[common.font_title, { color: year_color }, { fontSize: 45 }]}>{year}</Text>
+
                                 </TouchableHighlight>
-                                <TouchableHighlight /* onPress={() => { this.toggleModal() }} */>
-                                    <Text style={[common.font_title, { color: 'black' }, { fontSize: 30 }]}>{month}월</Text>
+                                <TouchableHighlight onPress={() => {this.selmonthcolor()}}>
+                                    <Text style={[common.font_title, { color: month_color }, { fontSize: 30 }]}>{month}월</Text>
                                 </TouchableHighlight>
+
                             </View>
+
+
                             <View style={styles.modalContent}>
                                 <ScrollPicker
-                                    dataSource={years.slice()}
-                                    selectedIndex={3}
+                                    dataSource={years}
+                                    selectedIndex={10}
                                     itemHeight={50}
                                     wrapperWidth={370}
                                     wrapperHeight={280}
@@ -145,6 +197,7 @@ export default class HomeScreen extends Component {
                                     itemColor={Colors.darkPrimary}
                                 />
                             </View>
+
                             <View style={styles.modalButton}>
                                 <TouchableHighlight onPress={() => { this.toggleModal() }}>
                                     <Text style={[common.font_mid, { color: Colors.darkPrimary }]}>완료</Text>
@@ -154,9 +207,8 @@ export default class HomeScreen extends Component {
                             {/* <Text>Hello!</Text>
                             <Button title="Hide modal" onPress={this.toggleModal} /> */}
                         </View>
+
                     </Modal>
-
-
 
                     {/* 먼슬리 -> 위클리 전환 */}
                     <Icon name="ios-calendar" size={30} color={Colors.gray}></Icon>
