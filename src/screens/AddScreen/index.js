@@ -7,6 +7,7 @@ import {
     TextInput,
     TouchableHighlight,
 } from 'react-native';
+import Modal from 'react-native-modal';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -14,20 +15,35 @@ import Colors from '../../../styles/colors';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import ReactNativePickerModule from 'react-native-picker-module';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import ScrollPicker from 'react-native-wheel-scroll-picker';
+import { Calendar } from 'react-native-calendars';
 
 //styles
 import common from '../../../styles/common';
 import styles from './style';
 
 
+//현재 년도 저장
+var year = new Date().getFullYear();
+//현재 월 저장
+var month = new Date().getMonth() + 1;
+// 시간을 저장하는 배열 생성
+var hour = new Array();
+// 분을 저장하는 배열 생성
+var minute = new Array();
+
 export default class AddScreen extends Component {
 
 
     //datepicker 생성자 추가
-    constructor() {
-        super()
+    constructor(props) {
+        super(props);
+
+        selected: undefined
         this.state = {
+            isModalVisible: false,
             isVisible: false,
+            pickerSelection: 'default',
             selectedValue: null,
             data: [
                 "설정 안함",
@@ -38,6 +54,15 @@ export default class AddScreen extends Component {
                 "45분전",
                 "1시간전"
             ]
+        }
+        for (var i = 0; i < 12; i++) {
+            var j = String(i + 1)
+            hour.push(j)
+        }
+
+        for (var i = 0; i < 60; i++) {
+            var j = String(i + 1)
+            minute.push(j)
         }
     }
 
@@ -67,6 +92,11 @@ export default class AddScreen extends Component {
         ]
     }; */
 
+    onDayPress = (day) => {
+        this.setState({ selected: day.dateString });
+    }
+
+
     // functions
 
     /*
@@ -86,34 +116,64 @@ export default class AddScreen extends Component {
     }
 
     /*
+        name:  toggleModal
+        description: show yearmonthday picker
+    */
+    toggleModal = () => {
+        this.setState({ isModalVisible: !this.state.isModalVisible });
+    }
+
+    /*
+     name: sethourarr
+     description: set hour array
+    */
+    sethourarr = () => {
+        for (var i = 0; i < 12; i++) {
+            var j = String(i + 1)
+            hour.push(j)
+        }
+    }
+
+    /*
+     name: setminutearr
+     description: set hour array
+    */
+   setminutearr = () => {
+    for (var i = 0; i < 60; i++) {
+        var j = String(i + 1)
+        minute.push(j)
+    }
+    }
+
+    /*
         name:  handlePicker
         description: handle datepicker
     */
-    handlePicker = () => {
-        this.setState({
-            isVisible: false
-        })
-    }
+    /*  handlePicker = () => {
+         this.setState({
+             isVisible: false
+         })
+     } */
 
     /*
         name:  showPicker
         description: show datepicker
     */
-    showPicker = () => {
-        this.setState({
-            isVisible: true
-        })
-    }
-
+    /*  showPicker = () => {
+         this.setState({
+             isVisible: true
+         })
+     }
+  */
     /*
         name:  hidePicker
         description: hide picker
     */
-    hidePicker = () => {
+    /* hidePicker = () => {
         this.setState({
             isVisible: false
         })
-    }
+    } */
 
 
 
@@ -140,25 +200,110 @@ export default class AddScreen extends Component {
                 <View style={styles.content}>
                     <View style={[styles.content_element, common.mt2]}>
                         <Text style={[common.font_mid, common.font_gray]}>시작일</Text>
-                        <TouchableOpacity onPress={this.showPicker}>
-                            <Text style={[common.font_mid, common.font_bold]}>년/월/일 시간</Text>
+                        <TouchableOpacity onPress={() => { this.toggleModal() }}>
+                            <Text style={[common.font_mid, common.font_bold]}>{year}.{month}.일 시간</Text>
                         </TouchableOpacity>
-                        <DateTimePicker
-                            isVisible={this.state.isVisible}
-                            onConfirm={this.handlePicker}
-                            onCancel={this.hidePicker} />
-                        <DateTimePicker />
                     </View>
                     <View style={styles.content_element}>
                         <Text style={[common.font_mid, common.font_gray]}>종료일</Text>
-                        <TouchableOpacity onPress={this.showPicker}>
-                            <Text style={[common.font_mid, common.font_bold]}>년/월/일 시간</Text>
+                        <TouchableOpacity onPress={() => { this.toggleModal() }}>
+                            <Text style={[common.font_mid, common.font_bold]}>{year}.{month}.일 시간</Text>
                         </TouchableOpacity>
-                        <DateTimePicker
+                        {/* <DateTimePicker
                             isVisible={this.state.isVisible}
                             onConfirm={this.handlePicker}
                             onCancel={this.hidePicker} />
-                        <DateTimePicker />
+                        <DateTimePicker /> */}
+                        <Modal isVisible={this.state.isModalVisible} >
+
+
+                            <View style={styles.modal_container}>
+                                <View style={styles.modalheader}>
+                                </View>
+                                <View style={styles.modalyearmonth}>
+                                    <TouchableHighlight  >
+                                        <Text style={[common.font_title, { color: 'black' }, { fontSize: 30 }]}>{year}년{month}월</Text>
+                                    </TouchableHighlight>
+                                </View>
+                                <View style={styles.modalCalendar}>
+                                    <Calendar
+                                        style={styles.calendar}
+                                        hideExtraDays
+                                        onDayPress={this.onDayPress}
+                                        markedDates={{
+                                            [this.state.selected]: {
+                                                selected: true,
+                                                disableTouchEvent: true,
+                                                selectedDotColor: "orange"
+                                            }
+                                        }}
+                                    />
+
+                                </View>
+                                <View style={styles.modalHourContainer}>
+                                    <View style={styles.modalAmPm} >
+                                        <ScrollPicker
+                                            dataSource={["오전", "오후"]}
+                                            selectedIndex={1}
+                                            itemHeight={40}
+                                            wrapperWidth={102}
+                                            wrapperHeight={50}
+                                            wrapperBackground={"white"}
+                                            highlightColor={Colors.gray}
+                                            highlightBorderWidth={1}
+                                            activeItemColor={"white"}
+                                            itemColor={Colors.darkPrimary}
+                                        />
+
+                                    </View>
+                                    <View style={styles.modalHour} >
+                                    <ScrollPicker
+                                        dataSource={hour}
+                                        selectedIndex={6}
+                                        itemHeight={50}
+                                        wrapperWidth={100}
+                                        wrapperHeight={20}
+                                        wrapperBackground={"white"}
+                                        highlightColor={Colors.gray}
+                                        highlightBorderWidth={1}
+                                        activeItemColor={"white"}
+                                        itemColor={Colors.darkPrimary}
+                                    />
+                                    </View>
+                                    <View style={styles.modalMin} >
+                                    <ScrollPicker
+                                        dataSource={minute}
+                                        selectedIndex={30}
+                                        itemHeight={50}
+                                        wrapperWidth={100}
+                                        wrapperHeight={20}
+                                        wrapperBackground={"white"}
+                                        highlightColor={Colors.gray}
+                                        highlightBorderWidth={1}
+                                        activeItemColor={"white"}
+                                        itemColor={Colors.darkPrimary}
+                                    />
+                                    </View>
+                                </View>
+                                <View style={styles.modalButton}>
+                                    <View Style={styles.modalCnButton}>
+                                        <TouchableHighlight onPress={() => { this.toggleModal() }}>
+                                            <Text style={[common.font_mid, { color: Colors.darkPrimary }]}>취소</Text>
+                                        </TouchableHighlight>
+                                    </View>
+                                    <View Style={styles.modalSvButton}>
+                                        <TouchableHighlight onPress={() => { this.toggleModal() }}>
+                                            <Text style={[common.font_mid, { color: Colors.darkPrimary }]}>저장</Text>
+                                        </TouchableHighlight>
+                                    </View>
+
+
+                                </View>
+
+                            </View>
+
+                        </Modal>
+
                     </View>
 
                     <View style={styles.content_element_sub}>

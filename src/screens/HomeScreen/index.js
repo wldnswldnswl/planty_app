@@ -181,9 +181,9 @@ export default class HomeScreen extends Component {
 
                             <View style={styles.modalContent}>
 
-
+                            <Calendar/>
                                     {/*원래 계획했던 데이트피커*/}
-                                    <ScrollPicker
+                                    {/* <ScrollPicker
                                     dataSource={year_month}
                                     selectedIndex={10}
                                     itemHeight={50}
@@ -194,7 +194,7 @@ export default class HomeScreen extends Component {
                                     highlightBorderWidth={1}
                                     activeItemColor={"white"}
                                     itemColor={Colors.darkPrimary}
-                                />
+                                /> */}
                             </View>
 
 
