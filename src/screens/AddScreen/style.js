@@ -1,3 +1,4 @@
+//addscreen-style
 import React from "react";
 import { StyleSheet } from "react-native";
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen'; 
@@ -92,7 +93,85 @@ import common from '../../../styles/common'
         color: Colors.darkPrimary,
         backgroundColor: "white",
         textAlign: 'center'
+    },
+
+    modal_container: {
+        alignItems:"center",
+        width:330,
+        height:600,
+        backgroundColor: 'white',
+        borderRadius: 5,
+    },
+
+    modalheader: {
+        width:'100%',
+        height:'3%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderTopLeftRadius: 5,
+        borderTopRightRadius:5,
+        backgroundColor:Colors.darkPrimary
+    },
+    
+    modalyearmonth: {
+        width : '100%',
+        height: '8%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor:'lightgray'
+    },
+
+    modalCalendar: {
+        width : '100%',
+        height: '60%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'white'
+    },
+
+    modalHourContainer: {
+        width : '100%',
+        height: '22%',
+        flexDirection: 'row'
+    },
+
+    modalAmPm: {
+        flex:1,
+        backgroundColor: 'pink'
+    },
+
+    modalHour: {
+        flex:1,
+        backgroundColor: 'blue'
+    },
+
+    modalMin: {
+        flex:1,
+        backgroundColor: 'black'
+    },
+
+    modalButton: {
+        width : '100%',
+        height: '7%',
+        flexDirection: 'row',
+        borderBottomLeftRadius: 5,
+        borderBottomRightRadius: 5
+    },
+
+    modalCnButton: {
+        flex:1,
+        backgroundColor:'blue'
+    },
+
+    modalSvButton: {
+        flex:1,
+        backgroundColor:'black'
+    },
+
+    calendar: {
+        // marginBottom: 10
     }
+
 
 }) 
 
