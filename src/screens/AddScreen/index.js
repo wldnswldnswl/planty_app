@@ -18,6 +18,7 @@ import ReactNativePickerModule from 'react-native-picker-module';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import ScrollPicker from 'react-native-wheel-scroll-picker';
 import { Calendar } from 'react-native-calendars';
+import SelectPicker from 'react-native-form-select-picker';
 
 //styles
 import common from '../../../styles/common';
@@ -28,13 +29,21 @@ import styles from './style';
 var year = new Date().getFullYear();
 //현재 월 저장
 var month = new Date().getMonth() + 1;
+//현재 일자 저장
+var day = new Date().getDay();
 // 시간을 저장하는 배열 생성
-var hour = new Array();
+var hour_arr = new Array();
 // 분을 저장하는 배열 생성
-var minute = new Array();
+var minute_arr = new Array();
+// 알람 상태 저장하는 배열 생성
+var alarm_arr = new Array();
+// 반복 상태 저장하는 배열 생성
+var repeat_arr = new Array();
+// 색상 상태 저장하는 배열 생성
+var color_arr = new Array();
+
 
 export default class AddScreen extends Component {
-
 
     //datepicker 생성자 추가
     constructor(props) {
@@ -45,53 +54,37 @@ export default class AddScreen extends Component {
             isModalVisible: false,
             isVisible: false,
             pickerSelection: 'default',
-            selectedValue: null,
-            data: [
-                "설정 안함",
-                "5분전",
-                "10분전",
-                "15분전",
-                "30분전",
-                "45분전",
-                "1시간전"
-            ]
+            selectedValue: null
         }
+
         for (var i = 0; i < 12; i++) {
             var j = String(i + 1)
-            hour.push(j)
+            hour_arr.push(j)
         }
 
         for (var i = 0; i < 60; i++) {
             var j = String(i + 1)
-            minute.push(j)
+            minute_arr.push(j)
         }
     }
 
-    /* //alarm select state 설정
-    state = {
-        selectedValue: null,
-        data: [
-            "설정 안함",
-            "5분전",
-            "10분전",
-            "15분전",
-            "30분전",
-            "45분전",
-            "1시간전"
-        ]
-    };
+    //alarm select state 설정
+    alarm_arr = ["설정안함",
+        "5분전",
+        "10분전",
+        "15분전",
+        "30분전",
+        "45분전",
+        "1시간전"]
+
+
 
     //repeat select state 설정
-    repeat_state = {
-        selectedValue: null,
-        data: [
-            "반복 안함",
-            "매일",
-            "매주",
-            "매월",
-            "매년"
-        ]
-    }; */
+    repeat_arr = ["반복 안함",
+        "매일",
+        "매주",
+        "매월",
+        "매년"]
 
     onDayPress = (day) => {
         this.setState({ selected: day.dateString });
@@ -128,53 +121,23 @@ export default class AddScreen extends Component {
      name: sethourarr
      description: set hour array
     */
-    sethourarr = () => {
+    /* sethourarr = () => {
         for (var i = 0; i < 12; i++) {
             var j = String(i + 1)
             hour.push(j)
         }
-    }
+    } */
 
     /*
      name: setminutearr
      description: set hour array
     */
-   setminutearr = () => {
-    for (var i = 0; i < 60; i++) {
-        var j = String(i + 1)
-        minute.push(j)
-    }
-    }
-
-    /*
-        name:  handlePicker
-        description: handle datepicker
-    */
-    /*  handlePicker = () => {
-         this.setState({
-             isVisible: false
-         })
-     } */
-
-    /*
-        name:  showPicker
-        description: show datepicker
-    */
-    /*  showPicker = () => {
-         this.setState({
-             isVisible: true
-         })
+    /* setminutearr = () => {
+     for (var i = 0; i < 60; i++) {
+         var j = String(i + 1)
+         minute.push(j)
      }
-  */
-    /*
-        name:  hidePicker
-        description: hide picker
-    */
-    /* hidePicker = () => {
-        this.setState({
-            isVisible: false
-        })
-    } */
+     } */
 
 
 
@@ -182,8 +145,6 @@ export default class AddScreen extends Component {
     render() {
         //  const params = this.props.navigation.state;
         //  const itemId = params ? params.itemId : null;
-
-
         return (
 
             <View style={styles.container}>
@@ -202,13 +163,13 @@ export default class AddScreen extends Component {
                     <View style={[styles.content_element, common.mt2]}>
                         <Text style={[common.font_mid, common.font_gray]}>시작일</Text>
                         <TouchableOpacity onPress={() => { this.toggleModal() }}>
-                            <Text style={[common.font_mid, common.font_bold]}>{year}.{month}.일 시간</Text>
+                            <Text style={[common.font_mid, common.font_bold]}>{year}년{month}월{day}일 시간</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={styles.content_element}>
                         <Text style={[common.font_mid, common.font_gray]}>종료일</Text>
                         <TouchableOpacity onPress={() => { this.toggleModal() }}>
-                            <Text style={[common.font_mid, common.font_bold]}>{year}.{month}.일 시간</Text>
+                            <Text style={[common.font_mid, common.font_bold]}>{year}년{month}월{day}일 시간</Text>
                         </TouchableOpacity>
                         {/* <DateTimePicker
                             isVisible={this.state.isVisible}
@@ -247,8 +208,8 @@ export default class AddScreen extends Component {
                                             dataSource={["오전", "오후"]}
                                             selectedIndex={1}
                                             itemHeight={40}
-                                            wrapperWidth={102}
-                                            wrapperHeight={50}
+                                            wrapperWidth={110}
+                                            wrapperHeight={150}
                                             wrapperBackground={"white"}
                                             highlightColor={Colors.gray}
                                             highlightBorderWidth={1}
@@ -258,32 +219,32 @@ export default class AddScreen extends Component {
 
                                     </View>
                                     <View style={styles.modalHour} >
-                                    <ScrollPicker
-                                        dataSource={hour}
-                                        selectedIndex={6}
-                                        itemHeight={50}
-                                        wrapperWidth={100}
-                                        wrapperHeight={20}
-                                        wrapperBackground={"white"}
-                                        highlightColor={Colors.gray}
-                                        highlightBorderWidth={1}
-                                        activeItemColor={"white"}
-                                        itemColor={Colors.darkPrimary}
-                                    />
+                                        <ScrollPicker
+                                            dataSource={hour_arr}
+                                            selectedIndex={5}
+                                            itemHeight={40}
+                                            wrapperWidth={110}
+                                            wrapperHeight={150}
+                                            wrapperBackground={"white"}
+                                            highlightColor={Colors.gray}
+                                            highlightBorderWidth={1}
+                                            activeItemColor={"white"}
+                                            itemColor={"red"}
+                                        />
                                     </View>
                                     <View style={styles.modalMin} >
-                                    <ScrollPicker
-                                        dataSource={minute}
-                                        selectedIndex={30}
-                                        itemHeight={50}
-                                        wrapperWidth={100}
-                                        wrapperHeight={20}
-                                        wrapperBackground={"white"}
-                                        highlightColor={Colors.gray}
-                                        highlightBorderWidth={1}
-                                        activeItemColor={"white"}
-                                        itemColor={Colors.darkPrimary}
-                                    />
+                                        <ScrollPicker
+                                            dataSource={minute_arr}
+                                            selectedIndex={29}
+                                            itemHeight={40}
+                                            wrapperWidth={110}
+                                            wrapperHeight={150}
+                                            wrapperBackground={"white"}
+                                            highlightColor={Colors.gray}
+                                            highlightBorderWidth={1}
+                                            activeItemColor={"white"}
+                                            itemColor={Colors.darkPrimary}
+                                        />
                                     </View>
                                 </View>
                                 <View style={styles.modalButton}>
@@ -316,28 +277,30 @@ export default class AddScreen extends Component {
                     <View style={styles.content_element_sub}>
                         <Icon name="ios-alarm" size={30} color={Colors.gray}></Icon>
                         {/*알람설정 부분*/}
-                        <TouchableOpacity onPress={() => { this.pickerRef.show() }}>
-                            <Text style={[common.font_small, common.ml2, { paddingVertical: 1 }]}>반복 안함</Text>
+                        <TouchableOpacity /* onPress={() => { this.toggleModal() }} */>
+                            <Text style={[common.font_small, common.ml2, { paddingVertical: 1 }]}>알람</Text>
                         </TouchableOpacity>
-                        <ReactNativePickerModule
-                            pickerRef={e => this.pickerRef = e}
-                            value={this.state.selectedValue}
-                            title={"알람 설정"}
-                            items={this.state.data}
-                            onValueChange={(index) => {
-                                this.setState({
-                                    selectedValue: index
-                                })
-                            }} />
+                        {/* <Modal isVisible={this.state.isModalVisible} >
+                            <View style={styles.modalAlarm_Container}>
+                                        <View style={styles.modalAR}/>
+
+                            </View>
+                        </Modal> */}
+
                     </View>
 
                     <View style={styles.content_element_sub}>
                         <Icon name="ios-color-palette" size={30} color={Colors.gray}></Icon>
-                        <TextInput style={[common.font_small, common.ml2, { paddingVertical: 1 }]} placeholder={'색상'}></TextInput>
+                        <TouchableOpacity /* onPress={() => { this.toggleModal() }} */>
+                            <Text style={[common.font_small, common.ml2, { paddingVertical: 1 }]}>색상</Text>
+                        </TouchableOpacity>
                     </View>
 
                     <View style={styles.content_element_sub}>
                         <Icon name="ios-repeat" size={30} color={Colors.gray}></Icon>
+                        <TouchableOpacity /* onPress={() => { this.toggleModal() }} */>
+                            <Text style={[common.font_small, common.ml2, { paddingVertical: 1 }]}>반복</Text>
+                        </TouchableOpacity>
                     </View>
 
 

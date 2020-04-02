@@ -137,17 +137,17 @@ import common from '../../../styles/common'
 
     modalAmPm: {
         flex:1,
-        backgroundColor: 'pink'
+        alignItems: 'center'
     },
 
     modalHour: {
         flex:1,
-        backgroundColor: 'blue'
+        alignItems: 'center'
     },
 
     modalMin: {
         flex:1,
-        backgroundColor: 'black'
+        alignItems: 'center'
     },
 
     modalButton: {
@@ -155,23 +155,35 @@ import common from '../../../styles/common'
         height: '7%',
         flexDirection: 'row',
         borderBottomLeftRadius: 5,
-        borderBottomRightRadius: 5
+        borderBottomRightRadius: 5,
+        backgroundColor: 'pink'
     },
 
     modalCnButton: {
         flex:1,
+        borderBottomLeftRadius: 5,
         backgroundColor:'blue'
     },
 
     modalSvButton: {
         flex:1,
+        borderBottomRightRadius: 5,
         backgroundColor:'black'
     },
 
     calendar: {
         // marginBottom: 10
-    }
+    },
 
+    modalAlarm_Container: {
+        width:330,
+        height:400
+    },
+
+    modalAR: {
+        flex:1,
+        backgroundColor:"pink"
+    }
 
 }) 
 

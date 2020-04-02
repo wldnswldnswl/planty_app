@@ -92,7 +92,89 @@ import common from '../../../styles/common'
         color: Colors.darkPrimary,
         backgroundColor: "white",
         textAlign: 'center'
+    },
+
+    modal_container: {
+        alignItems:"center",
+        width:330,
+        height:600,
+        backgroundColor: 'white',
+        borderRadius: 5,
+    },
+
+    modalheader: {
+        width:'100%',
+        height:'3%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderTopLeftRadius: 5,
+        borderTopRightRadius:5,
+        backgroundColor:Colors.darkPrimary
+    },
+    
+    modalyearmonth: {
+        width : '100%',
+        height: '8%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor:'lightgray'
+    },
+
+    modalCalendar: {
+        width : '100%',
+        height: '60%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'white'
+    },
+
+    modalHourContainer: {
+        width : '100%',
+        height: '22%',
+        flexDirection: 'row'
+    },
+
+    modalAmPm: {
+        flex:1,
+        alignItems: 'center'
+    },
+
+    modalHour: {
+        flex:1,
+        alignItems: 'center'
+    },
+
+    modalMin: {
+        flex:1,
+        alignItems: 'center'
+    },
+
+    modalButton: {
+        width : '100%',
+        height: '7%',
+        flexDirection: 'row',
+        borderBottomLeftRadius: 5,
+        borderBottomRightRadius: 5,
+        backgroundColor: 'pink'
+    },
+
+    modalCnButton: {
+        flex:1,
+        borderBottomLeftRadius: 5,
+        backgroundColor:'blue'
+    },
+
+    modalSvButton: {
+        flex:1,
+        borderBottomRightRadius: 5,
+        backgroundColor:'black'
+    },
+
+    calendar: {
+        // marginBottom: 10
     }
+
+
 
 }) 
 
