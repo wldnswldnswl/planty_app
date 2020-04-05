@@ -23,10 +23,10 @@ import Colors from '../../../styles/colors'
     
     theme_btn : {
        borderWidth : 1,
-       borderColor : Colors._10,
+       /* borderColor : Colors._10, */
        width : 25,
        height : 25,
-       backgroundColor : Colors._10,
+       /* backgroundColor : Colors._10, */
        borderRadius : 50,
        right : wp('-79%'),
        alignItems : 'center'
@@ -42,7 +42,51 @@ import Colors from '../../../styles/colors'
     selectWeek : {
         flexDirection : 'row',
         alignItems : 'center',
-        right : wp('-60%')     
+        right : wp('-58%')     
+    },
+
+    modal_container: {
+        width: 350,
+        height: 200,
+        left : wp('3%'),
+        right : wp('-3%'),
+        borderRadius: 3,
+        backgroundColor: 'white'
+    },
+
+    modalTitle: {
+        width: "100%",
+        height:("20%"),
+        left: wp('2%'),
+        marginTop: wp('2%'),
+        borderTopLeftRadius:3,
+        borderTopRightRadius:3
+    },
+
+    modalUp: {
+        flex:1,
+        alignItems:"center",
+        flexDirection : 'row'
+    },
+
+    modalDown: {
+        flex:1,
+        alignItems:"center",
+        flexDirection : 'row'
+    },
+
+    modalTheme: {
+        width:40,
+        height:40,
+        borderRadius: 50
+    },
+
+    modalButton: {
+        width: "100%",
+        height:("20%"),
+        alignItems:"center",
+        borderBottomLeftRadius:3,
+        borderBottomRightRadius:3
     }
 }) 
 

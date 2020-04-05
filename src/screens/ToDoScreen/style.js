@@ -98,6 +98,7 @@ import common from '../../../styles/common'
         alignItems:"center",
         width:330,
         height:600,
+        left:wp("5%"),
         backgroundColor: 'white',
         borderRadius: 5,
     },
@@ -116,8 +117,7 @@ import common from '../../../styles/common'
         width : '100%',
         height: '8%',
         justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor:'lightgray'
+        alignItems: 'center'
     },
 
     modalCalendar: {
@@ -153,25 +153,80 @@ import common from '../../../styles/common'
         width : '100%',
         height: '7%',
         flexDirection: 'row',
-        borderBottomLeftRadius: 5,
-        borderBottomRightRadius: 5,
-        backgroundColor: 'pink'
+        borderBottomLeftRadius: 3,
+        borderBottomRightRadius: 3
     },
 
     modalCnButton: {
         flex:1,
-        borderBottomLeftRadius: 5,
-        backgroundColor:'blue'
+        borderBottomLeftRadius: 3,
+        alignItems: "center"
     },
 
     modalSvButton: {
         flex:1,
-        borderBottomRightRadius: 5,
-        backgroundColor:'black'
+        borderBottomRightRadius: 3,
+         alignItems: "center"
     },
 
     calendar: {
         // marginBottom: 10
+    },
+
+    theme_btn : {
+        borderWidth : 1,
+        /* borderColor : Colors._10, */
+        width : 20,
+        height : 20,
+        /* backgroundColor : Colors._10, */
+        borderRadius : 50,
+        left : wp('3%'),
+        alignItems : 'center'
+       
+     },
+
+     colormodal_container: {
+        width: 350,
+        height: 200,
+        left : wp('3%'),
+        right : wp('-3%'),
+        borderRadius: 3,
+        backgroundColor: 'white'
+    },
+
+    colorModalTitle: {
+        width: "100%",
+        height:("20%"),
+        left: wp('2%'),
+        marginTop: wp('2%'),
+        borderTopLeftRadius:3,
+        borderTopRightRadius:3
+    },
+
+    colorModalUp: {
+        flex:1,
+        alignItems:"center",
+        flexDirection : 'row'
+    },
+
+    colorModalDown: {
+        flex:1,
+        alignItems:"center",
+        flexDirection : 'row'
+    },
+
+    colorModalTheme: {
+        width:40,
+        height:40,
+        borderRadius: 50
+    },
+
+    colorModalButton: {
+        width: "100%",
+        height:("20%"),
+        alignItems:"center",
+        borderBottomLeftRadius:3,
+        borderBottomRightRadius:3
     }
 
 

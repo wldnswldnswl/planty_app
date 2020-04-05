@@ -1,12 +1,14 @@
 //addscreen-index
 import React from 'react';
-import { Component } from 'react';
+import { Component, useState } from 'react';
 import {
     View,
     Text,
     Button,
     TextInput,
     TouchableHighlight,
+    Picker,
+    TouchableOpacity
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -15,10 +17,9 @@ import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Colors from '../../../styles/colors';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import ReactNativePickerModule from 'react-native-picker-module';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+/* import { TouchableOpacity } from 'react-native-gesture-handler'; */
 import ScrollPicker from 'react-native-wheel-scroll-picker';
 import { Calendar } from 'react-native-calendars';
-import SelectPicker from 'react-native-form-select-picker';
 
 //styles
 import common from '../../../styles/common';
@@ -46,15 +47,17 @@ var color_arr = new Array();
 export default class AddScreen extends Component {
 
     //datepicker 생성자 추가
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
 
-        selected: undefined
+        /*  selected: undefined */
         this.state = {
-            isModalVisible: false,
+            CalendarModalVisible: false,
+            ColorModalVisible: false,
             isVisible: false,
-            pickerSelection: 'default',
-            selectedValue: null
+            selectedAlarm: '알림 안함',
+            selectedRepeat: '반복 안함',
+            theme_color: '#2980b9'
         }
 
         for (var i = 0; i < 12; i++) {
@@ -68,23 +71,6 @@ export default class AddScreen extends Component {
         }
     }
 
-    //alarm select state 설정
-    alarm_arr = ["설정안함",
-        "5분전",
-        "10분전",
-        "15분전",
-        "30분전",
-        "45분전",
-        "1시간전"]
-
-
-
-    //repeat select state 설정
-    repeat_arr = ["반복 안함",
-        "매일",
-        "매주",
-        "매월",
-        "매년"]
 
     onDayPress = (day) => {
         this.setState({ selected: day.dateString });
@@ -110,12 +96,29 @@ export default class AddScreen extends Component {
     }
 
     /*
-        name:  toggleModal
-        description: show yearmonthday picker
+        name:  toggleCalendarModal
+        description: show calendar modal
     */
-    toggleModal = () => {
-        this.setState({ isModalVisible: !this.state.isModalVisible });
+    toggleCalendarModal = () => {
+        this.setState({ CalendarModalVisible: !this.state.CalendarModalVisible });
     }
+
+    /*
+        name:  toggleColorModal
+        description: show color picker
+    */
+    toggleColorModal = () => {
+        this.setState({ ColorModalVisible: !this.state.ColorModalVisible });
+    }
+
+    /*
+        name:  setThemeColor
+        description: set theme color
+    */
+    setThemeColor(Color) {
+        this.state.theme_color = Color;
+    }
+
 
     /*
      name: sethourarr
@@ -145,6 +148,10 @@ export default class AddScreen extends Component {
     render() {
         //  const params = this.props.navigation.state;
         //  const itemId = params ? params.itemId : null;
+
+        const { onValueChange } = this;
+
+
         return (
 
             <View style={styles.container}>
@@ -162,22 +169,17 @@ export default class AddScreen extends Component {
                 <View style={styles.content}>
                     <View style={[styles.content_element, common.mt2]}>
                         <Text style={[common.font_mid, common.font_gray]}>시작일</Text>
-                        <TouchableOpacity onPress={() => { this.toggleModal() }}>
+                        <TouchableOpacity onPress={() => { this.toggleCalendarModal() }}>
                             <Text style={[common.font_mid, common.font_bold]}>{year}년{month}월{day}일 시간</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={styles.content_element}>
                         <Text style={[common.font_mid, common.font_gray]}>종료일</Text>
-                        <TouchableOpacity onPress={() => { this.toggleModal() }}>
+                        <TouchableOpacity onPress={() => { this.toggleCalendarModal() }}>
                             <Text style={[common.font_mid, common.font_bold]}>{year}년{month}월{day}일 시간</Text>
                         </TouchableOpacity>
-                        {/* <DateTimePicker
-                            isVisible={this.state.isVisible}
-                            onConfirm={this.handlePicker}
-                            onCancel={this.hidePicker} />
-                        <DateTimePicker /> */}
-                        <Modal isVisible={this.state.isModalVisible} >
 
+                        <Modal isVisible={this.state.CalendarModalVisible} onBackdropPress={() => { this.toggleCalendarModal() }}>
 
                             <View style={styles.modal_container}>
                                 <View style={styles.modalheader}>
@@ -248,18 +250,16 @@ export default class AddScreen extends Component {
                                     </View>
                                 </View>
                                 <View style={styles.modalButton}>
-                                    <View Style={styles.modalCnButton}>
-                                        <TouchableHighlight onPress={() => { this.toggleModal() }}>
-                                            <Text style={[common.font_mid, { color: Colors.darkPrimary }]}>취소</Text>
+                                <View style={styles.modalCnButton}>
+                                        <TouchableHighlight onPress={() => { this.toggleCalendarModal() }}>
+                                            <Text style={[common.font_mid, { color: Colors.darkPrimary }, {marginTop:wp("2%")}]}>취소</Text>
                                         </TouchableHighlight>
-                                    </View>
-                                    <View Style={styles.modalSvButton}>
-                                        <TouchableHighlight onPress={() => { this.toggleModal() }}>
-                                            <Text style={[common.font_mid, { color: Colors.darkPrimary }]}>저장</Text>
+                                </View>
+                                <View style={styles.modalSvButton}>
+                                        <TouchableHighlight onPress={() => { this.toggleCalendarModal() }}>
+                                            <Text style={[common.font_mid, { color: Colors.darkPrimary },{marginTop:wp("2%")}]}>저장</Text>
                                         </TouchableHighlight>
-                                    </View>
-
-
+                                </View>
                                 </View>
 
                             </View>
@@ -277,30 +277,73 @@ export default class AddScreen extends Component {
                     <View style={styles.content_element_sub}>
                         <Icon name="ios-alarm" size={30} color={Colors.gray}></Icon>
                         {/*알람설정 부분*/}
-                        <TouchableOpacity /* onPress={() => { this.toggleModal() }} */>
-                            <Text style={[common.font_small, common.ml2, { paddingVertical: 1 }]}>알람</Text>
-                        </TouchableOpacity>
-                        {/* <Modal isVisible={this.state.isModalVisible} >
-                            <View style={styles.modalAlarm_Container}>
-                                        <View style={styles.modalAR}/>
-
-                            </View>
-                        </Modal> */}
+                        <Picker
+                            selectedValue={this.state.selectedAlarm}
+                            style={{ height: 30, width: 370 }}
+                            onValueChange={(itemValue, itemIndex) => this.setState({ selectedAlarm: itemValue })}
+                        >
+                            <Picker.Item label="설정안함" value="설정안함" />
+                            <Picker.Item label="5분전" value="5분전" />
+                            <Picker.Item label="10분전" value="10분전" />
+                            <Picker.Item label="15분전" value="15분전" />
+                            <Picker.Item label="30분전" value="30분전" />
+                            <Picker.Item label="45분전" value="45분전" />
+                            <Picker.Item label="1시간전" value="1시간전" />
+                        </Picker>
 
                     </View>
 
                     <View style={styles.content_element_sub}>
                         <Icon name="ios-color-palette" size={30} color={Colors.gray}></Icon>
-                        <TouchableOpacity /* onPress={() => { this.toggleModal() }} */>
-                            <Text style={[common.font_small, common.ml2, { paddingVertical: 1 }]}>색상</Text>
+                        {/*색상설정 부분*/}
+                        <TouchableOpacity title="Theme" style={[styles.theme_btn, { borderColor: this.state.theme_color }, { backgroundColor: this.state.theme_color }]} onPress={() => { this.toggleColorModal() }}>
                         </TouchableOpacity>
+                        <Modal isVisible={this.state.ColorModalVisible} onBackdropPress={() => { this.toggleColorModal() }}>
+                            <View style={styles.colormodal_container}>
+                                <View style={styles.colorModalTitle}>
+                                    <Text style={[common.font_mid, common.font_bold, common.mb1, { color: Colors.gray }]}>일정 색상 설정</Text>
+                                </View>
+                                <View style={styles.colorModalUp}>
+                                    <TouchableOpacity style={[styles.colorModalTheme, { borderColor: Colors._0 }, { backgroundColor: Colors._0 }, { left: wp("4%") }]} onPress={() => { this.toggleColorModal(); this.setThemeColor('#e74c3c') }} />
+                                    <TouchableOpacity style={[styles.colorModalTheme, { borderColor: Colors._1 }, { backgroundColor: Colors._1 }, { left: wp("8%") }]} onPress={() => { this.toggleColorModal(); this.setThemeColor('#e67e22') }} />
+                                    <TouchableOpacity style={[styles.colorModalTheme, { borderColor: Colors._2 }, { backgroundColor: Colors._2 }, { left: wp("12%") }]} onPress={() => { this.toggleColorModal(); this.setThemeColor('#f1c40f') }} />
+                                    <TouchableOpacity style={[styles.colorModalTheme, { borderColor: Colors._3 }, { backgroundColor: Colors._3 }, { left: wp("16%") }]} onPress={() => { this.toggleColorModal(); this.setThemeColor('#f39c12') }} />
+                                    <TouchableOpacity style={[styles.colorModalTheme, { borderColor: Colors._4 }, { backgroundColor: Colors._4 }, { left: wp("20%") }]} onPress={() => { this.toggleColorModal(); this.setThemeColor('#FF8D78') }} />
+                                    <TouchableOpacity style={[styles.colorModalTheme, { borderColor: Colors._5 }, { backgroundColor: Colors._5 }, { left: wp("24%") }]} onPress={() => { this.toggleColorModal(); this.setThemeColor('#fde296') }} />
+
+                                </View>
+                                <View style={styles.colorModalDown}>
+                                    <TouchableOpacity style={[styles.colorModalTheme, { borderColor: Colors._6 }, { backgroundColor: Colors._6 }, { left: wp("4%") }]} onPress={() => { this.toggleColorModal(); this.setThemeColor('#1abc9c') }} />
+                                    <TouchableOpacity style={[styles.colorModalTheme, { borderColor: Colors._7 }, { backgroundColor: Colors._7 }, { left: wp("8%") }]} onPress={() => { this.toggleColorModal(); this.setThemeColor('#2ecc71') }} />
+                                    <TouchableOpacity style={[styles.colorModalTheme, { borderColor: Colors._8 }, { backgroundColor: Colors._8 }, { left: wp("12%") }]} onPress={() => { this.toggleColorModal(); this.setThemeColor('#27ae60') }} />
+                                    <TouchableOpacity style={[styles.colorModalTheme, { borderColor: Colors._9 }, { backgroundColor: Colors._9 }, { left: wp("16%") }]} onPress={() => { this.toggleColorModal(); this.setThemeColor('#3498db') }} />
+                                    <TouchableOpacity style={[styles.colorModalTheme, { borderColor: Colors._10 }, { backgroundColor: Colors._10 }, { left: wp("20%") }]} onPress={() => { this.toggleColorModal(); this.setThemeColor('#2980b9') }} />
+                                    <TouchableOpacity style={[styles.colorModalTheme, { borderColor: Colors._11 }, { backgroundColor: Colors._11 }, { left: wp("24%") }]} onPress={() => { this.toggleColorModal(); this.setThemeColor('#0E2C40') }} />
+                                </View>
+                                <View style={styles.colorModalButton}>
+                                    <TouchableOpacity onPress={() => this.toggleColorModal()}>
+                                        <Text style={[common.font_mid, { color: Colors.darkPrimary }]}>취소</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </Modal>
+
                     </View>
 
                     <View style={styles.content_element_sub}>
                         <Icon name="ios-repeat" size={30} color={Colors.gray}></Icon>
-                        <TouchableOpacity /* onPress={() => { this.toggleModal() }} */>
-                            <Text style={[common.font_small, common.ml2, { paddingVertical: 1 }]}>반복</Text>
-                        </TouchableOpacity>
+                        {/*반복설정 부분*/}
+                        <Picker
+                            selectedValue={this.state.selectedRepeat}
+                            style={{ height: 30, width: 370 }}
+                            onValueChange={(itemValue, itemIndex) => this.setState({ selectedRepeat: itemValue })}
+                        >
+                            <Picker.Item label="반복안함" value="반복안함" />
+                            <Picker.Item label="매일" value="매일" />
+                            <Picker.Item label="매주" value="매주" />
+                            <Picker.Item label="매월" value="매월" />
+                            <Picker.Item label="매년" value="매년" />
+                        </Picker>
                     </View>
 
 

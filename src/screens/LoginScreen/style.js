@@ -57,7 +57,19 @@ const styles = StyleSheet.create({
         fontSize: wp('3.7%'),
         textAlign: 'center',
         color: Colors.gray
-     }
+     },
+
+     naverbutton: { 
+        width: '100%', 
+        marginTop: hp('2%'),
+        justifyContent: 'center', 
+        alignItems: 'center'
+    },
+
+    modal_containter: {
+        
+    }
+
  }) 
 
 
