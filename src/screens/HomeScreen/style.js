@@ -37,15 +37,16 @@ import Colors from '../../../styles/colors'
 
     modal_container: {
         alignItems:"center",
-        width:370,
+        width:340,
         height:500,
         backgroundColor: 'white',
         borderRadius: 10,
+        left: wp("4%")
     },
 
     modalheader: {
-        width:370,
-        height:'5%',
+        width:"100%",
+        height:'3%',
         justifyContent: 'center',
         alignItems: 'center',
         borderTopLeftRadius: 10,
@@ -54,24 +55,24 @@ import Colors from '../../../styles/colors'
     },
     
     modalyearmonth: {
-        width : 370,
-        height: '27%',
+        width : "100%",
+        height: '20%',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor:'white'
     },
 
     modalContent: {
-        width : 370,
-        height: '56%',
+        width : "100%",
+        height: '69%',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor:/* Colors.lightgray */'white'
+        backgroundColor:'white'
     },
 
     modalButton: {
-        width : 370,
-        height: '10%',
+        width : "100%",
+        height: '6%',
         justifyContent: 'center',
         alignItems: 'center',
         borderBottomLeftRadius: 10,

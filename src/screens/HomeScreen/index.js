@@ -32,11 +32,11 @@ var month = new Date().getMonth() + 1;
 var year_month = new Array();
 //년도, 월별 화면 선택위한 변수
 var select = true;
-//년도 색깔 설정
-var year_color = "pink";
+/* //년도 색깔 설정
+var year_color; 
 //월 색깔 설정
 var month_color;
-
+ */
 
 export default class HomeScreen extends Component {
 
@@ -50,10 +50,10 @@ export default class HomeScreen extends Component {
             pickerSelection: 'default'
         }
 
-        for (var i = 0; i < 20; i++) {
+        /* for (var i = 0; i < 20; i++) {
             var j = String(year - 10 + i)
             year_month.push(j)
-        }
+        } */
 
         /* for (var i = 0; i < 12; i++) {
             var j = String(i + 1)
@@ -104,39 +104,39 @@ export default class HomeScreen extends Component {
         name: selyearmonth
         description: set select for yearmonth picker
     */
-    selyearmonth(sel) {
+   /*  selyearmonth(sel) {
         select = sel;
-    }
+    } */
 
     /*
         name: selyearcolor
         description: change year's color, month's color in picker
     */
-    selyearcolor = () => {
+   /*  selyearcolor = () => {
         year_color = Colors.darkPrimary;
         month_color = "black";
-    }
+    } */
 
     /*
         name: selmonthcolor
         description: change year's color, month's color in picker
     */
-    selmonthcolor = () => {
+   /*  selmonthcolor = () => {
         year_color = "black";
         month_color = Colors.darkPrimary;
-    }
+    } */
 
     /*
         name: setyeararr
         description: set year array
     */
-    setyeararr = () => {
+   /*  setyeararr = () => {
         year_month.length = 0;
         for (var i = 0; i < 12; i++) {
             var j = String(i + 1)
             year_month.push(j)
         }
-    }
+    } */
 
 
     // HomeScreen : 캘린더
@@ -160,7 +160,7 @@ export default class HomeScreen extends Component {
                     <TouchableHighlight onPress={() => { this.toggleModal() }}>
                         <Text style={[common.font_title, { color: Colors.gray }]}>{year}.{month}</Text>
                     </TouchableHighlight>
-                    <Modal isVisible={this.state.isModalVisible} >
+                    <Modal isVisible={this.state.isModalVisible} onBackdropPress={() => { this.toggleModal() }} >
 
                         <View style={styles.modal_container}>
                             <View style={styles.modalheader}>
@@ -170,11 +170,11 @@ export default class HomeScreen extends Component {
 
                                 <TouchableHighlight onPress={this.selyearcolor} >
 
-                                    <Text style={[common.font_title, { color: year_color }, { fontSize: 45 }]}>{year}</Text>
+                                    <Text style={[common.font_title, { color: Colors.darkPrimary }, { fontSize: 43 }]}>{year}</Text>
 
                                 </TouchableHighlight>
                                 <TouchableHighlight onPress={() => { this.setyeararr() }}>
-                                    <Text style={[common.font_title, { color: month_color }, { fontSize: 30 }]}>{month}월</Text>
+                                    <Text style={[common.font_title, { color: Colors.darkPrimary }, { fontSize: 28 }]}>{month}월</Text>
                                 </TouchableHighlight>
 
                             </View>

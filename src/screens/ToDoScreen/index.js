@@ -25,13 +25,30 @@ var year = new Date().getFullYear();
 //현재 월 저장
 var month = new Date().getMonth() + 1;
 //현재 일자 저장
+var date = new Date().getDate();
+//현재 요일 저장
 var day = new Date().getDay();
-//현재 일자 저장
+//현재 시간 저장
 var hour = new Date().getHours();
+//현재 분 저장
+var minute = new Date().getMinutes();
+
 // 시간을 저장하는 배열 생성
 var hour_arr = new Array();
 // 분을 저장하는 배열 생성
 var minute_arr = new Array();
+// 요일 저장하는 변수 생성
+var ko_day;
+// 월 글자 수 맞추기 위한 변수 생성
+var month_len;
+// 일 글자 수 맞추기 위한 변수 생성
+var date_len;
+// 시간 글자 수 맞추기 위한 변수 생성
+var hour_len;
+// 분 글자 수 맞추기 위한 변수 생성
+var minute_len;
+// 오전,오후 구분 위한 변수 생성
+var am_pm;
 
 export default class AddScreen extends Component {
 
@@ -46,14 +63,71 @@ export default class AddScreen extends Component {
             theme_color: '#2980b9'
         }
 
+        //시간배열에 데이터 삽입
         for (var i = 0; i < 12; i++) {
             var j = String(i + 1)
             hour_arr.push(j)
         }
 
+        //분배열에 데이터 삽입
         for (var i = 0; i < 60; i++) {
             var j = String(i + 1)
             minute_arr.push(j)
+        }
+        //day값에 따라 요일 설정
+        switch (day) {
+            case 0: ko_day = "일";
+                break;
+            case 1: ko_day = "월";
+                break;
+            case 2: ko_day = "화";
+                break;
+            case 3: ko_day = "수";
+                break;
+            case 4: ko_day = "목";
+                break;
+            case 5: ko_day = "금";
+                break;
+            case 6: ko_day = "토";
+                break;
+        }
+
+        //1~9월을 두자릿수로 설정
+        if (month < 10)
+            month_len = "0";
+        else
+            month_len = "";
+
+        //한자릿수 일을 두자릿수로 설정
+        if (date < 10)
+            date_len = "0";
+        else
+            date_len = "";
+
+        //한자릿 수 분을 두자릿수로 설정
+        if (minute < 10)
+            minute_len = "0";
+        else
+            minute_len = "";
+
+        //오전,오후 구분
+        if (hour < 12) {
+            am_pm = "오전";
+            if (hour == 0) {
+                hour += 12;
+                hour_len = "";
+            }
+            hour_len = "0";
+        }
+        else if (hour < 24) {
+            am_pm = "오후";
+            hour -= 12;
+            hour_len = "0";
+        }
+        else {
+            am_pm = "오전";
+            hour -= 12;
+            hour_len = "";
         }
     }
 
@@ -163,7 +237,7 @@ export default class AddScreen extends Component {
                     <View style={[styles.content_element, common.mt2]}>
                         <Text style={[common.font_mid, common.font_gray]}>완료일</Text>
                         <TouchableOpacity onPress={() => { this.toggleCalendarModal() }}>
-                            <Text style={[common.font_mid, common.font_bold]}>{year}년{month}월{day}일 </Text>
+                            <Text style={[common.font_mid, common.font_bold]}>{year}.{month_len}{month}.{date_len}{date}({ko_day}) {am_pm} {hour_len}{hour}:{minute_len}{minute} </Text>
                         </TouchableOpacity>
                     </View>
 
@@ -240,16 +314,16 @@ export default class AddScreen extends Component {
                             </View>
                             <View style={styles.modalButton}>
                                 <View style={styles.modalCnButton}>
-                                        <TouchableHighlight onPress={() => { this.toggleCalendarModal() }}>
-                                            <Text style={[common.font_mid, { color: Colors.darkPrimary }, {marginTop:wp("2%")}]}>취소</Text>
-                                        </TouchableHighlight>
+                                    <TouchableHighlight onPress={() => { this.toggleCalendarModal() }}>
+                                        <Text style={[common.font_mid, { color: Colors.darkPrimary }, { marginTop: wp("2%") }]}>취소</Text>
+                                    </TouchableHighlight>
                                 </View>
                                 <View style={styles.modalSvButton}>
-                                        <TouchableHighlight onPress={() => { this.toggleCalendarModal() }}>
-                                            <Text style={[common.font_mid, { color: Colors.darkPrimary },{marginTop:wp("2%")}]}>저장</Text>
-                                        </TouchableHighlight>
+                                    <TouchableHighlight onPress={() => { this.toggleCalendarModal() }}>
+                                        <Text style={[common.font_mid, { color: Colors.darkPrimary }, { marginTop: wp("2%") }]}>저장</Text>
+                                    </TouchableHighlight>
                                 </View>
-                                </View>
+                            </View>
                         </View>
 
                     </Modal>
