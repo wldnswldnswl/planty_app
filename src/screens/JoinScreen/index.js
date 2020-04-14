@@ -2,7 +2,6 @@ import React from 'react';
 import {Component} from 'react'; 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-
  import { 
      View,
      Image, 
@@ -12,7 +11,7 @@ import { createStackNavigator } from '@react-navigation/stack';
      StyleSheet, 
      CheckBox
  } from 'react-native'; 
-
+import {getApi, postApi} from '../../common/common'
 //style
 import common from '../../../styles/common'; 
 import styles from './style';
@@ -23,7 +22,15 @@ import styles from './style';
       functions
     */
 
+    constructor(props){
+        super(props);
 
+        this.state = {
+            email: "",
+            pwd: "",
+            nickname: ""
+        }
+    }
     /*
         name: join
         description: make new Account
@@ -34,10 +41,9 @@ import styles from './style';
          /*
             회원가입 관련 코드
          */
-
-         // go to LoginScreen
-         alert("회원가입이 완료되었습니다");
-         this.props.navigation.goBack(); 
+        console.log(this.state);
+        postApi('membersApi','/members',this.state);
+        this.props.navigation.goBack(); 
 
      }  
 
@@ -56,13 +62,19 @@ import styles from './style';
                  <View style={styles.formArea}> 
                     <TextInput  
                          style={styles.textForm}  
-                         placeholder={"닉네임"}/> 
+                         placeholder={"닉네임"}
+                         onChangeText={(text) => this.setState({nickname : text})}
+                         /> 
                      <TextInput  
                          style={styles.textForm}  
-                         placeholder={"이메일"}/> 
+                         placeholder={"이메일"}
+                         onChangeText={(text) => this.setState({email : text})}
+                         /> 
                      <TextInput  
                          style={styles.textForm}  
-                         placeholder={"비밀번호"}/> 
+                         placeholder={"비밀번호"}
+                         onChangeText={(text) => this.setState({pwd: text})}
+                         /> 
                      <View style = {{ flexDirection : 'row', alignItems : 'center', textAlign : 'center' }}>
                         <CheckBox></CheckBox>
                         <Text style={styles.smallText}>

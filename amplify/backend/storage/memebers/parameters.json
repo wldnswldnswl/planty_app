@@ -1,0 +1,5 @@
+{
+    "tableName": "memebers",
+    "partitionKeyName": "email",
+    "partitionKeyType": "S"
+}

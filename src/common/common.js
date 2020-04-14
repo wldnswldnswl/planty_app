@@ -1,7 +1,7 @@
 import React from 'react';
 import {Component} from 'react'; 
 import {LocaleConfig} from 'react-native-calendars';
-
+import Amplify, {API} from 'aws-amplify';
 //공통함수
 
 // export default class Common extends Component{
@@ -15,4 +15,28 @@ export function setCalendarConfig(){
           };
         LocaleConfig.defaultLocale = 'kr';
 }
-// }
+
+export async function getApi(apiName, path) {
+  try{
+     const data = await API.get(apiName, path,{})
+     console.log('data: ', data);
+     return data;
+  }catch(err){
+      console.log('error: ', err);
+  }
+}
+
+export async function postApi(apiName, path, resources) {
+  resources = {
+    body: resources
+  }
+  
+  try{
+     const data = await API.post(apiName, path, resources)
+     console.log('data: ', data);
+     return data;
+  }catch(err){
+      console.log('error: ', err);
+  }
+ 
+}
