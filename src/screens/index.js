@@ -11,10 +11,12 @@ import DrawerScreen from './drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, createAppContainer } from '@react-navigation/stack'; 
 import * as Common from '../common/common'; 
-
+import Amplify from 'aws-amplify';
+import awsConfig from '../aws-exports';
 
 const Stack  = createStackNavigator();
 Common.setCalendarConfig(); // react-native-calendars 환경설정
+Amplify.configure(awsConfig); // Amplify 환경설정
 
 export default function MyStack() {
     return (
