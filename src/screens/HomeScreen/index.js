@@ -13,11 +13,10 @@ import Modal from 'react-native-modal';
 //styles
 import common from '../../../styles/common';
 import styles from './style';
-import { Calendar } from 'react-native-calendars';
+import { Calendar, CalendarList } from 'react-native-calendars';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Colors from '../../../styles/colors';
 import ScrollPicker from 'react-native-wheel-scroll-picker';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 import { createStackNavigator } from '@react-navigation/drawer';
 import { DrawerActions } from 'react-navigation-drawer';
@@ -45,8 +44,6 @@ export default class HomeScreen extends Component {
     constructor(props) {
         super(props);
 
-        
-
         selected: undefined
         this.state = {
             isModalVisible: false,
@@ -66,7 +63,7 @@ export default class HomeScreen extends Component {
     };
 
 
-
+    
 
     /*  //year_month modal 화면 상태 설정
     state = { modalVisible: false } */
@@ -103,44 +100,43 @@ export default class HomeScreen extends Component {
         this.setState({ isModalVisible: !this.state.isModalVisible });
     }
 
-    
     /*
         name: selyearmonth
         description: set select for yearmonth picker
     */
-    /*  selyearmonth(sel) {
-         select = sel;
-     } */
+   /*  selyearmonth(sel) {
+        select = sel;
+    } */
 
     /*
         name: selyearcolor
         description: change year's color, month's color in picker
     */
-    /*  selyearcolor = () => {
-         year_color = Colors.darkPrimary;
-         month_color = "black";
-     } */
+   /*  selyearcolor = () => {
+        year_color = Colors.darkPrimary;
+        month_color = "black";
+    } */
 
     /*
         name: selmonthcolor
         description: change year's color, month's color in picker
     */
-    /*  selmonthcolor = () => {
-         year_color = "black";
-         month_color = Colors.darkPrimary;
-     } */
+   /*  selmonthcolor = () => {
+        year_color = "black";
+        month_color = Colors.darkPrimary;
+    } */
 
     /*
         name: setyeararr
         description: set year array
     */
-    /*  setyeararr = () => {
-         year_month.length = 0;
-         for (var i = 0; i < 12; i++) {
-             var j = String(i + 1)
-             year_month.push(j)
-         }
-     } */
+   /*  setyeararr = () => {
+        year_month.length = 0;
+        for (var i = 0; i < 12; i++) {
+            var j = String(i + 1)
+            year_month.push(j)
+        }
+    } */
 
 
     // HomeScreen : 캘린더
@@ -186,9 +182,9 @@ export default class HomeScreen extends Component {
 
                             <View style={styles.modalContent}>
 
-                                <Calendar />
-                                {/*원래 계획했던 데이트피커*/}
-                                {/* <ScrollPicker
+                            <Calendar/>
+                                    {/*원래 계획했던 데이트피커*/}
+                                    {/* <ScrollPicker
                                     dataSource={year_month}
                                     selectedIndex={10}
                                     itemHeight={50}
@@ -204,58 +200,40 @@ export default class HomeScreen extends Component {
 
 
                             <View style={styles.modalButton}>
-                                <TouchableHighlight onPress={() => { this.toggleModal() }}>
-                                    <Text style={[common.font_mid, { color: Colors.darkPrimary }]}>완료</Text>
-                                </TouchableHighlight>
-                            </View>
+                                    <TouchableHighlight onPress={() => { this.toggleModal() }}>
+                                        <Text style={[common.font_mid, { color: Colors.darkPrimary }]}>완료</Text>
+                                    </TouchableHighlight>
+                                </View>
 
-                        </View>
+                            </View>
 
                     </Modal>
 
-                    {/* 먼슬리 -> 위클리 전환 */}
-                    <Icon name="ios-calendar" size={30} color={Colors.gray}></Icon>
+                        {/* 먼슬리 -> 위클리 전환 */}
+                        <Icon name="ios-calendar" size={30} color={Colors.gray}></Icon>
 
-                    {/* 위클리 -> 먼슬리 전환 */}
-                    {/* 모듈 업데이트되면서 아이콘 사라짐;; */}
+                        {/* 위클리 -> 먼슬리 전환 */}
+                        {/* 모듈 업데이트되면서 아이콘 사라짐;; */}
                 </View>
-                <View style={styles.content}>
-                    <Calendar
-                        style={styles.Calendar}
-                        calendarHeight={500}
-                        hideExtraDays={false}
-                        onDayPress={this.onDayPress}
-                        markedDates={{
-                            [this.state.selected]: {
-                                selected: true,
-                                disableTouchEvent: true,
-                                selectedDotColor: "orange"
-                            }
-                        }}
-                        calendar_flag= {true}
-
-
-                        theme={{
-                            "stylesheet.calendar.header": {
-                                header: {
-                                    height: 0,
-                                    opacity: 0
+                    <View style={styles.content}>
+                        <Calendar
+                            style={styles.calendar}
+                            hideExtraDays
+                            onDayPress={this.onDayPress}
+                            markedDates={{
+                                [this.state.selected]: {
+                                    selected: true,
+                                    disableTouchEvent: true,
+                                    selectedDotColor: "orange"
                                 }
-                            },
-                            
-                            textSectionTitleColor: Colors.darkgray,
-                            selectedDayBackgroundColor: Colors.lightgray,
-                            selectedDayTextColor: "black",
-                            todayTextColor: Colors.darkPrimary
-                        }}
-
-                    />
-                    <TouchableHighlight style={common.addButton}
-                        underlayColor={Colors.clicked} onPress={this.gotoAddScreen.bind(this)}>
-                        <Text style={{ fontSize: 50, color: 'white' }}>+</Text>
-                    </TouchableHighlight>
+                            }}
+                        />
+                        <TouchableHighlight style={common.addButton}
+                            underlayColor={Colors.clicked} onPress={this.gotoAddScreen.bind(this)}>
+                            <Text style={{ fontSize: 50, color: 'white' }}>+</Text>
+                        </TouchableHighlight>
+                    </View>
                 </View>
-            </View>
 
 
         );
