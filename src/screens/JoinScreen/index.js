@@ -42,7 +42,7 @@ import styles from './style';
             회원가입 관련 코드
          */
         console.log(this.state);
-        postApi('membersApi','/members',this.state);
+        postApi('membersApi','/members',this.state,"회원가입 완료","회원가입 실패");
         this.props.navigation.goBack(); 
 
      }  
