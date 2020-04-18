@@ -1,0 +1,34 @@
+{
+    "paths": [
+        {
+            "name": "/members",
+            "lambdaFunction": "LambdaMembers",
+            "privacy": {
+                "open": true
+            }
+        }
+    ],
+    "resourceName": "ApiMembers",
+    "apiName": "ApiMembers",
+    "functionArns": [
+        {
+            "lambdaFunction": "LambdaMembers"
+        }
+    ],
+    "privacy": {
+        "auth": 0,
+        "unauth": 0,
+        "authRoleName": "amplify-plantyapp-dev-42358-authRole",
+        "unAuthRoleName": "amplify-plantyapp-dev-42358-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "LambdaMembers",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ]
+}
