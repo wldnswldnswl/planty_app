@@ -78,6 +78,7 @@ app.get(path + hashKeyPath, function(req, res) {
 
 app.get(path + '/login' + hashKeyPath + sortKeyPath, function(req, res) {
   var params = {};
+
   if (userIdPresent && req.apiGateway) {
     params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
   } else {
@@ -100,7 +101,8 @@ app.get(path + '/login' + hashKeyPath + sortKeyPath, function(req, res) {
 
   let getItemParams = {
     TableName: tableName,
-    Key: params
+    Key: params,
+    "ProjectionExpression": "nickname, email"
   }
 
   dynamodb.get(getItemParams,(err, data) => {
@@ -154,7 +156,11 @@ app.post(path, function(req, res) {
 
   let putItemParams = {
     TableName: tableName,
-    Item: req.body
+    Item: {
+      email: req.body.email,
+      pwd: req.body.pwd,
+      nickname: req.body.nickname
+    }
   }
 
   dynamodb.put(putItemParams, (err, data) => {

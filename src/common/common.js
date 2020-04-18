@@ -18,7 +18,7 @@ export function setCalendarConfig(){
 
 export async function getApi(apiName, path, success, fail) {
   try{
-     const data = await API.get(apiName, path,{});
+     const data = await API.get(apiName, path, {});
      if(success != null) alert(success);
      console.log('data: ', data);
      return data;

@@ -24,7 +24,7 @@ import styles from './style';
      _doLogin() { 
      
         //get
-        // getApi('membersApi', '/members/login');
+        getApi('membersApi', '/members/login', "환영합니다","로그인 실패");
 
         this.props.navigation.navigate('Home'); 
     } 
