@@ -13,7 +13,7 @@ import Modal from 'react-native-modal';
 //styles
 import common from '../../../styles/common';
 import styles from './style';
-import { Calendar, CalendarList } from 'react-native-calendars';
+import { Calendar } from 'react-native-calendars';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Colors from '../../../styles/colors';
 import ScrollPicker from 'react-native-wheel-scroll-picker';
@@ -44,6 +44,8 @@ export default class HomeScreen extends Component {
 
     constructor(props) {
         super(props);
+
+        
 
         selected: undefined
         this.state = {
@@ -218,10 +220,8 @@ export default class HomeScreen extends Component {
                     {/* 모듈 업데이트되면서 아이콘 사라짐;; */}
                 </View>
                 <View style={styles.content}>
-                    <CalendarList
+                    <Calendar
                         style={styles.Calendar}
-                        horizontal = {true}
-                        pagingEnabled={true}
                         calendarHeight={500}
                         hideExtraDays={false}
                         onDayPress={this.onDayPress}
@@ -232,15 +232,16 @@ export default class HomeScreen extends Component {
                                 selectedDotColor: "orange"
                             }
                         }}
+                        calendar_flag= {true}
 
 
                         theme={{
-                            /* "stylesheet.calendar.header": {
+                            "stylesheet.calendar.header": {
                                 header: {
                                     height: 0,
                                     opacity: 0
                                 }
-                            }, */
+                            },
                             
                             textSectionTitleColor: Colors.darkgray,
                             selectedDayBackgroundColor: Colors.lightgray,
