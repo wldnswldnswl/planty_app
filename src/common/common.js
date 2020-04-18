@@ -16,9 +16,12 @@ export function setCalendarConfig(){
         LocaleConfig.defaultLocale = 'kr';
 }
 
-export async function getApi(apiName, path, success, fail) {
+export async function getApi(apiName, path, params, success, fail) {
+  resources = {
+    body: params
+  }
   try{
-     const data = await API.get(apiName, path, {});
+     const data = await API.get(apiName, path, resources);
      if(success != null) alert(success);
      console.log('data: ', data);
      return data;
@@ -28,9 +31,9 @@ export async function getApi(apiName, path, success, fail) {
   }
 }
 
-export async function postApi(apiName, path, resources, success, fail) {
+export async function postApi(apiName, path, params, success, fail) {
   resources = {
-    body: resources
+    body: params
   }
   
   try{

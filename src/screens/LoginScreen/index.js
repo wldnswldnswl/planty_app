@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import {Component} from 'react'; 
-// import Amplify, {API} from 'aws-amplify'; // API.get API.post API.put 
+import Amplify, {API} from 'aws-amplify'; // API.get API.post API.put 
 import { 
      View,
      Image, 
      Text, 
      TextInput, 
      TouchableOpacity, 
-     StyleSheet 
+     AsyncStorage
  } from 'react-native'; 
 import {getApi, postApi} from '../../common/common'
 import common from '../../../styles/common'; // common styles
@@ -15,18 +15,47 @@ import styles from './style';
 
 
  export default class LoginScreen extends Component{ 
+    
+    constructor(props){
+        super(props);
+
+        this.state = {
+            email: null,
+            pwd: null,
+            nicknam: null
+        }
+    }
+
     //functions
     /*
         name: _doLogin
         description: show Login Screen
     */
 
-     _doLogin() { 
+     _doLogin = async() => { 
      
         //get
-        getApi('membersApi', '/members/login', "환영합니다","로그인 실패");
+        //빈 칸 확인
+        if(this.state.email == null || this.state.email.trim() == ""||
+           this.state.pwd == null || this.state.pwd.trim() == "" ){
+               alert("빈 칸을 입력해주세요");
+           }
+        else{
+            // const response = getApi('membersApi', '/members/login', this.state, "환영합니다","로그인 실패");
+            // this.setState('nickname',response.nickname);
+            // await AsyncStorage.setItem('userToken', this.state.nickname);
+        // alert(JSON.stringify(response));
 
-        this.props.navigation.navigate('Home'); 
+        const data = await API.get('membersApi','/members', this.state);
+
+        // if(success != null) alert(success); //성공메시지
+
+        alert('succeses: ', JSON.stringify(data));
+
+    //  return data;
+
+        // this.props.navigation.navigate('Home'); 
+        }    
     } 
  
     /*
@@ -68,10 +97,16 @@ import styles from './style';
                  <View style={styles.formArea}> 
                      <TextInput  
                          style={styles.textForm}  
-                         placeholder={"이메일"}/> 
+                         placeholder={"이메일"}
+                         keyboardType='email-address'
+                         onChangeText = { value => this.setState({'email' : value})}
+                         /> 
                      <TextInput  
                          style={styles.textForm}  
-                         placeholder={"비밀번호"}/> 
+                         placeholder={"비밀번호"}
+                         secureTextEntry={true}
+                         onChangeText = { value => this.setState({'pwd' : value})}
+                         /> 
                     <Text style={styles.smallText}>비밀번호를 잊어버리셨나요? 
                         <Text 
                             style = {common.linkEffect}

@@ -47,7 +47,7 @@ import Colors from '../../../styles/colors';
         if(this.state.email == null || this.state.email.trim() == "" || 
         this.state.nickname == null || this.state.nickname.trim() == "" ||
         this.state.pwd == null || this.state.pwd.trim() == ""){
-            alert("빈 칸을 모두 입력해주세요");
+            alert("빈 칸을 입력해주세요");
         }//else if(this.state.checked == 0){
           //  alert("약관에 동의해주세요");
         //}
@@ -69,8 +69,8 @@ import Colors from '../../../styles/colors';
         const nameValid = (nickname && nickname.length > 0 && nickname.length <= 10 ? true : false) // 1자 이상 10자 이하
         const emailValid = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email) // 이메일 형식
         const passwordValid = /^[A-Z0-9._%+-]{6,12}$/i.test(pwd) // 6~12자 사이 영어,숫자,특수문자(_%+-)
-        // (pwd && pwd.length >= 8 ? true : false) //
-         return ( 
+        
+        return ( 
             <View style={styles.container}> 
                  <View style={styles.titleArea}> 
                  {/* 로고 이미지 삽입 */}
