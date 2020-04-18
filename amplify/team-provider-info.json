@@ -10,6 +10,17 @@
             "StackName": "amplify-plantyapp-dev-42358",
             "StackId": "arn:aws:cloudformation:ap-northeast-2:326165579446:stack/amplify-plantyapp-dev-42358/7f48a980-7e85-11ea-a5bb-0a8876b4c718",
             "AmplifyAppId": "d15ewb4votr9bw"
+        },
+        "categories": {
+            "function": {
+                "memebersLambda": {}
+            },
+            "hosting": {
+                "amplifyhosting": {
+                    "appId": "d15ewb4votr9bw",
+                    "type": "manual"
+                }
+            }
         }
     }
 }

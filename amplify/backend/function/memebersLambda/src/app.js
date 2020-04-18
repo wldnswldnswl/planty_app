@@ -57,50 +57,69 @@ const convertUrlType = (param, type) => {
 /********************************
  * HTTP Get method for list objects *
  ********************************/
-app.get(path + hashKeyPath, function(req, res) {
-  let queryParams = {
-    TableName: tableName
-  }
+// app.get(path + hashKeyPath, function(req, res) {
+//   let queryParams = {
+//     TableName: tableName
+//   }
 
-  dynamodb.query(queryParams, (err, data) => {
-    if (err) {
-      res.statusCode = 500;
-      res.json({error: 'Could not load items: ' + err});
-    } else {
-      res.json(data.Items);
-    }
-  });
-});
+//   dynamodb.query(queryParams, (err, data) => {
+//     if (err) {
+//       res.statusCode = 500;
+//       res.json({error: 'Could not load items: ' + err});
+//     } else {
+//       res.json(data.Items);
+//     }
+//   });
+// });
 
 /*****************************************
  * HTTP Get method for get single object *
  *****************************************/
 
-app.get(path + '/login' + hashKeyPath + sortKeyPath, function(req, res) {
-  var params = {};
-  if (userIdPresent && req.apiGateway) {
-    params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
-  } else {
-    params[partitionKeyName] = req.params[partitionKeyName];
-    try {
-      params[partitionKeyName] = convertUrlType(req.params[partitionKeyName], partitionKeyType);
-    } catch(err) {
-      res.statusCode = 500;
-      res.json({error: 'Wrong column type ' + err});
-    }
-  }
-  if (hasSortKey) {
-    try {
-      params[sortKeyName] = convertUrlType(req.params[sortKeyName], sortKeyType);
-    } catch(err) {
-      res.statusCode = 500;
-      res.json({error: 'Wrong column type ' + err});
-    }
-  }
+// app.get(path + '/login', function(req, res) {
+  app.get(path, function(req, res) {
+  var params = {
+    email = req.body.email,
+    pwd = req.body.pwd
+  };
+
+  // console.log("params: ", JSON.stringify(params));
+
+  // if (userIdPresent && req.apiGateway) {
+  //   params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+  // } else {
+  //   params[partitionKeyName] = req.params[partitionKeyName];
+  //   try {
+  //     params[partitionKeyName] = convertUrlType(req.params[partitionKeyName], partitionKeyType);
+  //   } catch(err) {
+  //     res.statusCode = 500;
+  //     res.json({error: 'Wrong column type ' + err});
+  //   }
+  // }
+  // if (hasSortKey) {
+  //   try {
+  //     params[sortKeyName] = convertUrlType(req.params[sortKeyName], sortKeyType);
+  //   } catch(err) {
+  //     res.statusCode = 500;
+  //     res.json({error: 'Wrong column type ' + err});
+  //   }
+  // }
 
   let getItemParams = {
     TableName: tableName,
-    Key: params
+    ProjectionExpression:"nickname, email",
+    KeyConditionExpression: "#email = :email and #pwd = :pwd",
+    ExpressionAttributeNames:{
+      "#email": "email",
+      "#pwd" : "pwd"
+    },
+    ExpressionAttributeValues: {
+      ":email": params.email,
+      ":pwd": params.pwd
+    }
+
+    // ,
+    // ProjectionExpression: "nickname, email"
   }
 
   dynamodb.get(getItemParams,(err, data) => {
@@ -115,6 +134,7 @@ app.get(path + '/login' + hashKeyPath + sortKeyPath, function(req, res) {
       }
     }
   });
+
 });
 
 
@@ -154,7 +174,11 @@ app.post(path, function(req, res) {
 
   let putItemParams = {
     TableName: tableName,
-    Item: req.body
+    Item: {
+      email: req.body.email,
+      pwd: req.body.pwd,
+      nickname: req.body.nickname
+    }
   }
 
   dynamodb.put(putItemParams, (err, data) => {

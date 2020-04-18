@@ -21,13 +21,13 @@ import Colors from '../../../styles/colors'
          marginBottom : wp('9%'),
          alignItems: 'center', 
      }, 
-     formArea: { 
+     formArea: {
          width: '100%', 
          paddingBottom: wp('6%'), 
      }, 
      textForm: { 
-         borderWidth: 0.5, 
-         borderColor: '#888', 
+        //  borderWidth: 0.5, 
+        //  borderColor: '#888', 
          width: '100%', 
          height: hp('6%'), 
          paddingLeft: 5, 

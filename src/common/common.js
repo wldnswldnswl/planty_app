@@ -16,26 +16,39 @@ export function setCalendarConfig(){
         LocaleConfig.defaultLocale = 'kr';
 }
 
-export async function getApi(apiName, path) {
+export async function getApi(apiName, path, params, success, fail) {
+  resources = {
+    body: params
+  }
   try{
-     const data = await API.get(apiName, path,{})
+     const data = await API.get(apiName, path, resources);
+     if(success != null) alert(success);
      console.log('data: ', data);
      return data;
   }catch(err){
+      if(fail != null) alert(fail);
       console.log('error: ', err);
   }
 }
 
-export async function postApi(apiName, path, resources) {
+export async function postApi(apiName, path, params, success, fail) {
   resources = {
-    body: resources
+    body: params
   }
   
   try{
-     const data = await API.post(apiName, path, resources)
-     console.log('data: ', data);
+     const data = await API.post(apiName, path, resources);
+
+     if(success != null) alert(success); //성공메시지
+
+     console.log('succeses: ', data);
+
      return data;
-  }catch(err){
+
+  }
+  catch(err){
+      if(fail != null) alert(fail); //실패메시지
+
       console.log('error: ', err);
   }
  
