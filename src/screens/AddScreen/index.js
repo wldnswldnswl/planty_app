@@ -234,12 +234,12 @@ export default class AddScreen extends Component {
 
             <View style={styles.container}>
                 <View style={styles.nav}>
-                    <TouchableHighlight style={[styles.tab_btn, styles.on]}>
+                    <TouchableOpacity style={[styles.tab_btn, styles.on]}>
                         <Text style={styles.on}>일정</Text>
-                    </TouchableHighlight>
-                    <TouchableHighlight style={[styles.tab_btn, styles.off]} onPress={this.gotoToDoScreen.bind(this)}>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.tab_btn, styles.off]} onPress={this.gotoToDoScreen.bind(this)}>
                         <Text style={styles.off}>할일</Text>
-                    </TouchableHighlight>
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.mainText}>
                     <TextInput style={[common.font_small, styles.textForm]} placeholder={'일정을 입력하세요'}></TextInput>
@@ -263,9 +263,9 @@ export default class AddScreen extends Component {
                                 <View style={styles.modalheader}>
                                 </View>
                                 <View style={styles.modalyearmonth}>
-                                    <TouchableHighlight  >
+                                    <TouchableOpacity  >
                                         <Text style={[common.font_title, { color: 'black' }, { fontSize: 30 }]}>{year}년{month}월</Text>
-                                    </TouchableHighlight>
+                                    </TouchableOpacity>
                                 </View>
                                 <View style={styles.modalCalendar}>
                                     <Calendar
@@ -329,14 +329,14 @@ export default class AddScreen extends Component {
                                 </View>
                                 <View style={styles.modalButton}>
                                     <View style={styles.modalCnButton}>
-                                        <TouchableHighlight onPress={() => { this.toggleCalendarModal() }}>
+                                        <TouchableOpacity onPress={() => { this.toggleCalendarModal() }}>
                                             <Text style={[common.font_mid, { color: Colors.darkPrimary }, { marginTop: wp("2%") }]}>취소</Text>
-                                        </TouchableHighlight>
+                                        </TouchableOpacity>
                                     </View>
                                     <View style={styles.modalSvButton}>
-                                        <TouchableHighlight onPress={() => { this.toggleCalendarModal() }}>
+                                        <TouchableOpacity onPress={() => { this.toggleCalendarModal() }}>
                                             <Text style={[common.font_mid, { color: Colors.darkPrimary }, { marginTop: wp("2%") }]}>저장</Text>
-                                        </TouchableHighlight>
+                                        </TouchableOpacity>
                                     </View>
                                 </View>
 
@@ -428,15 +428,15 @@ export default class AddScreen extends Component {
 
 
 
-                    <TouchableHighlight style={[common.addButton, { left: 10 }]}
+                    <TouchableOpacity style={[common.addButton, { left: 10 }]}
                         underlayColor={Colors.clicked} onPress={this.gotoHomeScreen.bind(this)}>
                         <Text style={{ fontSize: 30, color: 'white' }}>X</Text>
-                    </TouchableHighlight>
+                    </TouchableOpacity>
 
-                    <TouchableHighlight style={common.addButton}
+                    <TouchableOpacity style={common.addButton}
                         underlayColor={Colors.clicked} onPress={this.gotoHomeScreen.bind(this)}>
                         <Text style={{ fontSize: 30, color: 'white' }}>V</Text>
-                    </TouchableHighlight>
+                    </TouchableOpacity>
                 </View>
             </View>
 

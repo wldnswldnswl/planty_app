@@ -49,7 +49,7 @@ export default class HomeScreen extends Component {
 
         selected: undefined
         this.state = {
-            isModalVisible: false,
+            PickerModalVisible: false,
             pickerSelection: 'default'
         }
 
@@ -96,11 +96,11 @@ export default class HomeScreen extends Component {
     }
 
     /*
-        name:  toggleModal
+        name:  togglePickerModal
         description: show yearmonthday picker
     */
-    toggleModal = () => {
-        this.setState({ isModalVisible: !this.state.isModalVisible });
+    togglePickerModal = () => {
+        this.setState({ PickerModalVisible: !this.state.PickerModalVisible });
     }
 
     
@@ -161,10 +161,10 @@ export default class HomeScreen extends Component {
                         onPress={this.gotoSideNav.bind(this)}
                     ></Icon>
 
-                    <TouchableHighlight onPress={() => { this.toggleModal() }}>
+                    <TouchableOpacity onPress={() => { this.togglePickerModal() }}>
                         <Text style={[common.font_title, { color: Colors.gray }]}>{year}.{month}</Text>
-                    </TouchableHighlight>
-                    <Modal isVisible={this.state.isModalVisible} onBackdropPress={() => { this.toggleModal() }} >
+                    </TouchableOpacity>
+                    <Modal isVisible={this.state.PickerModalVisible} onBackdropPress={() => { this.togglePickerModal() }} >
 
                         <View style={styles.modal_container}>
                             <View style={styles.modalheader}>
@@ -172,15 +172,10 @@ export default class HomeScreen extends Component {
 
                             <View style={styles.modalyearmonth}>
 
-                                <TouchableHighlight onPress={this.selyearcolor} >
-
                                     <Text style={[common.font_title, { color: Colors.darkPrimary }, { fontSize: 43 }]}>{year}</Text>
 
-                                </TouchableHighlight>
-                                <TouchableHighlight onPress={() => { this.setyeararr() }}>
                                     <Text style={[common.font_title, { color: Colors.darkPrimary }, { fontSize: 28 }]}>{month}월</Text>
-                                </TouchableHighlight>
-
+                                
                             </View>
 
 
@@ -204,7 +199,7 @@ export default class HomeScreen extends Component {
 
 
                             <View style={styles.modalButton}>
-                                <TouchableHighlight onPress={() => { this.toggleModal() }}>
+                                <TouchableHighlight onPress={() => { this.togglePickerModal() }}>
                                     <Text style={[common.font_mid, { color: Colors.darkPrimary }]}>완료</Text>
                                 </TouchableHighlight>
                             </View>

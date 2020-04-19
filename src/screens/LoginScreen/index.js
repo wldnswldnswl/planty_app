@@ -36,26 +36,26 @@ import styles from './style';
      
         //get
         //빈 칸 확인
-        if(this.state.email == null || this.state.email.trim() == ""||
-           this.state.pwd == null || this.state.pwd.trim() == "" ){
-               alert("빈 칸을 입력해주세요");
-           }
-        else{
+        //if(this.state.email == null || this.state.email.trim() == ""||
+          // this.state.pwd == null || this.state.pwd.trim() == "" ){
+            //   alert("빈 칸을 입력해주세요");
+          // }
+       // else{
             // const response = getApi('membersApi', '/members/login', this.state, "환영합니다","로그인 실패");
             // this.setState('nickname',response.nickname);
             // await AsyncStorage.setItem('userToken', this.state.nickname);
         // alert(JSON.stringify(response));
 
-        const data = await API.get('membersApi','/members', this.state);
+        /* const data = await API.get('membersApi','/members', this.state); */
 
         // if(success != null) alert(success); //성공메시지
 
-        alert('succeses: ', JSON.stringify(data));
+      //  alert('succeses: ', JSON.stringify(data));
 
     //  return data;
 
-        // this.props.navigation.navigate('Home'); 
-        }    
+         this.props.navigation.navigate('Home'); 
+     //   }    
     } 
  
     /*

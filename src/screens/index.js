@@ -12,7 +12,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, createAppContainer } from '@react-navigation/stack'; 
 import * as Common from '../common/common'; 
 import Amplify from 'aws-amplify';
-import awsConfig from '../../aws-exports';
+import awsConfig from '../aws-exports';
 
 const Stack  = createStackNavigator();
 Common.setCalendarConfig(); // react-native-calendars 환경설정
