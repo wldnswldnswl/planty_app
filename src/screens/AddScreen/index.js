@@ -85,7 +85,7 @@ export default class AddScreen extends Component {
         }
 
         //분배열에 데이터 삽입
-        for (var i = 0; i < 60; i++) {
+        for (var i = 0; i < 59; i++) {
             var j = String(i + 1)
             minute_arr.push(j)
         }

@@ -41,12 +41,12 @@ import styles from './style';
                alert("빈 칸을 입력해주세요");
            }
         else{
-            // const response = getApi('membersApi', '/members/login', this.state, "환영합니다","로그인 실패");
+            const response = getApi('ApiMembers', '/members/login', this.state, "환영합니다","로그인 실패");
             // this.setState('nickname',response.nickname);
             // await AsyncStorage.setItem('userToken', this.state.nickname);
         // alert(JSON.stringify(response));
 
-        // const data = await API.get('membersApi','/members', this.state);
+        // const data = await API.get('ApiMembers','/members/login', this.state);
 
         // if(success != null) alert(success); //성공메시지
 

@@ -16,6 +16,7 @@ import Colors from '../../../styles/colors';
 import ScrollPicker from 'react-native-wheel-scroll-picker';
 import { Calendar } from 'react-native-calendars';
 
+import {getApi, postApi,getDateString} from '../../common/common'
 //styles
 import common from '../../../styles/common';
 import styles from './style';
@@ -37,18 +38,8 @@ var minute = new Date().getMinutes();
 var hour_arr = new Array();
 // 분을 저장하는 배열 생성
 var minute_arr = new Array();
-// 요일 저장하는 변수 생성
-var ko_day;
-// 월 글자 수 맞추기 위한 변수 생성
-var month_len;
-// 일 글자 수 맞추기 위한 변수 생성
-var date_len;
-// 시간 글자 수 맞추기 위한 변수 생성
-var hour_len;
-// 분 글자 수 맞추기 위한 변수 생성
-var minute_len;
-// 오전,오후 구분 위한 변수 생성
-var am_pm;
+
+var final_date;
 
 export default class AddScreen extends Component {
 
@@ -60,7 +51,14 @@ export default class AddScreen extends Component {
             CalendarModalVisible: false,
             ColorModalVisible: false,
             isVisible: false,
-            theme_color: '#2980b9'
+            theme_color: '#2980b9',
+            apiData:{
+                id: null,
+                title: null,
+                end_date: null,
+                description: null,
+                color: 0 // View에서 값 받는 설정 아직 안함. 
+            }
         }
 
         //시간배열에 데이터 삽입
@@ -70,65 +68,14 @@ export default class AddScreen extends Component {
         }
 
         //분배열에 데이터 삽입
-        for (var i = 0; i < 60; i++) {
+        for (var i = 0; i < 59; i++) {
             var j = String(i + 1)
             minute_arr.push(j)
         }
-        //day값에 따라 요일 설정
-        switch (day) {
-            case 0: ko_day = "일";
-                break;
-            case 1: ko_day = "월";
-                break;
-            case 2: ko_day = "화";
-                break;
-            case 3: ko_day = "수";
-                break;
-            case 4: ko_day = "목";
-                break;
-            case 5: ko_day = "금";
-                break;
-            case 6: ko_day = "토";
-                break;
-        }
+       
+        final_date = getDateString(year, day, month, date, minute, hour);
 
-        //1~9월을 두자릿수로 설정
-        if (month < 10)
-            month_len = "0";
-        else
-            month_len = "";
-
-        //한자릿수 일을 두자릿수로 설정
-        if (date < 10)
-            date_len = "0";
-        else
-            date_len = "";
-
-        //한자릿 수 분을 두자릿수로 설정
-        if (minute < 10)
-            minute_len = "0";
-        else
-            minute_len = "";
-
-        //오전,오후 구분
-        if (hour < 12) {
-            am_pm = "오전";
-            if (hour == 0) {
-                hour += 12;
-                hour_len = "";
-            }
-            hour_len = "0";
-        }
-        else if (hour < 24) {
-            am_pm = "오후";
-            hour -= 12;
-            hour_len = "0";
-        }
-        else {
-            am_pm = "오전";
-            hour -= 12;
-            hour_len = "";
-        }
+        // final_date ={year}+"."+{month_len}{month}.{date_len}{date}({ko_day}) {am_pm} {hour_len}{hour}:{minute_len}{minute}
     }
 
     // functions
@@ -146,12 +93,14 @@ export default class AddScreen extends Component {
         description: show Home Screen
     */
     gotoHomeScreen() {
-        this.props.navigation.navigate("Home");
+        alert(JSON.stringify(this.state.apiData));
+        // postApi('ApiToDoList','/todolist', this.state.apiData, "데이터 넣음","실패");
+        // this.props.navigation.navigate("Home");
     }
 
     /*
         name:  Back
-        description: screen back
+        description: screen back,
     */
     Back() {
         this.props.navigation.goBack();
@@ -231,13 +180,18 @@ export default class AddScreen extends Component {
                     </TouchableHighlight>
                 </View>
                 <View style={styles.mainText}>
-                    <TextInput style={[common.font_small, styles.textForm]} placeholder={'할일을 입력하세요'}></TextInput>
+                    <TextInput style={[common.font_small, styles.textForm]} 
+                               placeholder={'할일을 입력하세요'}
+                               onChangeText={(text) => { this.setState({apiData :{title: text}}) }}
+                    ></TextInput>
                 </View>
                 <View style={styles.content}>
                     <View style={[styles.content_element, common.mt2]}>
-                        <Text style={[common.font_mid, common.font_gray]}>완료일</Text>
+                        <Text style={[common.font_mid, common.font_gray]}
+                              onChangeText={(text) => { this.setState({apiData:{end_date: text}}) }}>
+                        완료일</Text>
                         <TouchableOpacity onPress={() => { this.toggleCalendarModal() }}>
-                            <Text style={[common.font_mid, common.font_bold]}>{year}.{month_len}{month}.{date_len}{date}({ko_day}) {am_pm} {hour_len}{hour}:{minute_len}{minute} </Text>
+                            <Text style={[common.font_mid, common.font_bold]}> {final_date} </Text>
                         </TouchableOpacity>
                     </View>
 
@@ -256,7 +210,7 @@ export default class AddScreen extends Component {
                                 <Calendar
                                     style={styles.calendar}
                                     hideExtraDays
-                                    onDayPress={this.onDayPress}
+                                    onDayPress={(day) => alert(JSON.stringify(day)) }
                                     markedDates={{
                                         [this.state.selected]: {
                                             selected: true,
@@ -333,13 +287,17 @@ export default class AddScreen extends Component {
                     <View style={styles.content_element_sub}>
                         {/* 아이콘 바꿔야 함 */}
                         <MIcon name="file-document-outline" size={30} color={Colors.gray}></MIcon>
-                        <TextInput style={[common.font_small, styles.descriptionForm]} placeholder={'설명'}></TextInput>
+                        <TextInput style={[common.font_small, styles.descriptionForm]} 
+                                   onChangeText={(text) => { this.setState({apiData: {description: text}}) }}
+                                   placeholder={'설명'}></TextInput>
                     </View>
 
                     <View style={styles.content_element_sub}>
                         <Icon name="ios-color-palette" size={30} color={Colors.gray}></Icon>
                         {/*색상설정 부분*/}
-                        <TouchableOpacity title="Theme" style={[styles.theme_btn, { borderColor: this.state.theme_color }, { backgroundColor: this.state.theme_color }]} onPress={() => { this.toggleColorModal() }}>
+                        <TouchableOpacity title="Theme" 
+                        style={[styles.theme_btn, { borderColor: this.state.theme_color }, { backgroundColor: this.state.theme_color }]} onPress={() => { this.toggleColorModal() }}
+                        >
                         </TouchableOpacity>
                         <Modal isVisible={this.state.ColorModalVisible} onBackdropPress={() => { this.toggleColorModal() }}>
                             <View style={styles.colormodal_container}>

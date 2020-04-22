@@ -2,28 +2,21 @@
 	"AWSTemplateFormatVersion": "2010-09-09",
 	"Description": "Lambda resource stack creation using Amplify CLI",
 	"Parameters": {
+		"CloudWatchRule": {
+			"Type": "String",
+			"Default": "NONE",
+			"Description": " Schedule Expression"
+		},
 		"env": {
 			"Type": "String"
 		},
-		"storagememebersName": {
+		"storagetodolistName": {
 			"Type": "String",
-			"Default": "storagememebersName"
+			"Default": "storagetodolistName"
 		},
-		"storagememebersArn": {
+		"storagetodolistArn": {
 			"Type": "String",
-			"Default": "storagememebersArn"
-		},
-		"functionmemebersLambdaName": {
-			"Type": "String",
-			"Default": "functionmemebersLambdaName"
-		},
-		"apimembersApiApiName": {
-			"Type": "String",
-			"Default": "apimembersApiApiName"
-		},
-		"apimembersApiApiId": {
-			"Type": "String",
-			"Default": "apimembersApiApiId"
+			"Default": "storagetodolistArn"
 		}
 	},
 	"Conditions": {
@@ -48,12 +41,12 @@
 				"FunctionName": {
 					"Fn::If": [
 						"ShouldNotCreateEnvResources",
-						"LambdaMembers",
+						"LambdaToDoList",
 						{
 							"Fn::Join": [
 								"",
 								[
-									"LambdaMembers",
+									"LambdaToDoList",
 									"-",
 									{
 										"Ref": "env"
@@ -70,21 +63,6 @@
 						},
 						"REGION": {
 							"Ref": "AWS::Region"
-						},
-						"STORAGE_MEMEBERS_NAME": {
-							"Ref": "storagememebersName"
-						},
-						"STORAGE_MEMEBERS_ARN": {
-							"Ref": "storagememebersArn"
-						},
-						"FUNCTION_MEMEBERSLAMBDA_NAME": {
-							"Ref": "functionmemebersLambdaName"
-						},
-						"API_MEMBERSAPI_APINAME": {
-							"Ref": "apimembersApiApiName"
-						},
-						"API_MEMBERSAPI_APIID": {
-							"Ref": "apimembersApiApiId"
 						}
 					}
 				},
@@ -98,7 +76,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "amplify-plantyapp-dev-42358-deployment",
-					"S3Key": "amplify-builds/LambdaMembers-624d6b472b5a66476834-build.zip"
+					"S3Key": "amplify-builds/LambdaToDoList-796858746e7a2f4f7138-build.zip"
 				}
 			}
 		},
@@ -108,12 +86,12 @@
 				"RoleName": {
 					"Fn::If": [
 						"ShouldNotCreateEnvResources",
-						"plantyappLambdaRole05f51a39",
+						"plantyappLambdaRole87979722",
 						{
 							"Fn::Join": [
 								"",
 								[
-									"plantyappLambdaRole05f51a39",
+									"plantyappLambdaRole87979722",
 									"-",
 									{
 										"Ref": "env"
@@ -192,133 +170,16 @@
 							],
 							"Resource": [
 								{
-									"Ref": "storagememebersArn"
+									"Ref": "storagetodolistArn"
 								},
 								{
 									"Fn::Join": [
 										"/",
 										[
 											{
-												"Ref": "storagememebersArn"
+												"Ref": "storagetodolistArn"
 											},
 											"index/*"
-										]
-									]
-								}
-							]
-						}
-					]
-				}
-			}
-		},
-		"AmplifyResourcesPolicy": {
-			"DependsOn": [
-				"LambdaExecutionRole"
-			],
-			"Type": "AWS::IAM::Policy",
-			"Properties": {
-				"PolicyName": "amplify-lambda-execution-policy",
-				"Roles": [
-					{
-						"Ref": "LambdaExecutionRole"
-					}
-				],
-				"PolicyDocument": {
-					"Version": "2012-10-17",
-					"Statement": [
-						{
-							"Effect": "Allow",
-							"Action": [
-								"dynamodb:Put*",
-								"dynamodb:Create*",
-								"dynamodb:BatchWriteItem",
-								"dynamodb:Get*",
-								"dynamodb:BatchGetItem",
-								"dynamodb:List*",
-								"dynamodb:Describe*",
-								"dynamodb:Scan",
-								"dynamodb:Query",
-								"dynamodb:Update*",
-								"dynamodb:RestoreTable*",
-								"dynamodb:Delete*"
-							],
-							"Resource": [
-								{
-									"Ref": "storagememebersArn"
-								},
-								{
-									"Fn::Join": [
-										"/",
-										[
-											{
-												"Ref": "storagememebersArn"
-											},
-											"index/*"
-										]
-									]
-								}
-							]
-						},
-						{
-							"Effect": "Allow",
-							"Action": [
-								"lambda:Create*",
-								"lambda:Put*",
-								"lambda:Add*",
-								"lambda:Get*",
-								"lambda:List*",
-								"lambda:Invoke*",
-								"lambda:Update*",
-								"lambda:Delete*",
-								"lambda:Remove*"
-							],
-							"Resource": [
-								{
-									"Fn::Join": [
-										"",
-										[
-											"arn:aws:lambda:",
-											{
-												"Ref": "AWS::Region"
-											},
-											":",
-											{
-												"Ref": "AWS::AccountId"
-											},
-											":function:",
-											{
-												"Ref": "functionmemebersLambdaName"
-											}
-										]
-									]
-								}
-							]
-						},
-						{
-							"Effect": "Allow",
-							"Action": [
-								"apigateway:POST",
-								"apigateway:PUT",
-								"apigateway:GET",
-								"apigateway:HEAD",
-								"apigateway:OPTIONS",
-								"apigateway:PATCH",
-								"apigateway:DELETE"
-							],
-							"Resource": [
-								{
-									"Fn::Join": [
-										"",
-										[
-											"arn:aws:apigateway:",
-											{
-												"Ref": "AWS::Region"
-											},
-											"::/restapis/",
-											{
-												"Ref": "apimembersApiApiName"
-											},
-											"/*"
 										]
 									]
 								}
