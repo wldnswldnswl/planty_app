@@ -22,7 +22,7 @@ import styles from './style';
         this.state = {
             email: null,
             pwd: null,
-            nicknam: null
+            nickname: null
         }
     }
 
@@ -31,8 +31,8 @@ import styles from './style';
         name: _doLogin
         description: show Login Screen
     */
-
-     _doLogin = async() => { 
+//    _doLogin = async() => 
+     _doLogin(){ 
      
         //get
         //빈 칸 확인
@@ -41,12 +41,13 @@ import styles from './style';
                alert("빈 칸을 입력해주세요");
            }
         else{
-            const response = getApi('ApiMembers', '/members/login', this.state, "환영합니다","로그인 실패");
+            // const response = 
+            // getApi('ApiMembers', '/members/login', this.state, "환영합니다", "아이디/비밀번호를 확인하세요");
             // this.setState('nickname',response.nickname);
             // await AsyncStorage.setItem('userToken', this.state.nickname);
         // alert(JSON.stringify(response));
 
-        // const data = await API.get('ApiMembers','/members/login', this.state);
+        // const data = await API.get('membersApi','/members', this.state);
 
         // if(success != null) alert(success); //성공메시지
 

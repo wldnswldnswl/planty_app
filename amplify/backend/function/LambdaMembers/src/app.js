@@ -69,25 +69,8 @@ const convertUrlType = (param, type) => {
  ********************************/
 
 app.get(path + hashKeyPath, function(req, res) {
-  var condition = {}
-  condition[partitionKeyName] = {
-    ComparisonOperator: 'EQ'
-  }
-
-  if (userIdPresent && req.apiGateway) {
-    condition[partitionKeyName]['AttributeValueList'] = [req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH ];
-  } else {
-    try {
-      condition[partitionKeyName]['AttributeValueList'] = [ convertUrlType(req.params[partitionKeyName], partitionKeyType) ];
-    } catch(err) {
-      res.statusCode = 500;
-      res.json({error: 'Wrong column type ' + err});
-    }
-  }
-
   let queryParams = {
-    TableName: tableName,
-    KeyConditions: condition
+    TableName: tableName
   }
 
   dynamodb.query(queryParams, (err, data) => {
@@ -104,31 +87,28 @@ app.get(path + hashKeyPath, function(req, res) {
  * HTTP Get method for get single object *
  *****************************************/
 
-app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
-  var params = {};
-  if (userIdPresent && req.apiGateway) {
-    params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
-  } else {
-    params[partitionKeyName] = req.params[partitionKeyName];
-    try {
-      params[partitionKeyName] = convertUrlType(req.params[partitionKeyName], partitionKeyType);
-    } catch(err) {
-      res.statusCode = 500;
-      res.json({error: 'Wrong column type ' + err});
-    }
-  }
-  if (hasSortKey) {
-    try {
-      params[sortKeyName] = convertUrlType(req.params[sortKeyName], sortKeyType);
-    } catch(err) {
-      res.statusCode = 500;
-      res.json({error: 'Wrong column type ' + err});
-    }
-  }
+app.get(path + '/login', function(req, res) {
+  // app.get(path, function(req, res) {
+  var params = {
+    email = req.body.email,
+    pwd = req.body.pwd
+  };
 
   let getItemParams = {
     TableName: tableName,
-    Key: params
+    ProjectionExpression:"nickname, email",
+    KeyConditionExpression: "#email = :email and #pwd = :pwd",
+    ExpressionAttributeNames:{
+      "#email": "email",
+      "#pwd" : "pwd"
+    },
+    ExpressionAttributeValues: {
+      ":email": params.email,
+      ":pwd": params.pwd
+    }
+
+    // ,
+    // ProjectionExpression: "nickname, email"
   }
 
   dynamodb.get(getItemParams,(err, data) => {
@@ -137,12 +117,13 @@ app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
       res.json({error: 'Could not load items: ' + err.message});
     } else {
       if (data.Item) {
-        res.json(data.Item);
+        res.json({success: '(success) /ApiMembers/login in LambdaMembers', url: req.url , data: data.Item});
       } else {
-        res.json(data) ;
+        res.json({success: '(success) But No Data', data: data}) ;
       }
     }
   });
+
 });
 
 
@@ -165,7 +146,7 @@ app.put(path, function(req, res) {
       res.statusCode = 500;
       res.json({error: err, url: req.url, body: req.body});
     } else{
-      res.json({success: 'put call succeed!', url: req.url, data: data})
+      res.json({success: 'put call succeed! in LambdaMembers', url: req.url, data: data})
     }
   });
 });
@@ -189,7 +170,7 @@ app.post(path, function(req, res) {
       res.statusCode = 500;
       res.json({error: err, url: req.url, body: req.body});
     } else{
-      res.json({success: 'post call succeed!', url: req.url, data: data})
+      res.json({success: 'post call succeed! in LambdaMembers', url: req.url, data: data})
     }
   });
 });

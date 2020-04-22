@@ -26,7 +26,7 @@ const awsmobile = {
         },
         {
             "name": "ApiToDoList",
-            "endpoint": "https://zfhahklcn7.execute-api.ap-northeast-2.amazonaws.com/dev",
+            "endpoint": "https://4gmo3vua3f.execute-api.ap-northeast-2.amazonaws.com/dev",
             "region": "ap-northeast-2"
         }
     ]
