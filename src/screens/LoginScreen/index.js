@@ -46,16 +46,16 @@ import styles from './style';
             // await AsyncStorage.setItem('userToken', this.state.nickname);
         // alert(JSON.stringify(response));
 
-        /* const data = await API.get('membersApi','/members', this.state); */
+        // const data = await API.get('membersApi','/members', this.state);
 
         // if(success != null) alert(success); //성공메시지
 
-      //  alert('succeses: ', JSON.stringify(data));
+        // alert('succeses: ', JSON.stringify(data));
 
     //  return data;
 
-         this.props.navigation.navigate('Home'); 
-     //   }    
+        this.props.navigation.navigate('Home'); 
+        }    
     } 
  
     /*

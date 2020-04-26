@@ -14,6 +14,11 @@ const awsmobile = {
             "name": "membersApi",
             "endpoint": "https://glgctyql63.execute-api.ap-northeast-2.amazonaws.com/dev",
             "region": "ap-northeast-2"
+        },
+        {
+            "name": "ApiMembers",
+            "endpoint": "https://itn50sqjrb.execute-api.ap-northeast-2.amazonaws.com/dev",
+            "region": "ap-northeast-2"
         }
     ]
 };

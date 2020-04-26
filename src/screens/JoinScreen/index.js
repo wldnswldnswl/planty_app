@@ -28,8 +28,9 @@ import Colors from '../../../styles/colors';
         this.state = {
             nickname: null,
             email: null,
-            pwd: null,
-            checked: 0
+            pwd: null
+            // ,
+            // checked: 0
         }
     }
     /*
@@ -55,7 +56,7 @@ import Colors from '../../../styles/colors';
             //페이지 고정
         }
         else{
-            postApi('membersApi','/members',this.state,"환영합니다","회원가입 실패: planty.adm@gmail.com으로 문의해주세요");
+            postApi('ApiMembers','/members',this.state,"환영합니다","회원가입 실패: planty.adm@gmail.com으로 문의해주세요");
             this.props.navigation.goBack(); 
         }
      }  
