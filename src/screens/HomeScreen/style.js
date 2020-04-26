@@ -78,8 +78,55 @@ import Colors from '../../../styles/colors'
         borderBottomLeftRadius: 10,
         borderBottomRightRadius:10,
         backgroundColor:'white'
-    }
+    },
 
+    daymodalheader: {
+        width: "100%",
+        height: '5%',
+        borderTopLeftRadius: 10,
+        borderTopRightRadius:10
+    },
+
+    daymodaldate: {
+        width: "100%",
+        height: "10%"
+    },
+
+    daymodalline: {
+        width: "91%",
+        height: 1,
+        backgroundColor: Colors.darkgray
+    },
+
+    daymodalcolortheme: {
+        width: 13,
+        height: 13,
+        borderRadius: 50
+    },
+
+    daymodallist: {
+        width: "100%",
+        height: "62%"
+    },
+
+    daymodalcontent: {
+        width: "100%",
+        height: "17%",
+        flexDirection: "row"
+    },
+
+    daymodaltheme: {
+        width: "10%",
+        alignContent: "center",
+        left: wp("4%"),
+        backgroundColor: 'pink'
+    },
+
+    daymodaltext: {
+        width: "80%",
+        left: wp("4%"),
+        backgroundColor: 'skyblue'
+    }
 
 
 }) 

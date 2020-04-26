@@ -54,8 +54,8 @@ import styles from './style';
 
     //  return data;
 
-        this.props.navigation.navigate('Home'); 
-        }    
+        // this.props.navigation.navigate('Home'); 
+        // }    
     } 
  
     /*

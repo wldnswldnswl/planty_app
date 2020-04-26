@@ -174,12 +174,10 @@ import common from '../../../styles/common'
         // marginBottom: 10
     },
 
-    theme_btn : {
+    theme_btn : {       
         borderWidth : 1,
-        /* borderColor : Colors._10, */
         width : 20,
         height : 20,
-        /* backgroundColor : Colors._10, */
         borderRadius : 50,
         left : wp('3%'),
         alignItems : 'center'

@@ -7,13 +7,14 @@ import {
     Button,
     Image,
     TouchableHighlight,
+    ScrollView
 } from 'react-native';
 import Modal from 'react-native-modal';
 
 //styles
 import common from '../../../styles/common';
 import styles from './style';
-import { Calendar } from 'react-native-calendars';
+import { Calendar, calendarModal, modalReal } from 'react-native-calendars';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Colors from '../../../styles/colors';
 import ScrollPicker from 'react-native-wheel-scroll-picker';
@@ -24,6 +25,8 @@ import { DrawerActions } from 'react-navigation-drawer';
 
 import Drawer from '../drawer';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import { SafeAreaView } from 'react-navigation';
 
 //현재 년도 저장
 var year = new Date().getFullYear();
@@ -33,11 +36,9 @@ var month = new Date().getMonth() + 1;
 var year_month = new Array();
 //년도, 월별 화면 선택위한 변수
 var select = true;
-/* //년도 색깔 설정
-var year_color; 
-//월 색깔 설정
-var month_color;
- */
+//일정 색깔 변수
+var day_color = 'gray';
+
 
 export default class HomeScreen extends Component {
 
@@ -45,31 +46,21 @@ export default class HomeScreen extends Component {
     constructor(props) {
         super(props);
 
-        
+
 
         selected: undefined
         this.state = {
             PickerModalVisible: false,
+            CalendarModalVisible: false,
+            selected: 'default',
+            CalendarDate: 'default',
+            CalendarMonth: 'default',
             pickerSelection: 'default'
         }
 
-        /* for (var i = 0; i < 20; i++) {
-            var j = String(year - 10 + i)
-            year_month.push(j)
-        } */
-
-        /* for (var i = 0; i < 12; i++) {
-            var j = String(i + 1)
-            months.push(j)
-        } */
+        this.gotoAddScreen = this.gotoAddScreen.bind(this);
 
     };
-
-
-
-
-    /*  //year_month modal 화면 상태 설정
-    state = { modalVisible: false } */
 
 
     onDayPress = (day) => {
@@ -83,7 +74,7 @@ export default class HomeScreen extends Component {
        name:  gotoAddScreen
        description: show Add Screen
    */
-    gotoAddScreen() {
+    gotoAddScreen = () => {
         this.props.navigation.navigate("Add");
     }
 
@@ -103,7 +94,18 @@ export default class HomeScreen extends Component {
         this.setState({ PickerModalVisible: !this.state.PickerModalVisible });
     }
 
-    
+    /*
+        name:  toggleCalendarModal
+        description: show yearmonthday picker
+    */
+    toggleCalendarModal = (month, date) => {
+        this.setState({ CalendarModalVisible: !this.state.CalendarModalVisible });
+        this.setState({ CalendarDate: date });
+        this.setState({ CalendarMonth: month });
+        /* alert(JSON.stringify(day)); */
+    }
+
+
     /*
         name: selyearmonth
         description: set select for yearmonth picker
@@ -155,6 +157,7 @@ export default class HomeScreen extends Component {
          const [modalOutput, setModalOutput] = useState("년/월"); */
 
         return (
+
             <View style={styles.container}>
                 <View style={styles.nav}>
                     <Icon name="ios-menu" size={30} color={Colors.gray}
@@ -172,10 +175,10 @@ export default class HomeScreen extends Component {
 
                             <View style={styles.modalyearmonth}>
 
-                                    <Text style={[common.font_title, { color: Colors.darkPrimary }, { fontSize: 43 }]}>{year}</Text>
+                                <Text style={[common.font_title, { color: Colors.darkPrimary }, { fontSize: 43 }]}>{year}</Text>
 
-                                    <Text style={[common.font_title, { color: Colors.darkPrimary }, { fontSize: 28 }]}>{month}월</Text>
-                                
+                                <Text style={[common.font_title, { color: Colors.darkPrimary }, { fontSize: 28 }]}>{month}월</Text>
+
                             </View>
 
 
@@ -227,8 +230,7 @@ export default class HomeScreen extends Component {
                                 selectedDotColor: "orange"
                             }
                         }}
-                        calendar_flag= {true}
-
+                        calendar_flag={true}
 
                         theme={{
                             "stylesheet.calendar.header": {
@@ -237,21 +239,60 @@ export default class HomeScreen extends Component {
                                     opacity: 0
                                 }
                             },
-                            
+
                             textSectionTitleColor: Colors.darkgray,
                             selectedDayBackgroundColor: Colors.lightgray,
                             selectedDayTextColor: "black",
-                            todayTextColor: Colors.darkPrimary
-                        }}
+                            todayTextColor: Colors.darkPrimary,
 
+                        }}
+                        toggleCalendarModal={this.toggleCalendarModal}
                     />
                     <TouchableHighlight style={common.addButton}
                         underlayColor={Colors.clicked} onPress={this.gotoAddScreen.bind(this)}>
                         <Text style={{ fontSize: 50, color: 'white' }}>+</Text>
                     </TouchableHighlight>
                 </View>
-            </View>
 
+                <Modal isVisible={this.state.CalendarModalVisible} onBackdropPress={() => { this.toggleCalendarModal() }} >
+                    <View style={styles.modal_container} >
+                        <View style={styles.daymodalheader} />
+                        <View style={styles.daymodaldate}>
+                            <Text style={{ fontSize: 30, color: Colors.darkgray, left: wp("5%") }}>{this.state.CalendarMonth + "월" + this.state.CalendarDate + "일"}</Text>
+                        </View>
+                        <View style={styles.daymodalline} />
+                        {/* <ScrollView> */}
+                        <View style={styles.daymodallist}>
+                            <View style={styles.daymodalcontent}>
+                                <View style={styles.daymodaltheme}>
+                                    <Image style={[styles.daymodalcolortheme, { borderColor: day_color }, { backgroundColor: day_color }, { left: wp("2.5%") }, { top: wp("3%") }]} />
+                                </View>
+
+                                <View style={styles.daymodaltext}>
+                                    <Text style={{ fontSize: 17, color: 'black', left: wp("1%"), top: wp("2%") }}>지운이랑 공부하기</Text>
+                                    <Text style={{ fontSize: 10, color: Colors.darkgray, left: wp("1%"), top: wp("2%") }}>하루 종일</Text>
+                                </View>
+                            </View>
+                            <View style={styles.daymodalcontent}>
+                                <View style={styles.daymodaltheme}>
+                                    <Image style={[styles.daymodalcolortheme, { borderColor: day_color }, { backgroundColor: day_color }, { left: wp("2.5%") }, { top: wp("3%") }]} />
+                                </View>
+                                <View style={styles.daymodaltext}>
+                                    <Text style={{ fontSize: 17, color: 'black', left: wp("1%"), top: wp("2%") }}>대창 과제하기</Text>
+                                    <Text style={{ fontSize: 10, color: Colors.darkgray, left: wp("1%"), top: wp("2%") }}>하루 종일</Text>
+                                </View>
+                            </View>
+                        </View>
+                        {/* </ScrollView> */}
+
+                        <TouchableHighlight style={common.addButton}
+                            underlayColor={Colors.clicked} onPress={() => { this.gotoAddScreen(); this.toggleCalendarModal() }}>
+                            <Text style={{ fontSize: 50, color: 'white' }}>+</Text>
+                        </TouchableHighlight>
+                    </View>
+                </Modal>
+
+            </View>
 
         );
 
