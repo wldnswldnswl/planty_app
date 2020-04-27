@@ -118,14 +118,14 @@ import Colors from '../../../styles/colors'
     daymodaltheme: {
         width: "10%",
         alignContent: "center",
-        left: wp("4%"),
-        backgroundColor: 'pink'
+        left: wp("4%")
+       /*  backgroundColor: 'pink' */
     },
 
     daymodaltext: {
         width: "80%",
-        left: wp("4%"),
-        backgroundColor: 'skyblue'
+        left: wp("4%")
+      /*   backgroundColor: 'skyblue' */
     }
 
 

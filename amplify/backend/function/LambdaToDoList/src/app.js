@@ -6,17 +6,7 @@ or in the "license" file accompanying this file. This file is distributed on an 
 See the License for the specific language governing permissions and limitations under the License.
 */
 
-/* Amplify Params - DO NOT EDIT
-You can access the following resource attributes as environment variables from your Lambda function
-var environment = process.env.ENV
-var region = process.env.REGION
-var storageMemebersName = process.env.STORAGE_MEMEBERS_NAME
-var storageMemebersArn = process.env.STORAGE_MEMEBERS_ARN
-var functionMemebersLambdaName = process.env.FUNCTION_MEMEBERSLAMBDA_NAME
-var apiMembersApiApiName = process.env.API_MEMBERSAPI_APINAME
-var apiMembersApiApiId = process.env.API_MEMBERSAPI_APIID
 
-Amplify Params - DO NOT EDIT */
 
 const AWS = require('aws-sdk')
 var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
@@ -27,18 +17,18 @@ AWS.config.update({ region: process.env.TABLE_REGION });
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-let tableName = "memebers";
+let tableName = "todolist";
 if(process.env.ENV && process.env.ENV !== "NONE") {
   tableName = tableName + '-' + process.env.ENV;
 }
 
 const userIdPresent = false; // TODO: update in case is required to use that definition
-const partitionKeyName = "email";
-const partitionKeyType = "S";
-const sortKeyName = "";
-const sortKeyType = "";
+const partitionKeyName = "id";
+const partitionKeyType = "N";
+const sortKeyName = "end_date";
+const sortKeyType = "S";
 const hasSortKey = sortKeyName !== "";
-const path = "/members";
+const path = "/todolist";
 const UNAUTH = 'UNAUTH';
 const hashKeyPath = '/:' + partitionKeyName;
 const sortKeyPath = hasSortKey ? '/:' + sortKeyName : '';
@@ -69,8 +59,25 @@ const convertUrlType = (param, type) => {
  ********************************/
 
 app.get(path + hashKeyPath, function(req, res) {
+  var condition = {}
+  condition[partitionKeyName] = {
+    ComparisonOperator: 'EQ'
+  }
+
+  if (userIdPresent && req.apiGateway) {
+    condition[partitionKeyName]['AttributeValueList'] = [req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH ];
+  } else {
+    try {
+      condition[partitionKeyName]['AttributeValueList'] = [ convertUrlType(req.params[partitionKeyName], partitionKeyType) ];
+    } catch(err) {
+      res.statusCode = 500;
+      res.json({error: 'Wrong column type ' + err});
+    }
+  }
+
   let queryParams = {
-    TableName: tableName
+    TableName: tableName,
+    KeyConditions: condition
   }
 
   dynamodb.query(queryParams, (err, data) => {
@@ -87,28 +94,31 @@ app.get(path + hashKeyPath, function(req, res) {
  * HTTP Get method for get single object *
  *****************************************/
 
-app.get(path + '/login', function(req, res) {
-  // app.get(path, function(req, res) {
-  var params = {
-    email = req.body.email,
-    pwd = req.body.pwd
-  };
+app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
+  var params = {};
+  if (userIdPresent && req.apiGateway) {
+    params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+  } else {
+    params[partitionKeyName] = req.params[partitionKeyName];
+    try {
+      params[partitionKeyName] = convertUrlType(req.params[partitionKeyName], partitionKeyType);
+    } catch(err) {
+      res.statusCode = 500;
+      res.json({error: 'Wrong column type ' + err});
+    }
+  }
+  if (hasSortKey) {
+    try {
+      params[sortKeyName] = convertUrlType(req.params[sortKeyName], sortKeyType);
+    } catch(err) {
+      res.statusCode = 500;
+      res.json({error: 'Wrong column type ' + err});
+    }
+  }
 
   let getItemParams = {
     TableName: tableName,
-    ProjectionExpression:"nickname, email",
-    KeyConditionExpression: "#email = :email and #pwd = :pwd",
-    ExpressionAttributeNames:{
-      "#email": "email",
-      "#pwd" : "pwd"
-    },
-    ExpressionAttributeValues: {
-      ":email": params.email,
-      ":pwd": params.pwd
-    }
-
-    // ,
-    // ProjectionExpression: "nickname, email"
+    Key: params
   }
 
   dynamodb.get(getItemParams,(err, data) => {
@@ -117,13 +127,12 @@ app.get(path + '/login', function(req, res) {
       res.json({error: 'Could not load items: ' + err.message});
     } else {
       if (data.Item) {
-        res.json({success: '(success) /ApiMembers/login in LambdaMembers', url: req.url , data: data.Item});
+        res.json(data.Item);
       } else {
-        res.json({success: '(success) But No Data', data: data}) ;
+        res.json(data) ;
       }
     }
   });
-
 });
 
 
@@ -146,7 +155,7 @@ app.put(path, function(req, res) {
       res.statusCode = 500;
       res.json({error: err, url: req.url, body: req.body});
     } else{
-      res.json({success: 'put call succeed! in LambdaMembers', url: req.url, data: data})
+      res.json({success: 'put call succeed!', url: req.url, data: data})
     }
   });
 });
@@ -170,7 +179,7 @@ app.post(path, function(req, res) {
       res.statusCode = 500;
       res.json({error: err, url: req.url, body: req.body});
     } else{
-      res.json({success: 'post call succeed! in LambdaMembers', url: req.url, data: data})
+      res.json({success: 'post call succeed!', url: req.url, data: data})
     }
   });
 });

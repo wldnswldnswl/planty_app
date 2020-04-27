@@ -16,42 +16,31 @@ import Colors from '../../../styles/colors';
 import ScrollPicker from 'react-native-wheel-scroll-picker';
 import { Calendar } from 'react-native-calendars';
 
+import {getApi, postApi,getDateString} from '../../common/common'
 //styles
 import common from '../../../styles/common';
 import styles from './style';
+// import { ScrollView } from 'react-native-gesture-handler';
 
-//현재 년도 저장
-var year = new Date().getFullYear();
-//현재 월 저장
-var month = new Date().getMonth() + 1;
-//현재 일자 저장
-var date = new Date().getDate();
-//현재 요일 저장
-var day = new Date().getDay();
-//현재 시간 저장
-var hour = new Date().getHours();
-//현재 분 저장
-var minute = new Date().getMinutes();
+//현재 년도/월/일자/요일/시간 저장
+var year, month,date,day,hour, minute;
+// var am_pm, am_pm_i;
+
+// 출력값 계산 결과
+var result = {
+    final_date : null,//최종 날짜
+    am_pm : null,
+    am_pm_i: null
+}
+// , final_date = null;
+
 
 // 시간을 저장하는 배열 생성
 var hour_arr = new Array();
 // 분을 저장하는 배열 생성
 var minute_arr = new Array();
-// 요일 저장하는 변수 생성
-var ko_day;
-// 월 글자 수 맞추기 위한 변수 생성
-var month_len;
-// 일 글자 수 맞추기 위한 변수 생성
-var date_len;
-// 시간 글자 수 맞추기 위한 변수 생성
-var hour_len;
-// 분 글자 수 맞추기 위한 변수 생성
-var minute_len;
-// 오전,오후 구분 위한 변수 생성
-var am_pm;
 
 export default class AddScreen extends Component {
-
 
     //datepicker 생성자 추가
     constructor() {
@@ -60,7 +49,15 @@ export default class AddScreen extends Component {
             CalendarModalVisible: false,
             ColorModalVisible: false,
             isVisible: false,
-            theme_color: '#2980b9'
+            theme_color: '#2980b9',
+            apiData:{
+                id: null,
+                title: null,
+                end_date: null,
+                description: null,
+                color: 0 // View에서 값 받는 설정 아직 안함. 
+            },
+            final_date: null
         }
 
         //시간배열에 데이터 삽입
@@ -70,65 +67,13 @@ export default class AddScreen extends Component {
         }
 
         //분배열에 데이터 삽입
-        for (var i = 0; i < 60; i++) {
+        for (var i = 0; i < 59; i++) {
             var j = String(i + 1)
             minute_arr.push(j)
         }
-        //day값에 따라 요일 설정
-        switch (day) {
-            case 0: ko_day = "일";
-                break;
-            case 1: ko_day = "월";
-                break;
-            case 2: ko_day = "화";
-                break;
-            case 3: ko_day = "수";
-                break;
-            case 4: ko_day = "목";
-                break;
-            case 5: ko_day = "금";
-                break;
-            case 6: ko_day = "토";
-                break;
-        }
-
-        //1~9월을 두자릿수로 설정
-        if (month < 10)
-            month_len = "0";
-        else
-            month_len = "";
-
-        //한자릿수 일을 두자릿수로 설정
-        if (date < 10)
-            date_len = "0";
-        else
-            date_len = "";
-
-        //한자릿 수 분을 두자릿수로 설정
-        if (minute < 10)
-            minute_len = "0";
-        else
-            minute_len = "";
-
-        //오전,오후 구분
-        if (hour < 12) {
-            am_pm = "오전";
-            if (hour == 0) {
-                hour += 12;
-                hour_len = "";
-            }
-            hour_len = "0";
-        }
-        else if (hour < 24) {
-            am_pm = "오후";
-            hour -= 12;
-            hour_len = "0";
-        }
-        else {
-            am_pm = "오전";
-            hour -= 12;
-            hour_len = "";
-        }
+       
+        this.getCurrentDate();
+       
     }
 
     // functions
@@ -146,22 +91,30 @@ export default class AddScreen extends Component {
         description: show Home Screen
     */
     gotoHomeScreen() {
-        this.props.navigation.navigate("Home");
+        console.log(JSON.stringify(this.state.apiData));
+        // postApi('ApiToDoList','/todolist', this.state.apiData, "데이터 넣음","실패");
+        // this.props.navigation.navigate("Home");
     }
 
     /*
         name:  Back
-        description: screen back
+        description: screen back,
     */
     Back() {
-        this.props.navigation.goBack();
+        // this.props.navigation.goBack(); // 로 하면 스택에 쌓인 할일/일정 페이지들이 나옴
+        this.props.navigation.navigate("Home");
     }
 
     /*
         name:  toggleCalendarModal
         description: show Calendar modal
     */
-    toggleCalendarModal = () => {
+    toggleCalendarModal = (flag, text) => {
+        if(flag == 'fresh') this.getCurrentDate(); // 현재 날짜로 초기화
+        // else if(flag == 'save'){
+        //     this.setState({final_date: text})
+        // }
+
         this.setState({ CalendarModalVisible: !this.state.CalendarModalVisible });
     }
 
@@ -213,6 +166,37 @@ export default class AddScreen extends Component {
  */
 
 
+    /*
+    * @name: getCurrentDate
+    * @description: 현재 날짜,시간으로 변수 초기화
+    * @params: 
+    * @history: 이지운
+    */
+    getCurrentDate(){
+        //현재 년도 저장
+        year = new Date().getFullYear();
+        //현재 월 저장
+        month = new Date().getMonth() + 1;
+        //현재 일자 저장
+        date = new Date().getDate();
+        //현재 요일 저장
+        day = new Date().getDay();
+        //현재 시간 저장
+        hour = new Date().getHours();
+        //현재 분 저장
+        minute = new Date().getMinutes();
+
+        // 현재 출력날짜 저장
+        result = getDateString(year, day, month, date, hour, minute, null);
+        this.setState({final_date : result.final_date}); // 출력날짜 상태 변경
+
+        result.am_pm == '오전' ? result.am_pm_i = 0 : 1;
+        
+        
+        // alert(final_date);
+        // console.log("i: ",result.am_pm_i);
+    }
+
     // AddScreen: 일정(0), 할일(1) (전달된 파라미터에 따라 다른 view 생성하기!!!)
     render() {
         //  const params = this.props.navigation.state;
@@ -231,19 +215,24 @@ export default class AddScreen extends Component {
                     </TouchableHighlight>
                 </View>
                 <View style={styles.mainText}>
-                    <TextInput style={[common.font_small, styles.textForm]} placeholder={'할일을 입력하세요'}></TextInput>
+                    {/* title */}
+                    <TextInput style={[common.font_small, styles.textForm]} 
+                               placeholder={'할일을 입력하세요'}
+                               onChangeText={(text) => { this.setState({apiData :{title: text, description:this.state.apiData['description'], end_date: this.state.apiData['end_date'], color: this.state.apiData['color']}}) }}
+                    ></TextInput>
                 </View>
                 <View style={styles.content}>
+                    {/* end_date */}
                     <View style={[styles.content_element, common.mt2]}>
                         <Text style={[common.font_mid, common.font_gray]}>완료일</Text>
                         <TouchableOpacity onPress={() => { this.toggleCalendarModal() }}>
-                            <Text style={[common.font_mid, common.font_bold]}>{year}.{month_len}{month}.{date_len}{date}({ko_day}) {am_pm} {hour_len}{hour}:{minute_len}{minute} </Text>
+                            <Text style={[common.font_mid, common.font_bold]}>
+                            {result.final_date} </Text>
                         </TouchableOpacity>
                     </View>
 
-                    <Modal isVisible={this.state.CalendarModalVisible} onBackdropPress={() => { this.toggleCalendarModal() }}>
-
-
+                    {/* select date Modal -- start -- */}
+                    <Modal isVisible={this.state.CalendarModalVisible} onBackdropPress={() => { this.toggleCalendarModal('fresh') }}>
                         <View style={styles.modal_container}>
                             <View style={styles.modalheader}>
                             </View>
@@ -256,7 +245,8 @@ export default class AddScreen extends Component {
                                 <Calendar
                                     style={styles.calendar}
                                     hideExtraDays
-                                    onDayPress={this.onDayPress}
+                                    // 캘린더 날짜 선택 시, 해당 날짜로 year, month, date, day변수 변경
+                                    onDayPress= {(thisDay) => {this.onDayPress, year = thisDay.year, month = thisDay.month, date = thisDay.day, day = new Date(thisDay.dateString).getDay()}}
                                     markedDates={{
                                         [this.state.selected]: {
                                             selected: true,
@@ -267,11 +257,11 @@ export default class AddScreen extends Component {
                                 />
 
                             </View>
-                            <View style={styles.modalHourContainer}>
+                            <View style={styles.modalHourContainer}>  
                                 <View style={styles.modalAmPm} >
                                     <ScrollPicker
-                                        dataSource={["오전", "오후"]}
-                                        selectedIndex={1}
+                                        dataSource= {['오전','오후']} 
+                                        selectedIndex={result.am_pm_i} // 첫번째 인덱스는 무조건 선택 안됨.(시간, 분도 마찬가지)
                                         itemHeight={40}
                                         wrapperWidth={110}
                                         wrapperHeight={150}
@@ -279,14 +269,18 @@ export default class AddScreen extends Component {
                                         highlightColor={Colors.gray}
                                         highlightBorderWidth={1}
                                         activeItemColor={"white"}
+                                        onValueChange={(data, selectedIndex) => {
+                                            result.am_pm = data;
+                                            result.am_pm_i = selectedIndex;
+                                            alert(result.am_pm);
+                                        }}
                                         itemColor={Colors.darkPrimary}
-                                    />
-
+                                    />       
                                 </View>
                                 <View style={styles.modalHour} >
                                     <ScrollPicker
                                         dataSource={hour_arr}
-                                        selectedIndex={5}
+                                        selectedIndex={hour - 1}
                                         itemHeight={40}
                                         wrapperWidth={110}
                                         wrapperHeight={150}
@@ -294,13 +288,16 @@ export default class AddScreen extends Component {
                                         highlightColor={Colors.gray}
                                         highlightBorderWidth={1}
                                         activeItemColor={"white"}
+                                        onValueChange={(data, selectedIndex) => {
+                                            hour = data;
+                                        }}
                                         itemColor={"red"}
                                     />
                                 </View>
                                 <View style={styles.modalMin} >
                                     <ScrollPicker
                                         dataSource={minute_arr}
-                                        selectedIndex={29}
+                                        selectedIndex={minute - 1}
                                         itemHeight={40}
                                         wrapperWidth={110}
                                         wrapperHeight={150}
@@ -308,6 +305,9 @@ export default class AddScreen extends Component {
                                         highlightColor={Colors.gray}
                                         highlightBorderWidth={1}
                                         activeItemColor={"white"}
+                                        onValueChange={(data, selectedIndex) => {
+                                            minute = data;
+                                        }}
                                         itemColor={Colors.darkPrimary}
                                     />
                                 </View>
@@ -319,27 +319,36 @@ export default class AddScreen extends Component {
                                     </TouchableHighlight>
                                 </View>
                                 <View style={styles.modalSvButton}>
-                                    <TouchableHighlight onPress={() => { this.toggleCalendarModal() }}>
-                                        <Text style={[common.font_mid, { color: Colors.darkPrimary }, { marginTop: wp("2%") }]}>저장</Text>
+                                    <TouchableHighlight onPress={() => { 
+                                            result = getDateString(year, day, month, date, hour, minute, result.am_pm);
+                                            this.setState({final_date : result.final_date});
+                                            this.setState({apiData:{end_date: result.final_date}})
+                                            this.toggleCalendarModal() }}>
+                                            <Text style={[common.font_mid, { color: Colors.darkPrimary }, { marginTop: wp("2%") }]} >저장</Text>
+                                            {/* 변수 확인용:  onPress = {(e) => {alert("최종: "+year+"년"+month+ "월"+date+"일"+day+ "요일"+ hour+ "시"+ minute+ "분"+ result.am_pm)}}  */}
                                     </TouchableHighlight>
                                 </View>
                             </View>
                         </View>
 
                     </Modal>
+                    {/* select date Modal -- end -- */}
 
 
-
+                    {/* description */}
                     <View style={styles.content_element_sub}>
-                        {/* 아이콘 바꿔야 함 */}
                         <MIcon name="file-document-outline" size={30} color={Colors.gray}></MIcon>
-                        <TextInput style={[common.font_small, styles.descriptionForm]} placeholder={'설명'}></TextInput>
+                        <TextInput style={[common.font_small, styles.descriptionForm]} 
+                                   onChangeText={(text) => { this.setState({apiData: {description: text}}) }}
+                                   placeholder={'설명'}></TextInput>
                     </View>
 
                     <View style={styles.content_element_sub}>
                         <Icon name="ios-color-palette" size={30} color={Colors.gray}></Icon>
-                        {/*색상설정 부분*/}
-                        <TouchableOpacity title="Theme" style={[styles.theme_btn, { borderColor: this.state.theme_color }, { backgroundColor: this.state.theme_color }]} onPress={() => { this.toggleColorModal() }}>
+                        {/*color*/}
+                        <TouchableOpacity title="Theme" 
+                        style={[styles.theme_btn, { borderColor: this.state.theme_color }, { backgroundColor: this.state.theme_color }]} onPress={() => { this.toggleColorModal() }}
+                        >
                         </TouchableOpacity>
                         <Modal isVisible={this.state.ColorModalVisible} onBackdropPress={() => { this.toggleColorModal() }}>
                             <View style={styles.colormodal_container}>

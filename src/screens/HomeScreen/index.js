@@ -32,12 +32,8 @@ import { SafeAreaView } from 'react-navigation';
 var year = new Date().getFullYear();
 //현재 월 저장
 var month = new Date().getMonth() + 1;
-//버튼 선택에 따라 년도나 월들을 저장하는 배열 생성
-var year_month = new Array();
-//년도, 월별 화면 선택위한 변수
-var select = true;
 //일정 색깔 변수
-var day_color = 'gray';
+var day_color = 'pink';
 
 
 export default class HomeScreen extends Component {
@@ -105,7 +101,6 @@ export default class HomeScreen extends Component {
         /* alert(JSON.stringify(day)); */
     }
 
-
     /*
         name: selyearmonth
         description: set select for yearmonth picker
@@ -147,11 +142,6 @@ export default class HomeScreen extends Component {
 
     // HomeScreen : 캘린더
     render() {
-
-
-
-
-
 
         /*  const [modalVisible, setModalVisible] = useState(false);
          const [modalOutput, setModalOutput] = useState("년/월"); */

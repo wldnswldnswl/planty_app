@@ -13,7 +13,8 @@
         },
         "categories": {
             "function": {
-                "memebersLambda": {}
+                "memebersLambda": {},
+                "LambdaMembers": {}
             },
             "hosting": {
                 "amplifyhosting": {

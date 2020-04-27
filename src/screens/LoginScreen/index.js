@@ -22,7 +22,7 @@ import styles from './style';
         this.state = {
             email: null,
             pwd: null,
-            nicknam: null
+            nickname: null
         }
     }
 
@@ -31,17 +31,18 @@ import styles from './style';
         name: _doLogin
         description: show Login Screen
     */
-
-     _doLogin = async() => { 
+//    _doLogin = async() => 
+     _doLogin(){ 
      
         //get
         //빈 칸 확인
-        //if(this.state.email == null || this.state.email.trim() == ""||
-          // this.state.pwd == null || this.state.pwd.trim() == "" ){
-            //   alert("빈 칸을 입력해주세요");
-          // }
-       // else{
-            // const response = getApi('membersApi', '/members/login', this.state, "환영합니다","로그인 실패");
+        if(this.state.email == null || this.state.email.trim() == ""||
+           this.state.pwd == null || this.state.pwd.trim() == "" ){
+               alert("빈 칸을 입력해주세요");
+           }
+        else{
+            // const response = 
+            // getApi('ApiMembers', '/members/login', this.state, "환영합니다", "아이디/비밀번호를 확인하세요");
             // this.setState('nickname',response.nickname);
             // await AsyncStorage.setItem('userToken', this.state.nickname);
         // alert(JSON.stringify(response));
@@ -55,7 +56,7 @@ import styles from './style';
     //  return data;
 
         // this.props.navigation.navigate('Home'); 
-        // }    
+         }    
     } 
  
     /*

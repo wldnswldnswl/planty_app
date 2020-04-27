@@ -7,6 +7,10 @@ const awsmobile = {
         {
             "tableName": "memebers-dev",
             "region": "ap-northeast-2"
+        },
+        {
+            "tableName": "todolist-dev",
+            "region": "ap-northeast-2"
         }
     ],
     "aws_cloud_logic_custom": [
@@ -18,6 +22,11 @@ const awsmobile = {
         {
             "name": "ApiMembers",
             "endpoint": "https://itn50sqjrb.execute-api.ap-northeast-2.amazonaws.com/dev",
+            "region": "ap-northeast-2"
+        },
+        {
+            "name": "ApiToDoList",
+            "endpoint": "https://4gmo3vua3f.execute-api.ap-northeast-2.amazonaws.com/dev",
             "region": "ap-northeast-2"
         }
     ]

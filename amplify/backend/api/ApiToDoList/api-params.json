@@ -1,0 +1,34 @@
+{
+    "paths": [
+        {
+            "name": "/todolist",
+            "lambdaFunction": "LambdaToDoList",
+            "privacy": {
+                "open": true
+            }
+        }
+    ],
+    "resourceName": "ApiToDoList",
+    "apiName": "ApiToDoList",
+    "functionArns": [
+        {
+            "lambdaFunction": "LambdaToDoList"
+        }
+    ],
+    "privacy": {
+        "auth": 0,
+        "unauth": 0,
+        "authRoleName": "amplify-plantyapp-dev-42358-authRole",
+        "unAuthRoleName": "amplify-plantyapp-dev-42358-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "LambdaToDoList",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ]
+}
