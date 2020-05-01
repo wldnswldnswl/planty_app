@@ -1,68 +1,15 @@
 {
 	"storage": {
-		"memebers": {
+		"todolist": {
 			"service": "DynamoDB",
 			"providerPlugin": "awscloudformation"
 		},
-		"todolist": {
+		"members": {
 			"service": "DynamoDB",
 			"providerPlugin": "awscloudformation"
 		}
 	},
 	"function": {
-		"memebersLambda": {
-			"build": true,
-			"providerPlugin": "awscloudformation",
-			"service": "Lambda",
-			"dependsOn": [
-				{
-					"category": "storage",
-					"resourceName": "memebers",
-					"attributes": [
-						"Name",
-						"Arn"
-					],
-					"attributeEnvMap": {
-						"Name": "TABLE_NAME",
-						"Arn": "TABLE_ARN"
-					}
-				}
-			]
-		},
-		"LambdaMembers": {
-			"build": true,
-			"providerPlugin": "awscloudformation",
-			"service": "Lambda",
-			"dependsOn": [
-				{
-					"category": "storage",
-					"resourceName": "memebers",
-					"attributes": [
-						"Name",
-						"Arn"
-					],
-					"attributeEnvMap": {
-						"Name": "TABLE_NAME",
-						"Arn": "TABLE_ARN"
-					}
-				},
-				{
-					"category": "function",
-					"resourceName": "memebersLambda",
-					"attributes": [
-						"Name"
-					]
-				},
-				{
-					"category": "api",
-					"resourceName": "membersApi",
-					"attributes": [
-						"ApiName",
-						"ApiId"
-					]
-				}
-			]
-		},
 		"LambdaToDoList": {
 			"build": true,
 			"providerPlugin": "awscloudformation",
@@ -81,16 +28,35 @@
 					}
 				}
 			]
+		},
+		"LambdaMembers": {
+			"build": true,
+			"providerPlugin": "awscloudformation",
+			"service": "Lambda",
+			"dependsOn": [
+				{
+					"category": "storage",
+					"resourceName": "members",
+					"attributes": [
+						"Name",
+						"Arn"
+					],
+					"attributeEnvMap": {
+						"Name": "TABLE_NAME",
+						"Arn": "TABLE_ARN"
+					}
+				}
+			]
 		}
 	},
 	"api": {
-		"membersApi": {
+		"ApiToDoList": {
 			"service": "API Gateway",
 			"providerPlugin": "awscloudformation",
 			"dependsOn": [
 				{
 					"category": "function",
-					"resourceName": "memebersLambda",
+					"resourceName": "LambdaToDoList",
 					"attributes": [
 						"Name",
 						"Arn"
@@ -105,20 +71,6 @@
 				{
 					"category": "function",
 					"resourceName": "LambdaMembers",
-					"attributes": [
-						"Name",
-						"Arn"
-					]
-				}
-			]
-		},
-		"ApiToDoList": {
-			"service": "API Gateway",
-			"providerPlugin": "awscloudformation",
-			"dependsOn": [
-				{
-					"category": "function",
-					"resourceName": "LambdaToDoList",
 					"attributes": [
 						"Name",
 						"Arn"

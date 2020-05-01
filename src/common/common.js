@@ -124,18 +124,18 @@ export function getDateString(year, day, month, date, hour, minute, is_am_pm){
 * @params: apiName(API이름), path(람다경로), params(전달 파라미터), success(성공메시지), fail(실패메시지)
 * @history: 이지운
 */
-export async function getApi(apiName, path, params, success, fail) {
-  resources = {
-    body: params
-  }
+export async function getApi(apiName, path,success, fail) {
+
   try{
-     const data = await API.get(apiName, path, resources);
-     if(success != null) alert(success);
-     console.log('data: ', data);
-     return data;
+    //  const data = await API.get(apiName, path);
+    console.log(path);
+    const response =  API.get(apiName, path,{});
+    //  if(success != null) alert(success);
+     console.log('data: ', JSON.stringify(response));
+    //  return data;
   }catch(err){
-      if(fail != null) alert(fail); // fail 위치 바꿔야 함
-      console.log('error: ', err);
+    //   if(fail != null) alert(fail); // fail 위치 바꿔야 함
+      console.log('local error: ', err);
   }
 }
 

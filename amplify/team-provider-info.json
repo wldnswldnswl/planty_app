@@ -14,7 +14,8 @@
         "categories": {
             "function": {
                 "memebersLambda": {},
-                "LambdaMembers": {}
+                "LambdaMembers": {},
+                "LambdaToDoList": {}
             },
             "hosting": {
                 "amplifyhosting": {

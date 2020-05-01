@@ -42,8 +42,6 @@ export default class HomeScreen extends Component {
     constructor(props) {
         super(props);
 
-
-
         selected: undefined
         this.state = {
             PickerModalVisible: false,

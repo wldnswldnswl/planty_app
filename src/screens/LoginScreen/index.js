@@ -32,8 +32,9 @@ import styles from './style';
         description: show Login Screen
     */
 //    _doLogin = async() => 
-     _doLogin(){ 
+     async _doLogin(){ 
      
+        // alert(JSON.stringify(this.state));
         //get
         //빈 칸 확인
         if(this.state.email == null || this.state.email.trim() == ""||
@@ -41,8 +42,16 @@ import styles from './style';
                alert("빈 칸을 입력해주세요");
            }
         else{
-            // const response = 
-            // getApi('ApiMembers', '/members/login', this.state, "환영합니다", "아이디/비밀번호를 확인하세요");
+            const resources = {
+               params: {
+                    email : this.state.email,
+                    pwd: this.state.pwd
+                }
+              }
+            //   alert(JSON.stringify(resources));
+             console.log(await API.get('ApiMembers', '/members/login'),resources);
+            // const response = API.get('ApiMembers', '/members/login');
+            // const response = getApi('ApiMembers', '/members/object', "환영합니다", "아이디/비밀번호를 확인하세요");
             // this.setState('nickname',response.nickname);
             // await AsyncStorage.setItem('userToken', this.state.nickname);
         // alert(JSON.stringify(response));
@@ -64,6 +73,7 @@ import styles from './style';
         description: login with Naver account
     */
     _doNaverLogin(){
+        alert("Ddd");
         this.props.navigation.navigate('Home'); // 임시로 써놓음. 네이버연동 알아보는 사람이 알아서 만들기,,
     }
 

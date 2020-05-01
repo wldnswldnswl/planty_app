@@ -18,7 +18,7 @@ import Colors from '../../../styles/colors';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import ReactNativePickerModule from 'react-native-picker-module';
 /* import { TouchableOpacity } from 'react-native-gesture-handler'; */
-import ScrollPicker from 'react-native-wheel-scroll-picker';
+import ScrollPicker, {scrollToIndex} from 'react-native-wheel-scroll-picker';
 import { Calendar } from 'react-native-calendars';
 
 import { getApi, postApi, getDateString } from '../../common/common'
@@ -48,6 +48,7 @@ export default class AddScreen extends Component {
     //datepicker 생성자 추가
     constructor() {
         super();
+        this.sp_am_pm = React.createRef();
 
         /*  selected: undefined */
         this.state = {
@@ -165,7 +166,7 @@ export default class AddScreen extends Component {
 
         result.am_pm == '오전' ? result.am_pm_i = 0 : 1;
 
-
+        // this.sp_am_pm.scrollToIndex(result.am_pm_i);
         // alert(final_date);
         // console.log("i: ",result.am_pm_i);
     }
@@ -200,7 +201,6 @@ export default class AddScreen extends Component {
         //  const itemId = params ? params.itemId : null;
 
         const { onValueChange } = this;
-
 
         return (
 
@@ -258,6 +258,7 @@ export default class AddScreen extends Component {
                                 <View style={styles.modalHourContainer}>
                                     <View style={styles.modalAmPm} >
                                         <ScrollPicker
+                                            ref = {(sp_am_pm) => {this.sp_am_pm = sp_am_pm}}
                                             dataSource={['오전', '오후']}
                                             selectedIndex={result.am_pm_i} // 첫번째 인덱스는 무조건 선택 안됨.(시간, 분도 마찬가지)
                                             itemHeight={40}
@@ -268,6 +269,7 @@ export default class AddScreen extends Component {
                                             highlightBorderWidth={1}
                                             activeItemColor={"white"}
                                             onValueChange={(data, selectedIndex) => {
+                                                this.sp.scrollToIndex(result.am_pm_i);
                                                 result.am_pm = data;
                                                 result.am_pm_i = selectedIndex;
                                                 alert(result.am_pm);
