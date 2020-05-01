@@ -26,6 +26,7 @@ import { getApi, postApi, getDateString } from '../../common/common'
 //styles
 import common from '../../../styles/common';
 import styles from './style';
+import { RotationGestureHandler } from 'react-native-gesture-handler';
 
 // 시간을 저장하는 배열 생성
 var hour_arr = new Array();
@@ -171,30 +172,6 @@ export default class AddScreen extends Component {
         // console.log("i: ",result.am_pm_i);
     }
 
-    /*
-     name: sethourarr
-     description: set hour array
-    */
-    /* sethourarr = () => {
-        for (var i = 0; i < 12; i++) {
-            var j = String(i + 1)
-            hour.push(j)
-        }
-    } */
-
-    /*
-     name: setminutearr
-     description: set hour array
-    */
-    /* setminutearr = () => {
-     for (var i = 0; i < 60; i++) {
-         var j = String(i + 1)
-         minute.push(j)
-     }
-     } */
-
-
-
     // AddScreen: 일정(0), 할일(1) (전달된 파라미터에 따라 다른 view 생성하기!!!)
     render() {
         //  const params = this.props.navigation.state;
@@ -260,7 +237,7 @@ export default class AddScreen extends Component {
                                         <ScrollPicker
                                             ref = {(sp_am_pm) => {this.sp_am_pm = sp_am_pm}}
                                             dataSource={['오전', '오후']}
-                                            selectedIndex={result.am_pm_i} // 첫번째 인덱스는 무조건 선택 안됨.(시간, 분도 마찬가지)
+                                            selectedItem={result.am_pm} // 첫번째 인덱스는 무조건 선택 안됨.(시간, 분도 마찬가지)
                                             itemHeight={40}
                                             wrapperWidth={110}
                                             wrapperHeight={150}

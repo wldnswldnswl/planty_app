@@ -105,27 +105,33 @@ import Colors from '../../../styles/colors'
     },
 
     daymodallist: {
-        width: "100%",
-        height: "62%"
+        width: "90%",
+        height: "82%"/* ,
+        backgroundColor: "skyblue" */
     },
 
     daymodalcontent: {
         width: "100%",
-        height: "17%",
-        flexDirection: "row"
+        height: "20%",
+        flexDirection: "row"/* ,
+        backgroundColor: 'lightgray' */
     },
 
     daymodaltheme: {
-        width: "10%",
-        alignContent: "center",
-        left: wp("4%")
-       /*  backgroundColor: 'pink' */
+        width: "23%",
+        alignContent: "center"/* ,
+        backgroundColor: 'yellow' */
     },
 
     daymodaltext: {
-        width: "80%",
-        left: wp("4%")
-      /*   backgroundColor: 'skyblue' */
+        width: "100%"/* ,
+        backgroundColor: 'pink' */
+    },
+    
+    scrollView: {
+        width: "100%",
+        flexDirection:'row',
+        backgroundColor: 'skyblue'
     }
 
 
