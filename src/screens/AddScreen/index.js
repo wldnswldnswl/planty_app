@@ -255,7 +255,7 @@ export default class AddScreen extends Component {
                                     <View style={styles.modalHour} >
                                         <ScrollPicker
                                             dataSource={hour_arr}
-                                            selectedIndex={hour - 1}
+                                            selectedIndex={0}
                                             itemHeight={40}
                                             wrapperWidth={110}
                                             wrapperHeight={150}

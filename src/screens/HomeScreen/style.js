@@ -80,6 +80,15 @@ import Colors from '../../../styles/colors'
         backgroundColor:'white'
     },
 
+    daymodal_container: {
+        alignItems:"center",
+        width:340,
+        height:480,
+        backgroundColor: 'white',
+        borderRadius: 10,
+        left: wp("4%")
+    },
+
     daymodalheader: {
         width: "100%",
         height: '5%',
@@ -99,40 +108,40 @@ import Colors from '../../../styles/colors'
     },
 
     daymodalcolortheme: {
-        width: 13,
-        height: 13,
+        width: 12,
+        height: 12,
         borderRadius: 50
     },
 
     daymodallist: {
-        width: "90%",
-        height: "82%"/* ,
-        backgroundColor: "skyblue" */
+        height: "60%"
     },
 
     daymodalcontent: {
         width: "100%",
-        height: "20%",
-        flexDirection: "row"/* ,
-        backgroundColor: 'lightgray' */
+        flex:1,
+        flexDirection: "row"
     },
 
     daymodaltheme: {
-        width: "23%",
-        alignContent: "center"/* ,
-        backgroundColor: 'yellow' */
+        width: "10%",
+        height: "20%",
+        alignContent: "center",
+        marginVertical: 8
     },
 
     daymodaltext: {
-        width: "100%"/* ,
-        backgroundColor: 'pink' */
+        width: "100%",
+        height: "20%",
+        marginVertical: 15,
+        marginLeft: 3
     },
     
     scrollView: {
-        width: "100%",
-        flexDirection:'row',
-        backgroundColor: 'skyblue'
-    }
+        width:"90%"
+    },
+
+    
 
 
 }) 

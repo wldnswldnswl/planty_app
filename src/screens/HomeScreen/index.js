@@ -58,47 +58,21 @@ export default class HomeScreen extends Component {
             //일정 내용 임시로 지정함, 실제 데이터 받아올때는 어떻게 할지 아직 모르겠음
             day_data: [
                 {
-                    theme_color: "Colors._1",
+                    //날짜를 이용하여 구분
+                    day: "",
+                    theme_color: "#e74c3c",
                     content: "강의 듣기",
-                    content_color: "Colors.darkgray",
-                    //다른 어플들 보면 일정 시간 설정한것도 표시해서 일단 추가해놓음
+                    content_color: "#313340",
+                    //다른 어플들 보면 일정 시간 설정한것도 표시해서 추가함
                     time: "하루 종일"
                 },
                 {
-                    theme_color: "Colors._2",
+                    day: "",
+                    theme_color: "#f1c40f",
                     content: "멍때리기",
-                    content_color: "Colors.darkgray",
-                    time: "하루 종일"
-                },
-                {
-                    theme_color: "Colors._10",
-                    content: "핸드폰 하기",
-                    content_color: "Colors.darkgray",
-                    time: "하루 종일"
-                },
-                {
-                    theme_color: "Colors._1",
-                    content: "피아노 가기",
-                    content_color: "Colors.darkgray",
-                    time: "하루 종일"
-                },
-                {
-                    theme_color: "Colors._3",
-                    content: "강의1 듣기",
-                    content_color: "Colors.darkgray",
-                    time: "하루 종일"
-                },
-                {
-                    theme_color: "Colors._1",
-                    content: "강의4 듣기",
-                    content_color: "Colors.darkgray",
-                    time: "하루 종일"
-                },
-                {
-                    theme_color: "Colors._6",
-                    content: "강의5 듣기",
-                    content_color: "Colors.darkgray",
-                    time: "하루 종일"
+                    content_color: "#f1c40f",
+                    //할일 목록은 일정 시간을 표시하지 않음
+                    time: ""
                 }
             ]
         }
@@ -169,7 +143,7 @@ export default class HomeScreen extends Component {
                 ko_day = "토"
                 break;
         }
-        /*  alert(JSON.stringify(ko_day)); */
+        
         return (ko_day);
     }
 
@@ -255,17 +229,19 @@ export default class HomeScreen extends Component {
          const [modalOutput, setModalOutput] = useState("년/월"); */
 
         //일정 내용들 day_list에 맵핑
-        const day_list = this.state.day_data.map(data => {
-            return <View style={styles.daymodalcontent}>
+        const day_list = this.state.day_data.map(day_list => {
+            return( 
+                    <View style={styles.daymodalcontent}>
                 <View style={styles.daymodaltheme}>
-                    <Image style={[styles.daymodalcolortheme, { borderColor: data.theme_color }, { backgroundColor: data.theme_color }, { left: wp("2.5%") }, { top: wp("3%") }]} />
+                    <View style={[styles.daymodalcolortheme, { borderColor: day_list.theme_color }, { backgroundColor: day_list.theme_color }, { left: wp("1.5%") }, { top: wp("3%") }]} />
                 </View>
 
                 <View style={styles.daymodaltext}>
-                    <Text style={{ fontSize: 17, color: data.content_color, left: wp("1%"), top: wp("2%") }}>{data.content}</Text>
-                    <Text style={{ fontSize: 10, color: Colors.darkgray, left: wp("1%"), top: wp("2%") }}>{data.time}</Text>
+                    <Text style={{ fontSize: 17, color: day_list.content_color }}>{day_list.content}</Text>
+                    <Text style={{ fontSize: 10, color: Colors.darkgray}}>{day_list.time}</Text>
                 </View>
             </View>
+            )
         })
 
         return (
@@ -357,17 +333,19 @@ export default class HomeScreen extends Component {
                 </View>
 
                 <Modal isVisible={this.state.CalendarModalVisible} onBackdropPress={() => { this.toggleCalendarModal() }} >
-                    <View style={styles.modal_container} >
+                    <View style={styles.daymodal_container} >
                         <View style={styles.daymodalheader} />
                         <View style={styles.daymodaldate}>
                             <Text style={{ fontSize: 30, color: Colors.darkgray, left: wp("5%") }}>{this.state.CalendarMonth + "월" + this.state.CalendarDate + "일 " + this.state.CalendarDay}</Text>
                         </View>
                         <View style={styles.daymodalline} />
-                        <View style={styles.daymodallist}>
-                            <ScrollView /* style={styles.scrollView} */>
+                        
+                            <ScrollView style={styles.scrollView}>
+                               <View style={styles.daymodallist}>
                                 {day_list}
+                               </View>
                             </ScrollView>
-                        </View>
+                       
 
 
                         <TouchableHighlight style={common.addButton}
