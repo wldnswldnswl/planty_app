@@ -43,8 +43,6 @@ export default class HomeScreen extends Component {
     constructor(props) {
         super(props);
 
-
-
         selected: undefined
         this.state = {
             PickerModalVisible: false,
@@ -59,7 +57,7 @@ export default class HomeScreen extends Component {
             day_data: [
                 {
                     //날짜를 이용하여 구분
-                    day: "",
+                    day: "2020-05-06",
                     theme_color: "#e74c3c",
                     content: "강의 듣기",
                     content_color: "#313340",
@@ -67,12 +65,28 @@ export default class HomeScreen extends Component {
                     time: "하루 종일"
                 },
                 {
-                    day: "",
+                    day: "2020-05-06",
                     theme_color: "#f1c40f",
                     content: "멍때리기",
                     content_color: "#f1c40f",
                     //할일 목록은 일정 시간을 표시하지 않음
                     time: ""
+                },
+                {
+                    day: "2020-05-08",
+                    theme_color: "#f1c40f",
+                    content: "멍때리기",
+                    content_color: "#f1c40f",
+                    //할일 목록은 일정 시간을 표시하지 않음
+                    time: ""
+                },
+                {
+                    day: "2020-05-10",
+                    theme_color: "#e74c3c",
+                    content: "강의듣기",
+                    content_color: "#313340",
+                    //할일 목록은 일정 시간을 표시하지 않음
+                    time: "하루 종일"
                 }
             ]
         }
@@ -325,6 +339,7 @@ export default class HomeScreen extends Component {
                         toggleCalendarModal={this.toggleCalendarModal}
                         changeYearMonth={this.changeYearMonth}
                         setDateModal={this.setDateModal}
+                        dayContent={this.state.day_data}
                     />
                     <TouchableHighlight style={common.addButton}
                         underlayColor={Colors.clicked} onPress={this.gotoAddScreen.bind(this)}>

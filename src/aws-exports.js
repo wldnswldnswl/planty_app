@@ -5,28 +5,23 @@ const awsmobile = {
     "aws_dynamodb_all_tables_region": "ap-northeast-2",
     "aws_dynamodb_table_schemas": [
         {
-            "tableName": "memebers-dev",
+            "tableName": "todolist-dev",
             "region": "ap-northeast-2"
         },
         {
-            "tableName": "todolist-dev",
+            "tableName": "members-dev",
             "region": "ap-northeast-2"
         }
     ],
     "aws_cloud_logic_custom": [
         {
-            "name": "membersApi",
-            "endpoint": "https://glgctyql63.execute-api.ap-northeast-2.amazonaws.com/dev",
+            "name": "ApiToDoList",
+            "endpoint": "https://4gmo3vua3f.execute-api.ap-northeast-2.amazonaws.com/dev",
             "region": "ap-northeast-2"
         },
         {
             "name": "ApiMembers",
-            "endpoint": "https://itn50sqjrb.execute-api.ap-northeast-2.amazonaws.com/dev",
-            "region": "ap-northeast-2"
-        },
-        {
-            "name": "ApiToDoList",
-            "endpoint": "https://4gmo3vua3f.execute-api.ap-northeast-2.amazonaws.com/dev",
+            "endpoint": "https://fj8o0wjb0j.execute-api.ap-northeast-2.amazonaws.com/dev",
             "region": "ap-northeast-2"
         }
     ]

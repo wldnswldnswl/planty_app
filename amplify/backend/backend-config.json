@@ -1,68 +1,19 @@
 {
 	"storage": {
-		"memebers": {
+		"todolist": {
 			"service": "DynamoDB",
 			"providerPlugin": "awscloudformation"
 		},
-		"todolist": {
+		"members": {
+			"service": "DynamoDB",
+			"providerPlugin": "awscloudformation"
+		},
+		"calendar": {
 			"service": "DynamoDB",
 			"providerPlugin": "awscloudformation"
 		}
 	},
 	"function": {
-		"memebersLambda": {
-			"build": true,
-			"providerPlugin": "awscloudformation",
-			"service": "Lambda",
-			"dependsOn": [
-				{
-					"category": "storage",
-					"resourceName": "memebers",
-					"attributes": [
-						"Name",
-						"Arn"
-					],
-					"attributeEnvMap": {
-						"Name": "TABLE_NAME",
-						"Arn": "TABLE_ARN"
-					}
-				}
-			]
-		},
-		"LambdaMembers": {
-			"build": true,
-			"providerPlugin": "awscloudformation",
-			"service": "Lambda",
-			"dependsOn": [
-				{
-					"category": "storage",
-					"resourceName": "memebers",
-					"attributes": [
-						"Name",
-						"Arn"
-					],
-					"attributeEnvMap": {
-						"Name": "TABLE_NAME",
-						"Arn": "TABLE_ARN"
-					}
-				},
-				{
-					"category": "function",
-					"resourceName": "memebersLambda",
-					"attributes": [
-						"Name"
-					]
-				},
-				{
-					"category": "api",
-					"resourceName": "membersApi",
-					"attributes": [
-						"ApiName",
-						"ApiId"
-					]
-				}
-			]
-		},
 		"LambdaToDoList": {
 			"build": true,
 			"providerPlugin": "awscloudformation",
@@ -81,16 +32,77 @@
 					}
 				}
 			]
+		},
+		"LambdaMembers": {
+			"build": true,
+			"providerPlugin": "awscloudformation",
+			"service": "Lambda",
+			"dependsOn": [
+				{
+					"category": "storage",
+					"resourceName": "members",
+					"attributes": [
+						"Name",
+						"Arn"
+					],
+					"attributeEnvMap": {
+						"Name": "TABLE_NAME",
+						"Arn": "TABLE_ARN"
+					}
+				}
+			]
+		},
+		"LambdaCalendar": {
+			"build": true,
+			"providerPlugin": "awscloudformation",
+			"service": "Lambda",
+			"dependsOn": [
+				{
+					"category": "storage",
+					"resourceName": "calendar",
+					"attributes": [
+						"Name",
+						"Arn"
+					],
+					"attributeEnvMap": {
+						"Name": "TABLE_NAME",
+						"Arn": "TABLE_ARN"
+					}
+				},
+				{
+					"category": "storage",
+					"resourceName": "memebers",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
+				},
+				{
+					"category": "function",
+					"resourceName": "memebersLambda",
+					"attributes": [
+						"Name"
+					]
+				},
+				{
+					"category": "api",
+					"resourceName": "membersApi",
+					"attributes": [
+						"ApiName",
+						"ApiId"
+					]
+				}
+			]
 		}
 	},
 	"api": {
-		"membersApi": {
+		"ApiToDoList": {
 			"service": "API Gateway",
 			"providerPlugin": "awscloudformation",
 			"dependsOn": [
 				{
 					"category": "function",
-					"resourceName": "memebersLambda",
+					"resourceName": "LambdaToDoList",
 					"attributes": [
 						"Name",
 						"Arn"
@@ -112,13 +124,13 @@
 				}
 			]
 		},
-		"ApiToDoList": {
+		"ApiCalendar": {
 			"service": "API Gateway",
 			"providerPlugin": "awscloudformation",
 			"dependsOn": [
 				{
 					"category": "function",
-					"resourceName": "LambdaToDoList",
+					"resourceName": "LambdaCalendar",
 					"attributes": [
 						"Name",
 						"Arn"
