@@ -66,17 +66,9 @@ export default class LoginScreen extends Component {
 
             //  return data;
 
-            // this.props.navigation.navigate('Home'); 
+            this.props.navigation.navigate('Home'); 
         }
     }
-
-<<<<<<< HEAD
-        this.props.navigation.navigate('Home'); 
-         }    
-    } 
- 
-=======
->>>>>>> 134eaa3a83583fce4b1f7cdc5242ce9394536387
     /*
         name: _doNaverLogin
         description: login with Naver account

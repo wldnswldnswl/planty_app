@@ -105,7 +105,7 @@ export default class AddScreen extends Component {
 
         console.log(getApi('ApiToDoList','/todolist'));
         if(params.title != null && params.title.trim() != "" && params.end_date != null && params.end_date.trim() != ""){
-            // postApi('ApiToDoList','/todolist', params, "데이터 넣음","실패");
+            postApi('ApiToDoList','/todolist', params, "데이터 넣음","빈 칸을 입력하세요");
 
         }else{
             alert("할일을 입력하세요"); // 나중에 비동기로 빨간글씨로 바꾸기
