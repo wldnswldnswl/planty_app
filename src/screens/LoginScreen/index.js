@@ -44,8 +44,26 @@ export default class LoginScreen extends Component {
         else{
             //   alert(JSON.stringify(resources));
             
-             console.log(JSON.stringify(await API.get('ApiMembers', '/members/login')));
+            //  console.log(JSON.stringify(await API.get('ApiMembers', '/members/login')));
+            
+            // 세션 설정 (아이디, 닉네임)
+            AsyncStorage.multiSet([ // AsyncStorage는 내부 저장소로 세션으로 사용하기에 보안이 부실할 것. 하지만 이메일, 닉네임 같은 비중요정보라 일단 저걸로 구현해놓음...!
+                                    // 추후 redis 또는 Redux와 Redux Persist(앱을 종료해도 지속되는 Store)로 구현 //https://medium.com/humanscape-tech/redux-persist-%EC%95%8C%EC%95%84%EB%B3%B4%EA%B8%B0-2077c9e566d9
+                ["email", this.state.email]
+                // ,
+                // ["nickname", this.state.nickname]
+            ]);
 
+
+            // getSession
+            // AsyncStorage.multiGet(['email', 'password']).then((data) => {
+            //     let email = data[0][1];
+            //     let password = data[1][1];
+         
+            //     if (email !== null)
+            //         //Your logic
+            //  });
+            
             //  ,{
             //     'queryStringParameter':{
             //         'email' : 'planty.adm@gmail.com',

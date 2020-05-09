@@ -1,14 +1,10 @@
 {
 	"storage": {
-		"todolist": {
-			"service": "DynamoDB",
-			"providerPlugin": "awscloudformation"
-		},
 		"members": {
 			"service": "DynamoDB",
 			"providerPlugin": "awscloudformation"
 		},
-		"calendar": {
+		"todolist": {
 			"service": "DynamoDB",
 			"providerPlugin": "awscloudformation"
 		}
@@ -51,48 +47,6 @@
 					}
 				}
 			]
-		},
-		"LambdaCalendar": {
-			"build": true,
-			"providerPlugin": "awscloudformation",
-			"service": "Lambda",
-			"dependsOn": [
-				{
-					"category": "storage",
-					"resourceName": "calendar",
-					"attributes": [
-						"Name",
-						"Arn"
-					],
-					"attributeEnvMap": {
-						"Name": "TABLE_NAME",
-						"Arn": "TABLE_ARN"
-					}
-				},
-				{
-					"category": "storage",
-					"resourceName": "memebers",
-					"attributes": [
-						"Name",
-						"Arn"
-					]
-				},
-				{
-					"category": "function",
-					"resourceName": "memebersLambda",
-					"attributes": [
-						"Name"
-					]
-				},
-				{
-					"category": "api",
-					"resourceName": "membersApi",
-					"attributes": [
-						"ApiName",
-						"ApiId"
-					]
-				}
-			]
 		}
 	},
 	"api": {
@@ -117,20 +71,6 @@
 				{
 					"category": "function",
 					"resourceName": "LambdaToDoList",
-					"attributes": [
-						"Name",
-						"Arn"
-					]
-				}
-			]
-		},
-		"ApiCalendar": {
-			"service": "API Gateway",
-			"providerPlugin": "awscloudformation",
-			"dependsOn": [
-				{
-					"category": "function",
-					"resourceName": "LambdaCalendar",
 					"attributes": [
 						"Name",
 						"Arn"

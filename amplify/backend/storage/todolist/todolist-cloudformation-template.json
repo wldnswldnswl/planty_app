@@ -40,12 +40,12 @@
                 "AttributeDefinitions": [
                   
                   {
-                      "AttributeName": "id",
-                      "AttributeType": "N"
+                      "AttributeName": "email",
+                      "AttributeType": "S"
                   }  , 
                   
                   {
-                      "AttributeName": "end_date",
+                      "AttributeName": "uuid",
                       "AttributeType": "S"
                   } 
                   
@@ -53,12 +53,12 @@
                 "KeySchema": [
                   
                   {
-                    "AttributeName": "id",
+                    "AttributeName": "email",
                     "KeyType": "HASH"
                   }  , 
                   
                   {
-                    "AttributeName": "end_date",
+                    "AttributeName": "uuid",
                     "KeyType": "RANGE"
                   } 
                   

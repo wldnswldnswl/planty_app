@@ -23,9 +23,9 @@ if(process.env.ENV && process.env.ENV !== "NONE") {
 }
 
 const userIdPresent = false; // TODO: update in case is required to use that definition
-const partitionKeyName = "id";
-const partitionKeyType = "N";
-const sortKeyName = "end_date";
+const partitionKeyName = "email";
+const partitionKeyType = "S";
+const sortKeyName = "uuid";
 const sortKeyType = "S";
 const hasSortKey = sortKeyName !== "";
 const path = "/todolist";
@@ -94,14 +94,34 @@ app.get(path + hashKeyPath, function(req, res) {
  * HTTP Get method for get single object *
  *****************************************/
 
-app.get(path + '/count', function(req, res) {
+app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
+  var params = {};
+  if (userIdPresent && req.apiGateway) {
+    params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+  } else {
+    params[partitionKeyName] = req.params[partitionKeyName];
+    try {
+      params[partitionKeyName] = convertUrlType(req.params[partitionKeyName], partitionKeyType);
+    } catch(err) {
+      res.statusCode = 500;
+      res.json({error: 'Wrong column type ' + err});
+    }
+  }
+  if (hasSortKey) {
+    try {
+      params[sortKeyName] = convertUrlType(req.params[sortKeyName], sortKeyType);
+    } catch(err) {
+      res.statusCode = 500;
+      res.json({error: 'Wrong column type ' + err});
+    }
+  }
 
   let getItemParams = {
     TableName: tableName,
     Key: params
   }
 
-  dynamodb.query(getItemParams,(err, data) => {
+  dynamodb.get(getItemParams,(err, data) => {
     if(err) {
       res.statusCode = 500;
       res.json({error: 'Could not load items: ' + err.message});
@@ -150,13 +170,18 @@ app.post(path, function(req, res) {
     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
   }
 
-  if(req.body.description == null){
-      delete req.body.description;
-  }
+  console.log("uuid: " + req.apiGateway.context.awsRequestId);
 
   let putItemParams = {
     TableName: tableName,
-    Item: req.body
+    Item: {
+      email : "minihidy@gmail.com",
+      uuid : req.apiGateway.context.awsRequestId,
+      end_date : req.body.end_date,
+      title : req.body.title,
+      description : req.body.description,
+      color : req.body.color
+    }
   }
   dynamodb.put(putItemParams, (err, data) => {
     if(err) {

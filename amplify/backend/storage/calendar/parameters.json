@@ -1,7 +1,0 @@
-{
-    "tableName": "calendar",
-    "partitionKeyName": "id",
-    "partitionKeyType": "S",
-    "sortKeyName": "description",
-    "sortKeyType": "S"
-}
