@@ -15,13 +15,13 @@ const awsmobile = {
     ],
     "aws_cloud_logic_custom": [
         {
-            "name": "ApiToDoList",
-            "endpoint": "https://4gmo3vua3f.execute-api.ap-northeast-2.amazonaws.com/dev",
+            "name": "ApiMembers",
+            "endpoint": "https://fj8o0wjb0j.execute-api.ap-northeast-2.amazonaws.com/dev",
             "region": "ap-northeast-2"
         },
         {
-            "name": "ApiMembers",
-            "endpoint": "https://fj8o0wjb0j.execute-api.ap-northeast-2.amazonaws.com/dev",
+            "name": "ApiToDoList",
+            "endpoint": "https://k74yd50nkd.execute-api.ap-northeast-2.amazonaws.com/dev",
             "region": "ap-northeast-2"
         }
     ]

@@ -98,7 +98,7 @@ export function getDateString(year, day, month, date, hour, minute, is_am_pm){
         else if (hour < 24) {
             result.am_pm = "오후";
             hour -= 12;
-            hour_len = "0";
+            hour_len = "";
         }
         else {
             result.am_pm = "오전";
@@ -129,7 +129,7 @@ export async function getApi(apiName, path,success, fail) {
   try{
     //  const data = await API.get(apiName, path);
     console.log(path);
-    const response =  API.get(apiName, path,{});
+    const response =  await API.get(apiName, path);
     //  if(success != null) alert(success);
      console.log('data: ', JSON.stringify(response));
     //  return data;

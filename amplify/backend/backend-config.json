@@ -10,25 +10,6 @@
 		}
 	},
 	"function": {
-		"LambdaToDoList": {
-			"build": true,
-			"providerPlugin": "awscloudformation",
-			"service": "Lambda",
-			"dependsOn": [
-				{
-					"category": "storage",
-					"resourceName": "todolist",
-					"attributes": [
-						"Name",
-						"Arn"
-					],
-					"attributeEnvMap": {
-						"Name": "TABLE_NAME",
-						"Arn": "TABLE_ARN"
-					}
-				}
-			]
-		},
 		"LambdaMembers": {
 			"build": true,
 			"providerPlugin": "awscloudformation",
@@ -47,23 +28,28 @@
 					}
 				}
 			]
-		}
-	},
-	"api": {
-		"ApiToDoList": {
-			"service": "API Gateway",
+		},
+		"LambdaToDoList": {
+			"build": true,
 			"providerPlugin": "awscloudformation",
+			"service": "Lambda",
 			"dependsOn": [
 				{
-					"category": "function",
-					"resourceName": "LambdaToDoList",
+					"category": "storage",
+					"resourceName": "todolist",
 					"attributes": [
 						"Name",
 						"Arn"
-					]
+					],
+					"attributeEnvMap": {
+						"Name": "TABLE_NAME",
+						"Arn": "TABLE_ARN"
+					}
 				}
 			]
-		},
+		}
+	},
+	"api": {
 		"ApiMembers": {
 			"service": "API Gateway",
 			"providerPlugin": "awscloudformation",
@@ -71,6 +57,20 @@
 				{
 					"category": "function",
 					"resourceName": "LambdaMembers",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
+				}
+			]
+		},
+		"ApiToDoList": {
+			"service": "API Gateway",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [
+				{
+					"category": "function",
+					"resourceName": "LambdaToDoList",
 					"attributes": [
 						"Name",
 						"Arn"

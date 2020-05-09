@@ -111,48 +111,60 @@ app.get(path + hashKeyPath, function(req, res) {
 /*****************************************
  * HTTP Get method for get single object *
  *****************************************/
-// app.get(path + '/login' + hashKeyPath + sortKeyPath, function(req, res) {
-app.get(path + '/login', function(req, res) {
-  // var params = {};
-  // if (userIdPresent && req.apiGateway) {
-  //   params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
-  // } else {
-  //   params[partitionKeyName] = req.params[partitionKeyName];
-  //   try {
-  //     params[partitionKeyName] = convertUrlType(req.params[partitionKeyName], partitionKeyType);
-  //   } catch(err) {
-  //     res.statusCode = 500;
-  //     res.json({error: 'Wrong column type ' + err});
-  //   }
-  // }
-  // if (hasSortKey) {
-  //   try {
-  //     params[sortKeyName] = convertUrlType(req.params[sortKeyName], sortKeyType);
-  //   } catch(err) {
-  //     res.statusCode = 500;
-  //     res.json({error: 'Wrong column type ' + err});
-  //   }
-  // }
+app.get(path + '/login' + hashKeyPath + sortKeyPath, function(req, res) {
+// app.get(path + '/login', function(req, res) {
+  var params = {};
+  if (userIdPresent && req.apiGateway) {
+    params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+  } else {
+    params[partitionKeyName] = req.params[partitionKeyName];
+    try {
+      params[partitionKeyName] = convertUrlType(req.params[partitionKeyName], partitionKeyType);
+    } catch(err) {
+      res.statusCode = 500;
+      res.json({error: 'Wrong column type ' + err});
+    }
+  }
+  if (hasSortKey) {
+    try {
+      params[sortKeyName] = convertUrlType(req.params[sortKeyName], sortKeyType);
+    } catch(err) {
+      res.statusCode = 500;
+      res.json({error: 'Wrong column type ' + err});
+    }
+  }
 
   // console.log("req: "+req);
   let getItemParams = {
     TableName: tableName,
-    Key: {
-      email :"planty.adm@gmail.com",
-      pwd: "123456"
+    // Select: 'ALL_ATTRIBUTES'
+    ProjectionExpression:"nickname, email",
+    KeyConditionExpression: "#email = :email and #pwd = :pwd",
+    ExpressionAttributeNames:{
+      "#email": "email",
+      "#pwd" : "pwd"
+    },
+    ExpressionAttributeValues: {
+      ":email": "planty.adm@gmail.com",
+      ":pwd": "123456"
     }
   }
 
-  dynamodb.get(getItemParams,(err, data) => {
+  dynamodb.query(getItemParams,(err, data) => {
     if(err) {
       res.statusCode = 500;
       res.json({error: 'Could not load items: ' + err.message});
     } else {
-      if (data.Item) {
-        res.json({success: 'memberInfo', flag: 1, url: req.url, data: data.Item}); // 로그인 성공:1
-      } else {
-        res.json({success: 'memberInfo', flag: 0, url: req.url, data: data}) ;// 로그인 실패:0
-      }
+      // if (data.Item) {
+        // res.json({success: 'memberInfo', flag: 1, url: req.url, data: data.Items.map(item => {
+        //   return item;
+        // })}); // 로그인 성공:1
+        data.Items.forEach(function(item){
+          console.log(item);
+        });
+      // } else {
+        // res.json({success: 'memberInfo', flag: 0, url: req.url, data: data}) ;// 로그인 실패:0
+      // }
     }
   });
 

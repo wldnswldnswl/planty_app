@@ -42,14 +42,16 @@ import styles from './style';
                alert("빈 칸을 입력해주세요");
            }
         else{
-            const resources = {
-               params: {
-                    email : this.state.email,
-                    pwd: this.state.pwd
-                }
-              }
             //   alert(JSON.stringify(resources));
-             console.log(await API.get('ApiMembers', '/members/login'),resources);
+            
+             console.log(JSON.stringify(await API.get('ApiMembers', '/members/login')));
+
+            //  ,{
+            //     'queryStringParameter':{
+            //         'email' : 'planty.adm@gmail.com',
+            //         'pwd':'123456'
+            //    }
+            //  }
             // const response = API.get('ApiMembers', '/members/login');
             // const response = getApi('ApiMembers', '/members/object', "환영합니다", "아이디/비밀번호를 확인하세요");
             // this.setState('nickname',response.nickname);
@@ -64,7 +66,7 @@ import styles from './style';
 
     //  return data;
 
-        // this.props.navigation.navigate('Home'); 
+        this.props.navigation.navigate('Home'); 
          }    
     } 
  

@@ -8,6 +8,7 @@ import {
     TouchableHighlight,
     TouchableOpacity
 } from 'react-native';
+import {API} from 'aws-amplify'; 
 import Modal from 'react-native-modal';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -50,13 +51,15 @@ export default class AddScreen extends Component {
             ColorModalVisible: false,
             isVisible: false,
             theme_color: '#2980b9',
-            apiData:{
-                id: null,
-                title: null,
-                end_date: null,
-                description: null,
-                color: 0 // View에서 값 받는 설정 아직 안함. 
-            },
+
+            // put params start
+            id: null,
+            title: null,
+            end_date: null,
+            description: "",
+            color: 0, // View에서 값 받는 설정 아직 안함. 
+            // put params end
+
             final_date: null
         }
 
@@ -90,9 +93,25 @@ export default class AddScreen extends Component {
         name:  gotoHomeScreen
         description: show Home Screen
     */
-    gotoHomeScreen() {
-        console.log(JSON.stringify(this.state.apiData));
-        // postApi('ApiToDoList','/todolist', this.state.apiData, "데이터 넣음","실패");
+   gotoHomeScreen() {
+        const params = {
+            id: 2,
+            title: this.state.title,
+            end_date: this.state.end_date,
+            description: this.state.description,
+            color: 1 // View에서 값 받는 설정 아직 안함. 
+        }
+
+
+        console.log(getApi('ApiToDoList','/todolist'));
+        if(params.title != null && params.title.trim() != "" && params.end_date != null && params.end_date.trim() != ""){
+            // postApi('ApiToDoList','/todolist', params, "데이터 넣음","실패");
+
+        }else{
+            alert("할일을 입력하세요"); // 나중에 비동기로 빨간글씨로 바꾸기
+        }
+    
+        console.log(params);
         // this.props.navigation.navigate("Home");
     }
 
@@ -189,7 +208,7 @@ export default class AddScreen extends Component {
         // 현재 출력날짜 저장
         result = getDateString(year, day, month, date, hour, minute, null);
         this.setState({final_date : result.final_date}); // 출력날짜 상태 변경
-
+        this.setState({end_date : result.final_date}); 
         result.am_pm == '오전' ? result.am_pm_i = 0 : 1;
         
         
@@ -218,7 +237,8 @@ export default class AddScreen extends Component {
                     {/* title */}
                     <TextInput style={[common.font_small, styles.textForm]} 
                                placeholder={'할일을 입력하세요'}
-                               onChangeText={(text) => { this.setState({apiData :{title: text, description:this.state.apiData['description'], end_date: this.state.apiData['end_date'], color: this.state.apiData['color']}}) }}
+                               onChangeText={(text) => { this.setState({title : text}) }}
+                            //    {apiData :{title: text, description:this.state.apiData['description'], end_date: this.state.apiData['end_date'], color: this.state.apiData['color']}})
                     ></TextInput>
                 </View>
                 <View style={styles.content}>
@@ -322,7 +342,7 @@ export default class AddScreen extends Component {
                                     <TouchableHighlight onPress={() => { 
                                             result = getDateString(year, day, month, date, hour, minute, result.am_pm);
                                             this.setState({final_date : result.final_date});
-                                            this.setState({apiData:{end_date: result.final_date}})
+                                            this.setState({end_date: result.final_date})
                                             this.toggleCalendarModal() }}>
                                             <Text style={[common.font_mid, { color: Colors.darkPrimary }, { marginTop: wp("2%") }]} >저장</Text>
                                             {/* 변수 확인용:  onPress = {(e) => {alert("최종: "+year+"년"+month+ "월"+date+"일"+day+ "요일"+ hour+ "시"+ minute+ "분"+ result.am_pm)}}  */}
@@ -339,7 +359,7 @@ export default class AddScreen extends Component {
                     <View style={styles.content_element_sub}>
                         <MIcon name="file-document-outline" size={30} color={Colors.gray}></MIcon>
                         <TextInput style={[common.font_small, styles.descriptionForm]} 
-                                   onChangeText={(text) => { this.setState({apiData: {description: text}}) }}
+                                   onChangeText={(text) => { this.setState( {description: text}) }}
                                    placeholder={'설명'}></TextInput>
                     </View>
 
