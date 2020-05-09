@@ -7,6 +7,10 @@
 		"todolist": {
 			"service": "DynamoDB",
 			"providerPlugin": "awscloudformation"
+		},
+		"calendar": {
+			"service": "DynamoDB",
+			"providerPlugin": "awscloudformation"
 		}
 	},
 	"function": {
@@ -47,6 +51,25 @@
 					}
 				}
 			]
+		},
+		"LambdaCalendar": {
+			"build": true,
+			"providerPlugin": "awscloudformation",
+			"service": "Lambda",
+			"dependsOn": [
+				{
+					"category": "storage",
+					"resourceName": "calendar",
+					"attributes": [
+						"Name",
+						"Arn"
+					],
+					"attributeEnvMap": {
+						"Name": "TABLE_NAME",
+						"Arn": "TABLE_ARN"
+					}
+				}
+			]
 		}
 	},
 	"api": {
@@ -71,6 +94,20 @@
 				{
 					"category": "function",
 					"resourceName": "LambdaToDoList",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
+				}
+			]
+		},
+		"ApiCalendar": {
+			"service": "API Gateway",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [
+				{
+					"category": "function",
+					"resourceName": "LambdaCalendar",
 					"attributes": [
 						"Name",
 						"Arn"

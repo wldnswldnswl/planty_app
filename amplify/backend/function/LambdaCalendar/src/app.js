@@ -17,7 +17,7 @@ AWS.config.update({ region: process.env.TABLE_REGION });
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-let tableName = "todolist";
+let tableName = "calendar";
 if(process.env.ENV && process.env.ENV !== "NONE") {
   tableName = tableName + '-' + process.env.ENV;
 }
@@ -28,7 +28,7 @@ const partitionKeyType = "S";
 const sortKeyName = "uuid";
 const sortKeyType = "S";
 const hasSortKey = sortKeyName !== "";
-const path = "/todolist";
+const path = "/calendar";
 const UNAUTH = 'UNAUTH';
 const hashKeyPath = '/:' + partitionKeyName;
 const sortKeyPath = hasSortKey ? '/:' + sortKeyName : '';
@@ -170,21 +170,25 @@ app.post(path, function(req, res) {
     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
   }
 
-   let body = {
+  let body = {
     email : req.body.email, // 세션값
-    end_date : req.body.end_date,  // 필수입력
-    uuid :  null, // 필수입력
-    title : req.body.title, // 필수입력
+    start_date  : req.body.start_date, // must
+    end_date : req.body.end_date,  // must
+    uuid :  null, // must
+    title : req.body.title, // must
     description : req.body.description == '' ? null :  req.body.description, // null이면 true가 push됨
-    color : req.body.color // 필수입력
+    color : req.body.color, // must
+    alarm : req.body.alarm,
+    repeat : req.body.repeat
   }
 
-  body.uuid = body.end_date +"_"+ req.apiGateway.event.requestContext.requestId;
+  body.uuid = body.start_date +"_"+ req.apiGateway.event.requestContext.requestId;
 
   let putItemParams = {
     TableName: tableName,
     Item: body
   }
+
   dynamodb.put(putItemParams, (err, data) => {
     if(err) {
       res.statusCode = 500;

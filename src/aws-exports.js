@@ -5,11 +5,15 @@ const awsmobile = {
     "aws_dynamodb_all_tables_region": "ap-northeast-2",
     "aws_dynamodb_table_schemas": [
         {
+            "tableName": "members-dev",
+            "region": "ap-northeast-2"
+        },
+        {
             "tableName": "todolist-dev",
             "region": "ap-northeast-2"
         },
         {
-            "tableName": "members-dev",
+            "tableName": "calendar-dev",
             "region": "ap-northeast-2"
         }
     ],
@@ -21,7 +25,12 @@ const awsmobile = {
         },
         {
             "name": "ApiToDoList",
-            "endpoint": "https://k74yd50nkd.execute-api.ap-northeast-2.amazonaws.com/dev",
+            "endpoint": "https://170po6vei9.execute-api.ap-northeast-2.amazonaws.com/dev",
+            "region": "ap-northeast-2"
+        },
+        {
+            "name": "ApiCalendar",
+            "endpoint": "https://ogvwfj3hqg.execute-api.ap-northeast-2.amazonaws.com/dev",
             "region": "ap-northeast-2"
         }
     ]

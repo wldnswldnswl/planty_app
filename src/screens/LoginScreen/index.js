@@ -32,7 +32,7 @@ export default class LoginScreen extends Component {
         description: show Login Screen
     */
 //    _doLogin = async() => 
-     async _doLogin(){ 
+     _doLogin(){ 
      
         // alert(JSON.stringify(this.state));
         //get
@@ -64,14 +64,8 @@ export default class LoginScreen extends Component {
             //         //Your logic
             //  });
             
-            //  ,{
-            //     'queryStringParameter':{
-            //         'email' : 'planty.adm@gmail.com',
-            //         'pwd':'123456'
-            //    }
-            //  }
             // const response = API.get('ApiMembers', '/members/login');
-            // const response = getApi('ApiMembers', '/members/object', "환영합니다", "아이디/비밀번호를 확인하세요");
+            const response = getApi('ApiMembers', '/members/login', "환영합니다", "아이디/비밀번호를 확인하세요");
             // this.setState('nickname',response.nickname);
             // await AsyncStorage.setItem('userToken', this.state.nickname);
             // alert(JSON.stringify(response));
@@ -109,7 +103,6 @@ export default class LoginScreen extends Component {
         description: show FindInfo Screen
     */
     _goFindScreen() {
-        console.log("find find");
         this.props.navigation.navigate('FindInfo');
     }
 

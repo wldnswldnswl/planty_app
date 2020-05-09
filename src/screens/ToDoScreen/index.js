@@ -6,7 +6,8 @@ import {
     Button,
     TextInput,
     TouchableHighlight,
-    TouchableOpacity
+    TouchableOpacity,
+    AsyncStorage
 } from 'react-native';
 import {API} from 'aws-amplify'; 
 import Modal from 'react-native-modal';
@@ -17,7 +18,7 @@ import Colors from '../../../styles/colors';
 import ScrollPicker from 'react-native-wheel-scroll-picker';
 import { Calendar } from 'react-native-calendars';
 
-import {getApi, postApi,getDateString} from '../../common/common'
+import {getApi, postApi,getDateString, getSession} from '../../common/common'
 //styles
 import common from '../../../styles/common';
 import styles from './style';
@@ -46,6 +47,7 @@ export default class AddScreen extends Component {
     //datepicker 생성자 추가
     constructor() {
         super()
+
         this.state = {
             CalendarModalVisible: false,
             ColorModalVisible: false,
@@ -53,7 +55,7 @@ export default class AddScreen extends Component {
             theme_color: '#2980b9',
 
             // put params start
-            id: null,
+            email: null,
             title: null,
             end_date: null,
             description: "",
@@ -62,6 +64,14 @@ export default class AddScreen extends Component {
 
             final_date: null
         }
+
+       // get Session
+       AsyncStorage.multiGet(['email']).then((data) => {
+        let email = data[0][1];
+ 
+        if (email !== null)
+            this.state.email = email;
+       });
 
         //시간배열에 데이터 삽입
         for (var i = 0; i < 12; i++) {
@@ -95,24 +105,24 @@ export default class AddScreen extends Component {
     */
    gotoHomeScreen() {
         const params = {
-            id: 2,
+            email : this.state.email,
             title: this.state.title,
             end_date: this.state.end_date,
             description: this.state.description,
             color: 1 // View에서 값 받는 설정 아직 안함. 
         }
 
-
-        console.log(getApi('ApiToDoList','/todolist'));
-        if(params.title != null && params.title.trim() != "" && params.end_date != null && params.end_date.trim() != ""){
-            postApi('ApiToDoList','/todolist', params, "데이터 넣음","빈 칸을 입력하세요");
+        console.log(params);
+        // console.log("getToDoList: ");
+        // console.log(getApi('ApiToDoList','/todolist'));//&& params.end_date != null && params.end_date.trim() != ""
+        if(params.title != null && params.title.trim() != ""){
+            postApi('ApiToDoList','/todolist', params);
+            this.props.navigation.navigate("Home");
 
         }else{
-            alert("할일을 입력하세요"); // 나중에 비동기로 빨간글씨로 바꾸기
+            alert("할 일을 입력하세요"); // 나중에 비동기 이용해 빨간글씨로 바꾸기
         }
     
-        console.log(params);
-        // this.props.navigation.navigate("Home");
     }
 
     /*
@@ -207,8 +217,9 @@ export default class AddScreen extends Component {
 
         // 현재 출력날짜 저장
         result = getDateString(year, day, month, date, hour, minute, null);
-        this.setState({final_date : result.final_date}); // 출력날짜 상태 변경
-        this.setState({end_date : result.final_date}); 
+        this.final_date = result.final_date; // 출력날짜 상태 변경
+        // this.setState({final_date : result.final_date}); 
+        this.state.end_date = result.final_date;
         result.am_pm == '오전' ? result.am_pm_i = 0 : 1;
         
         

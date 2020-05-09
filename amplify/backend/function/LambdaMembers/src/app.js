@@ -137,8 +137,8 @@ app.get(path + '/login' + hashKeyPath + sortKeyPath, function(req, res) {
   // console.log("req: "+req);
   let getItemParams = {
     TableName: tableName,
-    // Select: 'ALL_ATTRIBUTES'
-    ProjectionExpression:"nickname, email",
+    Select: 'ALL_ATTRIBUTES',
+    // ProjectionExpression:"nickname, email",
     KeyConditionExpression: "#email = :email and #pwd = :pwd",
     ExpressionAttributeNames:{
       "#email": "email",

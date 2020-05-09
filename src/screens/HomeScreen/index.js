@@ -6,7 +6,8 @@ import {
     Text,
     Button,
     Image,
-    TouchableHighlight
+    TouchableHighlight,
+    AsyncStorage
     /* ScrollView */
 } from 'react-native';
 import Modal from 'react-native-modal';
@@ -53,6 +54,7 @@ export default class HomeScreen extends Component {
             pickerSelection: 'default',
             year: new Date().getFullYear(),
             month: new Date().getMonth() + 1,
+
             //일정 내용 임시로 지정함, 실제 데이터 받아올때는 어떻게 할지 아직 모르겠음
             day_data: [
                 {
