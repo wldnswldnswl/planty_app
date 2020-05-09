@@ -1,7 +1,7 @@
 import React from 'react';
-import {Component} from 'react'; 
-import {LocaleConfig} from 'react-native-calendars';
-import Amplify, {API} from 'aws-amplify';
+import { Component } from 'react';
+import { LocaleConfig } from 'react-native-calendars';
+import Amplify, { API } from 'aws-amplify';
 //공통함수
 
 /*
@@ -10,15 +10,15 @@ import Amplify, {API} from 'aws-amplify';
 * @params:
 * @history: 이지운
 */
-export function setCalendarConfig(){
-        LocaleConfig.locales['kr'] = {
-            monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
-            monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
-            dayNames: ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'],
-            dayNamesShort: ['일','월','화','수','목','금','토'],
-            today: '오늘'
-          };
-        LocaleConfig.defaultLocale = 'kr';
+export function setCalendarConfig() {
+    LocaleConfig.locales['kr'] = {
+        monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        dayNames: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
+        dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+        today: '오늘'
+    };
+    LocaleConfig.defaultLocale = 'kr';
 }
 
 /*
@@ -28,10 +28,10 @@ export function setCalendarConfig(){
 * @history: 서주희 
             이지운 - fianl_date 반환함수로 변경
 */
-export function getDateString(year, day, month, date, hour, minute, is_am_pm){
+export function getDateString(year, day, month, date, hour, minute, is_am_pm) {
 
     var result = {
-        fianl_date : null,
+        fianl_date: null,
         am_pm: null //오전,오후 구분 위한 변수 생성
     }
     // var final_date;
@@ -51,21 +51,21 @@ export function getDateString(year, day, month, date, hour, minute, is_am_pm){
 
     //day값에 따라 요일 설정
     switch (day) {
-      case 0: ko_day = "일";
-          break;
-      case 1: ko_day = "월";
-          break;
-      case 2: ko_day = "화";
-          break;
-      case 3: ko_day = "수";
-          break;
-      case 4: ko_day = "목";
-          break;
-      case 5: ko_day = "금";
-          break;
-      case 6: ko_day = "토";
-          break;
-  }
+        case 0: ko_day = "일";
+            break;
+        case 1: ko_day = "월";
+            break;
+        case 2: ko_day = "화";
+            break;
+        case 3: ko_day = "수";
+            break;
+        case 4: ko_day = "목";
+            break;
+        case 5: ko_day = "금";
+            break;
+        case 6: ko_day = "토";
+            break;
+    }
 
     //1~9월을 두자릿수로 설정
     if (month < 10)
@@ -86,7 +86,7 @@ export function getDateString(year, day, month, date, hour, minute, is_am_pm){
         minute_len = "";
 
     //오전,오후 구분
-    if(is_am_pm == null || is_am_pm.trim() == ''){
+    if (is_am_pm == null || is_am_pm.trim() == '') {
         if (hour < 12) {
             result.am_pm = "오전";
             if (hour == 0) {
@@ -95,28 +95,34 @@ export function getDateString(year, day, month, date, hour, minute, is_am_pm){
             }
             hour_len = "0";
         }
-        else if (hour < 24) {
+        else if (hour > 12 && hour < 22) {
             result.am_pm = "오후";
-            hour -= 12;
-            hour_len = "";
+            if (hour != 12) {
+                hour -= 12;
+                hour_len = "0";
+            }
+            else {
+                hour_len = "";            }
         }
         else {
-            result.am_pm = "오전";
             hour -= 12;
             hour_len = "";
+            if(hour == 24) 
+                result.am_pm = "오전"
+            else
+                result.am_pm = "오후"
         }
-    }else{
-        if(hour > 9) hour_len = "";
-        else if(hour > 0 && hour < 10) hour_len = "0";
-        result.am_pm = is_am_pm;        
+    } else {
+        if (hour > 9) hour_len = "";
+        else if (hour > 0 && hour < 10) hour_len = "0";
+        result.am_pm = is_am_pm;
     }
 
-    result.final_date = year+"."+month_len+""+month+"."+date_len+""+date+"("+ko_day+") "+ result.am_pm+" "+ hour_len+""+hour+":"+minute_len+""+minute;
-  
-//   alert("pass: "+ JSON.stringify(final_date));
-  return result;
-}
+    result.final_date = year + "." + month_len + "" + month + "." + date_len + "" + date + "(" + ko_day + ") " + result.am_pm + " " + hour_len + "" + hour + ":" + minute_len + "" + minute;
 
+    //   alert("pass: "+ JSON.stringify(final_date));
+    return result;
+}
 
 /*
 * @name: getApi
@@ -147,24 +153,24 @@ export async function getApi(apiName, path,success, fail) {
 * @history: 이지운
 */
 export async function postApi(apiName, path, params, success, fail) {
-  resources = {
-    body: params
-  }
-  
-  try{
-     const data = await API.post(apiName, path, resources);
+    resources = {
+        body: params
+    }
 
-     if(success != null) alert(success); //성공메시지
+    try {
+        const data = await API.post(apiName, path, resources);
 
-     console.log('succeses: ', data);
+        if (success != null) alert(success); //성공메시지
 
-     return data;
+        console.log('succeses: ', data);
 
-  }
-  catch(err){
-      if(fail != null) alert(fail); //실패메시지
+        return data;
 
-      console.log('error: ', err);
-  }
- 
+    }
+    catch (err) {
+        if (fail != null) alert(fail); //실패메시지
+
+        console.log('error: ', err);
+    }
+
 }

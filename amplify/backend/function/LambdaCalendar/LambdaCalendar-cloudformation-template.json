@@ -1,0 +1,242 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Lambda resource stack creation using Amplify CLI",
+    "Parameters": {
+        "CloudWatchRule": {
+            "Type": "String",
+            "Default" : "NONE",
+            "Description" : " Schedule Expression"
+        },
+        "env": {
+            "Type": "String"
+        },
+    
+    
+    
+        "storagecalendarName": {
+            "Type": "String",
+            "Default": "storagecalendarName"
+            },
+        
+        "storagecalendarArn": {
+            "Type": "String",
+            "Default": "storagecalendarArn"
+            },
+        
+    
+        
+    
+        "storagememebersName": {
+            "Type": "String",
+            "Default": "storagememebersName"
+            },
+        
+        "storagememebersArn": {
+            "Type": "String",
+            "Default": "storagememebersArn"
+            },
+        
+    
+        
+    
+        "functionmemebersLambdaName": {
+            "Type": "String",
+            "Default": "functionmemebersLambdaName"
+            },
+        
+    
+        
+    
+        "apimembersApiApiName": {
+            "Type": "String",
+            "Default": "apimembersApiApiName"
+            },
+        
+        "apimembersApiApiId": {
+            "Type": "String",
+            "Default": "apimembersApiApiId"
+            }
+        
+    
+        
+    
+    },
+    "Conditions": {
+        "ShouldNotCreateEnvResources": {
+            "Fn::Equals": [
+                {
+                    "Ref": "env"
+                },
+                "NONE"
+            ]
+        }
+    },
+    "Resources": {
+        "LambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Metadata": {
+            "aws:asset:path": "./src",
+            "aws:asset:property": "Code"
+          },
+          "Properties": {
+            "Handler": "index.handler",
+            "FunctionName": {
+                "Fn::If": [
+                    "ShouldNotCreateEnvResources",
+                    "LambdaCalendar", 
+                    {
+
+                        "Fn::Join": [
+                            "",
+                            [
+                                "LambdaCalendar",
+                                "-",
+                                {
+                                    "Ref": "env"
+                                }
+                            ]
+                        ]
+                    }      
+                ]
+            },
+            "Environment": {
+                "Variables" : {
+                    "ENV": {
+                        "Ref": "env"
+                    },
+                    "REGION": { 
+                        "Ref": "AWS::Region"
+                    }
+                    ,"STORAGE_MEMEBERS_NAME": {"Ref": "storagememebersName"},
+"STORAGE_MEMEBERS_ARN": {"Ref": "storagememebersArn"},
+"STORAGE_MEMEBERS_NAME": {"Ref": "storagememebersName"},
+"STORAGE_MEMEBERS_ARN": {"Ref": "storagememebersArn"},
+"STORAGE_CALENDAR_NAME": {"Ref": "storagecalendarName"},
+"STORAGE_CALENDAR_ARN": {"Ref": "storagecalendarArn"},
+"FUNCTION_MEMEBERSLAMBDA_NAME": {"Ref": "functionmemebersLambdaName"},
+"API_MEMBERSAPI_APINAME": {"Ref": "apimembersApiApiName"},
+"API_MEMBERSAPI_APIID": {"Ref": "apimembersApiApiId"} 
+                }
+            },
+            "Role": { "Fn::GetAtt" : ["LambdaExecutionRole", "Arn"] },
+            "Runtime": "nodejs12.x",
+            "Timeout": "25"
+          }
+        },
+        "LambdaExecutionRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "RoleName": {
+                    "Fn::If": [
+                        "ShouldNotCreateEnvResources",
+                        "plantyappLambdaRole5e3f7c79", 
+                        {
+
+                            "Fn::Join": [
+                                "",
+                                [
+                                    "plantyappLambdaRole5e3f7c79",
+                                    "-",
+                                    {
+                                        "Ref": "env"
+                                    }
+                                ]
+                            ]
+                        } 
+                    ]
+                },
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "lambda.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+        ,"lambdaexecutionpolicy": {
+            "DependsOn": ["LambdaExecutionRole"],
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "lambda-execution-policy",
+                "Roles": [{ "Ref": "LambdaExecutionRole" }],
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action":["logs:CreateLogGroup",
+                            "logs:CreateLogStream",
+                            "logs:PutLogEvents"],
+                            "Resource": { "Fn::Sub" : [ "arn:aws:logs:${region}:${account}:log-group:/aws/lambda/${lambda}:log-stream:*", { "region": {"Ref": "AWS::Region"},  "account": {"Ref": "AWS::AccountId"}, "lambda": {"Ref": "LambdaFunction"}} ]}
+                        },
+                        {
+                            "Effect": "Allow", 
+                            "Action": ["dynamodb:DescribeTable","dynamodb:GetItem","dynamodb:Query","dynamodb:Scan","dynamodb:PutItem","dynamodb:UpdateItem","dynamodb:DeleteItem"],
+                            "Resource": [
+                            
+                                { "Ref": "storagecalendarArn" },
+                                {
+                                    "Fn::Join": [
+                                        "/",
+                                        [
+                                            { "Ref": "storagecalendarArn" },
+                                            "index/*"
+                                        ]
+                                    ]
+                                }      
+                            
+                            ]
+                        }
+                        
+                    ]
+                }
+            }
+        }
+        ,"AmplifyResourcesPolicy": {
+            "DependsOn": ["LambdaExecutionRole"],
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "amplify-lambda-execution-policy",
+                "Roles": [{ "Ref": "LambdaExecutionRole" }],
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [{"Effect":"Allow","Action":["dynamodb:Put*","dynamodb:Create*","dynamodb:BatchWriteItem","dynamodb:Get*","dynamodb:BatchGetItem","dynamodb:List*","dynamodb:Describe*","dynamodb:Scan","dynamodb:Query","dynamodb:Update*","dynamodb:RestoreTable*","dynamodb:Delete*"],"Resource":[{"Ref":"storagememebersArn"},{"Fn::Join":["/",[{"Ref":"storagememebersArn"},"index/*"]]}]},{"Effect":"Allow","Action":["dynamodb:Put*","dynamodb:Create*","dynamodb:BatchWriteItem","dynamodb:Get*","dynamodb:BatchGetItem","dynamodb:List*","dynamodb:Describe*","dynamodb:Scan","dynamodb:Query","dynamodb:Update*","dynamodb:RestoreTable*","dynamodb:Delete*"],"Resource":[{"Ref":"storagememebersArn"},{"Fn::Join":["/",[{"Ref":"storagememebersArn"},"index/*"]]}]},{"Effect":"Allow","Action":["dynamodb:Put*","dynamodb:Create*","dynamodb:BatchWriteItem","dynamodb:Get*","dynamodb:BatchGetItem","dynamodb:List*","dynamodb:Describe*","dynamodb:Scan","dynamodb:Query","dynamodb:Update*","dynamodb:RestoreTable*","dynamodb:Delete*"],"Resource":[{"Ref":"storagecalendarArn"},{"Fn::Join":["/",[{"Ref":"storagecalendarArn"},"index/*"]]}]},{"Effect":"Allow","Action":["lambda:Create*","lambda:Put*","lambda:Add*","lambda:Get*","lambda:List*","lambda:Invoke*","lambda:Update*","lambda:Delete*","lambda:Remove*"],"Resource":[{"Fn::Join":["",["arn:aws:lambda:",{"Ref":"AWS::Region"},":",{"Ref":"AWS::AccountId"},":function:",{"Ref":"functionmemebersLambdaName"}]]}]},{"Effect":"Allow","Action":["apigateway:POST","apigateway:PUT","apigateway:GET","apigateway:HEAD","apigateway:OPTIONS","apigateway:PATCH","apigateway:DELETE"],"Resource":[{"Fn::Join":["",["arn:aws:apigateway:",{"Ref":"AWS::Region"},"::/restapis/",{"Ref":"apimembersApiApiName"},"/*"]]}]}]
+                }
+            }
+        }
+        
+        
+                         
+    },
+    "Outputs": {
+        "Name": {
+            "Value": {
+                "Ref": "LambdaFunction"
+            }
+        },
+        "Arn": {
+            "Value": {"Fn::GetAtt": ["LambdaFunction", "Arn"]}
+        },
+        "Region": {
+            "Value": {
+                "Ref": "AWS::Region"
+            }
+        },
+        "LambdaExecutionRole": {
+            "Value": {
+                "Ref": "LambdaExecutionRole"
+            }
+        }
+          
+    }
+}

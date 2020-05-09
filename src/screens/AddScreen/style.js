@@ -12,7 +12,7 @@ import common from '../../../styles/common'
         backgroundColor: 'white', 
         alignItems: "center",
         marginBottom: hp('2%'),
-        paddingHorizontal: wp('3%')
+        paddingHorizontal: wp('3%'),
         // padding: wp('5%')
     }, 
     nav: { 
