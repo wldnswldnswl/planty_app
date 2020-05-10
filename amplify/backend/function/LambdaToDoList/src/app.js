@@ -23,9 +23,9 @@ if(process.env.ENV && process.env.ENV !== "NONE") {
 }
 
 const userIdPresent = false; // TODO: update in case is required to use that definition
-const partitionKeyName = "id";
-const partitionKeyType = "N";
-const sortKeyName = "end_date";
+const partitionKeyName = "email";
+const partitionKeyType = "S";
+const sortKeyName = "uuid";
 const sortKeyType = "S";
 const hasSortKey = sortKeyName !== "";
 const path = "/todolist";
@@ -94,14 +94,34 @@ app.get(path + hashKeyPath, function(req, res) {
  * HTTP Get method for get single object *
  *****************************************/
 
-app.get(path + '/count', function(req, res) {
+app.get(path + '/getInfo' + hashKeyPath + sortKeyPath, function(req, res) {
+  var params = {};
+  if (userIdPresent && req.apiGateway) {
+    params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+  } else {
+    params[partitionKeyName] = req.params[partitionKeyName];
+    try {
+      params[partitionKeyName] = convertUrlType(req.params[partitionKeyName], partitionKeyType);
+    } catch(err) {
+      res.statusCode = 500;
+      res.json({error: 'Wrong column type ' + err});
+    }
+  }
+  if (hasSortKey) {
+    try {
+      params[sortKeyName] = convertUrlType(req.params[sortKeyName], sortKeyType);
+    } catch(err) {
+      res.statusCode = 500;
+      res.json({error: 'Wrong column type ' + err});
+    }
+  }
 
   let getItemParams = {
     TableName: tableName,
     Key: params
   }
 
-  dynamodb.query(getItemParams,(err, data) => {
+  dynamodb.get(getItemParams,(err, data) => {
     if(err) {
       res.statusCode = 500;
       res.json({error: 'Could not load items: ' + err.message});
@@ -150,13 +170,20 @@ app.post(path, function(req, res) {
     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
   }
 
-  if(req.body.description == null){
-      delete req.body.description;
+   let body = {
+    email : req.body.email, // 세션값
+    end_date : req.body.end_date,  // 필수입력
+    uuid :  null, // 필수입력
+    title : req.body.title, // 필수입력
+    description : req.body.description == '' ? null :  req.body.description, // null이면 true가 push됨
+    color : req.body.color // 필수입력
   }
+
+  body.uuid = body.end_date +"_"+ req.apiGateway.event.requestContext.requestId;
 
   let putItemParams = {
     TableName: tableName,
-    Item: req.body
+    Item: body
   }
   dynamodb.put(putItemParams, (err, data) => {
     if(err) {

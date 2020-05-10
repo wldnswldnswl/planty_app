@@ -6,17 +6,7 @@ or in the "license" file accompanying this file. This file is distributed on an 
 See the License for the specific language governing permissions and limitations under the License.
 */
 
-/* Amplify Params - DO NOT EDIT
-	API_MEMBERSAPI_APIID
-	API_MEMBERSAPI_APINAME
-	ENV
-	FUNCTION_MEMEBERSLAMBDA_NAME
-	REGION
-	STORAGE_CALENDAR_ARN
-	STORAGE_CALENDAR_NAME
-	STORAGE_MEMEBERS_ARN
-	STORAGE_MEMEBERS_NAME
-Amplify Params - DO NOT EDIT */
+
 
 const AWS = require('aws-sdk')
 var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
@@ -33,9 +23,9 @@ if(process.env.ENV && process.env.ENV !== "NONE") {
 }
 
 const userIdPresent = false; // TODO: update in case is required to use that definition
-const partitionKeyName = "id";
+const partitionKeyName = "email";
 const partitionKeyType = "S";
-const sortKeyName = "description";
+const sortKeyName = "uuid";
 const sortKeyType = "S";
 const hasSortKey = sortKeyName !== "";
 const path = "/calendar";
@@ -104,7 +94,7 @@ app.get(path + hashKeyPath, function(req, res) {
  * HTTP Get method for get single object *
  *****************************************/
 
-app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
+app.get(path + '/getInfo' + hashKeyPath + sortKeyPath, function(req, res) {
   var params = {};
   if (userIdPresent && req.apiGateway) {
     params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
@@ -128,7 +118,8 @@ app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
 
   let getItemParams = {
     TableName: tableName,
-    Key: params
+    ProjectionExpression:"nickname, email",
+    KeyConditionExpression: "#email = :email and #uuid = :uuid",
   }
 
   dynamodb.get(getItemParams,(err, data) => {
@@ -180,10 +171,25 @@ app.post(path, function(req, res) {
     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
   }
 
+  let body = {
+    email : req.body.email, // 세션값
+    start_date  : req.body.start_date, // must
+    end_date : req.body.end_date,  // must
+    uuid :  null, // must
+    title : req.body.title, // must
+    description : req.body.description == '' ? null :  req.body.description, // null이면 true가 push됨
+    color : req.body.color, // must
+    alarm : req.body.alarm,
+    repeat : req.body.repeat
+  }
+
+  body.uuid = body.start_date +"_"+ req.apiGateway.event.requestContext.requestId;
+
   let putItemParams = {
     TableName: tableName,
-    Item: req.body
+    Item: body
   }
+
   dynamodb.put(putItemParams, (err, data) => {
     if(err) {
       res.statusCode = 500;

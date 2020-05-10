@@ -1,7 +1,7 @@
 {
     "tableName": "calendar",
-    "partitionKeyName": "id",
+    "partitionKeyName": "email",
     "partitionKeyType": "S",
-    "sortKeyName": "description",
+    "sortKeyName": "uuid",
     "sortKeyType": "S"
 }

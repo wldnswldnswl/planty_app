@@ -1,7 +1,7 @@
 {
     "tableName": "todolist",
-    "partitionKeyName": "id",
-    "partitionKeyType": "N",
-    "sortKeyName": "end_date",
+    "partitionKeyName": "email",
+    "partitionKeyType": "S",
+    "sortKeyName": "uuid",
     "sortKeyType": "S"
 }

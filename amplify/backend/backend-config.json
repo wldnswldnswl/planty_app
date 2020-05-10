@@ -1,10 +1,10 @@
 {
 	"storage": {
-		"todolist": {
+		"members": {
 			"service": "DynamoDB",
 			"providerPlugin": "awscloudformation"
 		},
-		"members": {
+		"todolist": {
 			"service": "DynamoDB",
 			"providerPlugin": "awscloudformation"
 		},
@@ -68,29 +68,6 @@
 						"Name": "TABLE_NAME",
 						"Arn": "TABLE_ARN"
 					}
-				},
-				{
-					"category": "storage",
-					"resourceName": "memebers",
-					"attributes": [
-						"Name",
-						"Arn"
-					]
-				},
-				{
-					"category": "function",
-					"resourceName": "memebersLambda",
-					"attributes": [
-						"Name"
-					]
-				},
-				{
-					"category": "api",
-					"resourceName": "membersApi",
-					"attributes": [
-						"ApiName",
-						"ApiId"
-					]
 				}
 			]
 		}

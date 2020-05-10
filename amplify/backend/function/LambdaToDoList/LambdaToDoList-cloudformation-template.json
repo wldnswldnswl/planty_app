@@ -71,7 +71,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "amplify-plantyapp-dev-42358-deployment",
-					"S3Key": "amplify-builds/LambdaToDoList-704176516b53676d3870-build.zip"
+					"S3Key": "amplify-builds/LambdaToDoList-494d354a66506f646132-build.zip"
 				}
 			}
 		},
@@ -81,12 +81,12 @@
 				"RoleName": {
 					"Fn::If": [
 						"ShouldNotCreateEnvResources",
-						"plantyappLambdaRole030dcd9d",
+						"plantyappLambdaRoled464dd2e",
 						{
 							"Fn::Join": [
 								"",
 								[
-									"plantyappLambdaRole030dcd9d",
+									"plantyappLambdaRoled464dd2e",
 									"-",
 									{
 										"Ref": "env"
