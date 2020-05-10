@@ -8,7 +8,8 @@ import {
     TextInput,
     TouchableHighlight,
     Picker,
-    TouchableOpacity
+    TouchableOpacity,
+    AsyncStorage
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -59,8 +60,27 @@ export default class AddScreen extends Component {
             selectedAlarm: '알림 안함',
             selectedRepeat: '반복 안함',
             theme_color: '#2980b9',
-            final_date: null
+            final_date: null,
+
+             // put params start
+             email: null,
+             title: null,
+             start_date: null,
+             end_date: null,
+             description: "",
+             color : 0, // View에서 값 받는 설정 아직 안함. 
+             alarm : 0, // View에서 값 받는 설정 아직 안함. 
+             repeat : 0 // View에서 값 받는 설정 아직 안함. 
+             // put params end
         }
+
+        // get Session
+        AsyncStorage.multiGet(['email']).then((data) => {
+            let email = data[0][1];
+     
+            if (email !== null)
+                this.state.email = email;
+        });
 
         //시간배열에 데이터 삽입
         for (var i = 0; i < 12; i++) {
@@ -92,7 +112,28 @@ export default class AddScreen extends Component {
        description: show Home Screen
    */
     gotoHomeScreen() {
-        this.props.navigation.navigate("Home");
+
+        const params = {
+            email : this.state.email,
+            title: this.state.title,
+            start_date: this.state.start_date,
+            end_date: this.state.end_date,
+            description: this.state.description,
+            color: 1, // View에서 값 받는 설정 아직 안함. 
+            alarm: 0, // View에서 값 받는 설정 아직 안함. 
+            repeat: 0 // View에서 값 받는 설정 아직 안함. 
+        }
+
+        console.log(params);
+        // console.log("getCalendar: ");
+        // console.log(getApi('ApiCalendar','/calendar'));//&& params.end_date != null && params.end_date.trim() != ""
+        if(params.title != null && params.title.trim() != ""){
+            postApi('ApiCalendar','/calendar', params);
+            this.props.navigation.navigate("Home");
+
+        }else{
+            alert("일정을 입력하세요"); // 나중에 비동기 이용해 빨간글씨로 바꾸기
+        }
     }
 
     /*
@@ -118,6 +159,8 @@ export default class AddScreen extends Component {
    */
     toggleCalendarModal = (flag, text) => {
         if (flag == 'fresh') this.getCurrentDate(); // 현재 날짜로 초기화
+        // else if(flag == "start_date")
+        //     this.state.start_date = 
         // else if(flag == 'save'){
         //     this.setState({final_date: text})
         // }
@@ -163,8 +206,10 @@ export default class AddScreen extends Component {
 
         // 현재 출력날짜 저장
         result = getDateString(year, day, month, date, hour, minute, null);
-        this.setState({ final_date: result.final_date }); // 출력날짜 상태 변경
-
+        this.final_date = result.final_date; // 출력날짜 상태 변경
+        // this.setState({final_date : result.final_date}); 
+        this.state.end_date = result.final_date;
+        this.state.start_date = result.final_date;
         result.am_pm == '오전' ? result.am_pm_i = 0 : 1;
 
         // this.sp_am_pm.scrollToIndex(result.am_pm_i);
@@ -191,12 +236,14 @@ export default class AddScreen extends Component {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.mainText}>
-                    <TextInput style={[common.font_small, styles.textForm]} placeholder={'일정을 입력하세요'}></TextInput>
+                    <TextInput style={[common.font_small, styles.textForm]} placeholder={'일정을 입력하세요'}
+                     onChangeText={(text) => { this.setState({title : text}) }}
+                    ></TextInput>
                 </View>
                 <View style={styles.content}>
                     <View style={[styles.content_element, common.mt2]}>
                         <Text style={[common.font_mid, common.font_gray]}>시작일</Text>
-                        <TouchableOpacity onPress={() => { this.toggleCalendarModal() }}>
+                        <TouchableOpacity onPress={() => { this.toggleCalendarModal("start_date") }}>
                             <Text style={[common.font_mid, common.font_bold]}>{result.final_date}</Text>
                         </TouchableOpacity>
                     </View>
@@ -299,7 +346,7 @@ export default class AddScreen extends Component {
                                         <TouchableHighlight onPress={() => {
                                             result = getDateString(year, day, month, date, hour, minute, result.am_pm);
                                             this.setState({ final_date: result.final_date });
-                                            this.setState({ apiData: { end_date: result.final_date } })
+                                            this.setState({end_date: result.final_date})
                                             this.toggleCalendarModal()
                                         }}>
                                             <Text style={[common.font_mid, { color: Colors.darkPrimary }, { marginTop: wp("2%") }]} >저장</Text>
@@ -317,7 +364,9 @@ export default class AddScreen extends Component {
                     <View style={styles.content_element_sub}>
                         {/* 아이콘 바꿔야 함 */}
                         <MIcon name="file-document-outline" size={30} color={Colors.gray}></MIcon>
-                        <TextInput style={[common.font_small, styles.descriptionForm]} placeholder={'설명'}></TextInput>
+                        <TextInput style={[common.font_small, styles.descriptionForm]} 
+                         onChangeText={(text) => { this.setState( {description: text}) }}
+                        placeholder={'설명'}></TextInput>
                     </View>
 
                     <View style={styles.content_element_sub}>

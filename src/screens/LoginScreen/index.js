@@ -32,7 +32,7 @@ export default class LoginScreen extends Component {
         description: show Login Screen
     */
 //    _doLogin = async() => 
-     async _doLogin(){ 
+     _doLogin(){ 
      
         // alert(JSON.stringify(this.state));
         //get
@@ -44,16 +44,28 @@ export default class LoginScreen extends Component {
         else{
             //   alert(JSON.stringify(resources));
             
-             console.log(JSON.stringify(await API.get('ApiMembers', '/members/login')));
+            //  console.log(JSON.stringify(await API.get('ApiMembers', '/members/login')));
+            
+            // 세션 설정 (아이디, 닉네임)
+            AsyncStorage.multiSet([ // AsyncStorage는 내부 저장소로 세션으로 사용하기에 보안이 부실할 것. 하지만 이메일, 닉네임 같은 비중요정보라 일단 저걸로 구현해놓음...!
+                                    // 추후 redis 또는 Redux와 Redux Persist(앱을 종료해도 지속되는 Store)로 구현 //https://medium.com/humanscape-tech/redux-persist-%EC%95%8C%EC%95%84%EB%B3%B4%EA%B8%B0-2077c9e566d9
+                ["email", this.state.email]
+                // ,
+                // ["nickname", this.state.nickname]
+            ]);
 
-            //  ,{
-            //     'queryStringParameter':{
-            //         'email' : 'planty.adm@gmail.com',
-            //         'pwd':'123456'
-            //    }
-            //  }
+
+            // getSession
+            // AsyncStorage.multiGet(['email', 'password']).then((data) => {
+            //     let email = data[0][1];
+            //     let password = data[1][1];
+         
+            //     if (email !== null)
+            //         //Your logic
+            //  });
+            
             // const response = API.get('ApiMembers', '/members/login');
-            // const response = getApi('ApiMembers', '/members/object', "환영합니다", "아이디/비밀번호를 확인하세요");
+            const response = getApi('ApiMembers', '/members/login', "환영합니다", "아이디/비밀번호를 확인하세요");
             // this.setState('nickname',response.nickname);
             // await AsyncStorage.setItem('userToken', this.state.nickname);
             // alert(JSON.stringify(response));
@@ -66,17 +78,9 @@ export default class LoginScreen extends Component {
 
             //  return data;
 
-            // this.props.navigation.navigate('Home'); 
+            this.props.navigation.navigate('Home'); 
         }
     }
-
-<<<<<<< HEAD
-        this.props.navigation.navigate('Home'); 
-         }    
-    } 
- 
-=======
->>>>>>> 134eaa3a83583fce4b1f7cdc5242ce9394536387
     /*
         name: _doNaverLogin
         description: login with Naver account
@@ -99,7 +103,6 @@ export default class LoginScreen extends Component {
         description: show FindInfo Screen
     */
     _goFindScreen() {
-        console.log("find find");
         this.props.navigation.navigate('FindInfo');
     }
 

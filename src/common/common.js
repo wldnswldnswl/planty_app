@@ -1,5 +1,8 @@
 import React from 'react';
 import { Component } from 'react';
+import {
+    AsyncStorage
+} from 'react-native';
 import { LocaleConfig } from 'react-native-calendars';
 import Amplify, { API } from 'aws-amplify';
 //공통함수
@@ -141,7 +144,7 @@ export async function getApi(apiName, path,success, fail) {
     //  return data;
   }catch(err){
     //   if(fail != null) alert(fail); // fail 위치 바꿔야 함
-      console.log('local error: ', err);
+      console.log('common.getApi error: ', err);
   }
 }
 
@@ -170,7 +173,9 @@ export async function postApi(apiName, path, params, success, fail) {
     catch (err) {
         if (fail != null) alert(fail); //실패메시지
 
-        console.log('error: ', err);
+        console.log('common.postApi error: ', err);
     }
 
 }
+
+
