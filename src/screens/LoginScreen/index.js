@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Component } from 'react';
-import Amplify, { API } from 'aws-amplify'; // API.get API.post API.put 
 import {
     View,
     Image,
@@ -12,6 +11,7 @@ import {
 import { getApi, postApi } from '../../common/common'
 import common from '../../../styles/common'; // common styles
 import styles from './style';
+import { color } from 'react-native-reanimated';
 
 
 export default class LoginScreen extends Component {
@@ -31,8 +31,7 @@ export default class LoginScreen extends Component {
         name: _doLogin
         description: show Login Screen
     */
-//    _doLogin = async() => 
-     _doLogin(){ 
+    async _doLogin(){ 
      
         // alert(JSON.stringify(this.state));
         //get
@@ -42,43 +41,37 @@ export default class LoginScreen extends Component {
                alert("빈 칸을 입력해주세요");
            }
         else{
-            //   alert(JSON.stringify(resources));
+            const response = await getApi('ApiMembers', '/members/login/'+this.state.email+'/'+this.state.pwd);
+
+            if(response.data[0] != null){
+           
+                this.state.nickname = response.data[0].nickname;
+
+                 // 세션 설정 (아이디, 닉네임)
+                AsyncStorage.multiSet([ // AsyncStorage는 내부 저장소로 세션으로 사용하기에 보안이 부실할 것. 하지만 이메일, 닉네임 같은 비중요정보라 일단 저걸로 구현해놓음...!
+                // 추후 redis 또는 Redux와 Redux Persist(앱을 종료해도 지속되는 Store)로 구현 //https://medium.com/humanscape-tech/redux-persist-%EC%95%8C%EC%95%84%EB%B3%B4%EA%B8%B0-2077c9e566d9
+                ["email", this.state.email],
+                ["nickname", this.state.nickname]
+                ]);
+
+                this.props.navigation.navigate('Home'); 
+
+            }else{
+                alert("아이디/비밀번호를 확인해주세요.");
+            }
             
-            //  console.log(JSON.stringify(await API.get('ApiMembers', '/members/login')));
+
+
+// getSession
+// AsyncStorage.multiGet(['email', 'password']).then((data) => {
+//     let email = data[0][1];
+//     let password = data[1][1];
+
+//     if (email !== null)
+//         //Your logic
+//  });
+
             
-            // 세션 설정 (아이디, 닉네임)
-            AsyncStorage.multiSet([ // AsyncStorage는 내부 저장소로 세션으로 사용하기에 보안이 부실할 것. 하지만 이메일, 닉네임 같은 비중요정보라 일단 저걸로 구현해놓음...!
-                                    // 추후 redis 또는 Redux와 Redux Persist(앱을 종료해도 지속되는 Store)로 구현 //https://medium.com/humanscape-tech/redux-persist-%EC%95%8C%EC%95%84%EB%B3%B4%EA%B8%B0-2077c9e566d9
-                ["email", this.state.email]
-                // ,
-                // ["nickname", this.state.nickname]
-            ]);
-
-
-            // getSession
-            // AsyncStorage.multiGet(['email', 'password']).then((data) => {
-            //     let email = data[0][1];
-            //     let password = data[1][1];
-         
-            //     if (email !== null)
-            //         //Your logic
-            //  });
-            
-            // const response = API.get('ApiMembers', '/members/login');
-            const response = getApi('ApiMembers', '/members/login', "환영합니다", "아이디/비밀번호를 확인하세요");
-            // this.setState('nickname',response.nickname);
-            // await AsyncStorage.setItem('userToken', this.state.nickname);
-            // alert(JSON.stringify(response));
-
-            // const data = await API.get('membersApi','/members', this.state);
-
-            // if(success != null) alert(success); //성공메시지
-
-            // alert('succeses: ', JSON.stringify(data));
-
-            //  return data;
-
-            this.props.navigation.navigate('Home'); 
         }
     }
     /*

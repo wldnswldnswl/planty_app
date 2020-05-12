@@ -55,20 +55,17 @@ const convertUrlType = (param, type) => {
 }
 
 /********************************
- * HTTP Get method for list objects *
+  * HTTP Get method for get single object *
  ********************************/
+app.get(path + '/getEmail' + hashKeyPath, function(req, res) {
 
-app.get(path + hashKeyPath, function(req, res) {
-  var condition = {}
-  condition[partitionKeyName] = {
-    ComparisonOperator: 'EQ'
-  }
-
+  var params = {};
   if (userIdPresent && req.apiGateway) {
-    condition[partitionKeyName]['AttributeValueList'] = [req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH ];
+    params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
   } else {
+    params[partitionKeyName] = req.params[partitionKeyName];
     try {
-      condition[partitionKeyName]['AttributeValueList'] = [ convertUrlType(req.params[partitionKeyName], partitionKeyType) ];
+      params[partitionKeyName] = convertUrlType(req.params[partitionKeyName], partitionKeyType);
     } catch(err) {
       res.statusCode = 500;
       res.json({error: 'Wrong column type ' + err});
@@ -77,7 +74,17 @@ app.get(path + hashKeyPath, function(req, res) {
 
   let queryParams = {
     TableName: tableName,
-    KeyConditions: condition
+    // Key:{
+    //   email : params["email"]
+    // }
+    ProjectionExpression:"nickname, email",
+    KeyConditionExpression: "#email = :email",
+    ExpressionAttributeNames:{
+      "#email": "email"
+    },
+    ExpressionAttributeValues: {
+      ":email": params["email"]
+    }
   }
 
   dynamodb.query(queryParams, (err, data) => {
@@ -89,24 +96,6 @@ app.get(path + hashKeyPath, function(req, res) {
     }
   });
 });
-
-/********************************
- * HTTP Get method for list objects *
- ********************************/
-// app.get(path + hashKeyPath, function(req, res) {
-//   let queryParams = {
-//     TableName: tableName
-//   }
-
-//   dynamodb.query(queryParams, (err, data) => {
-//     if (err) {
-//       res.statusCode = 500;
-//       res.json({error: 'Could not load items: ' + err});
-//     } else {
-//       res.json(data.Items);
-//     }
-//   });
-// });
 
 /*****************************************
  * HTTP Get method for get single object *
@@ -134,24 +123,17 @@ app.get(path + '/login' + hashKeyPath + sortKeyPath, function(req, res) {
     }
   }
 
-  // console.log("req: "+req);
   let getItemParams = {
     TableName: tableName,
-<<<<<<< HEAD
-    // Select: 'ALL_ATTRIBUTES',
     ProjectionExpression:"nickname, email",
-=======
-    Select: 'ALL_ATTRIBUTES',
-    // ProjectionExpression:"nickname, email",
->>>>>>> 94c9ecfe530cfc6c9b8c363a333b2c345e2ed231
-    KeyConditionExpression: "#email = :email and #pwd = :pwd",
+    KeyConditionExpression: "#email = :email AND #pwd = :pwd",
     ExpressionAttributeNames:{
       "#email": "email",
       "#pwd" : "pwd"
     },
     ExpressionAttributeValues: {
-      ":email": "planty.adm@gmail.com",
-      ":pwd": "123456"
+      ":email": params["email"],
+      ":pwd": params["pwd"]
     }
   }
 
@@ -160,49 +142,14 @@ app.get(path + '/login' + hashKeyPath + sortKeyPath, function(req, res) {
       res.statusCode = 500;
       res.json({error: 'Could not load items: ' + err.message});
     } else {
-      // if (data.Item) {
-        // res.json({success: 'memberInfo', flag: 1, url: req.url, data: data.Items.map(item => {
-        //   return item;
-        // })}); // 로그인 성공:1
-        data.Items.forEach(function(item){
-          console.log(item);
-        });
-      // } else {
-        // res.json({success: 'memberInfo', flag: 0, url: req.url, data: data}) ;// 로그인 실패:0
-      // }
+      if(data.Items != null){
+        res.json({status: 1, data: data.Items, url: req.url}); // 1: 로그인 성공
+      }else{
+        res.json({status: 0, data: "no data", url:req.url}); // 0: 로그인 실패 - 일치하는 회원정보 없음
+      }
     }
   });
 
-
-  // let getItemParams = {
-  //   TableName: tableName,
-  //   ProjectionExpression:"nickname, email",
-  //   KeyConditionExpression: "#email = :email and #pwd = :pwd",
-  //   ExpressionAttributeNames:{
-  //     "#email": "email",
-  //     "#pwd" : "pwd"
-  //   },
-  //   ExpressionAttributeValues: {
-  //     ":email": params.email,
-  //     ":pwd": params.pwd
-  //   }
-
-  //   // ,
-  //   // ProjectionExpression: "nickname, email"
-  // }
-
-  // dynamodb.query(getItemParams,(err, data) => {
-  //   if(err) {
-  //     res.statusCode = 500;
-  //     res.json({error: 'Could not load items: ' + err.message});
-  //   } else {
-  //     if (data.Item) {
-  //       res.json(data.Item);
-  //     } else {
-  //       res.json(data) ;
-  //     }
-  //   }
-  // });
 });
 
 

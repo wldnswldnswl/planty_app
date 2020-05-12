@@ -94,11 +94,7 @@ app.get(path + hashKeyPath, function(req, res) {
  * HTTP Get method for get single object *
  *****************************************/
 
-<<<<<<< HEAD
-app.get(path + '/getInfo' + hashKeyPath + sortKeyPath, function(req, res) {
-=======
 app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
->>>>>>> 94c9ecfe530cfc6c9b8c363a333b2c345e2ed231
   var params = {};
   if (userIdPresent && req.apiGateway) {
     params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;

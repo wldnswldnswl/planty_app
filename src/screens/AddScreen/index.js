@@ -446,7 +446,7 @@ export default class AddScreen extends Component {
 
 
                     <TouchableOpacity style={[common.addButton, { left: 10 }]}
-                        underlayColor={Colors.clicked} onPress={this.gotoHomeScreen.bind(this)}>
+                        underlayColor={Colors.clicked} onPress={this.Back.bind(this)}>
                         <Text style={{ fontSize: 30, color: 'white' }}>X</Text>
                     </TouchableOpacity>
 

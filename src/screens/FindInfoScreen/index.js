@@ -1,6 +1,6 @@
 import React from 'react';
 import {Component} from 'react'; 
-
+import { getApi, postApi } from '../../common/common'
 import { 
      View,
      Image, 
@@ -21,19 +21,38 @@ import styles from './style';
     /*
       functions
     */
+    constructor(props) {
+        super(props);
 
+        this.state = {
+            email: null
+        }
+    }
 
     /*
         name: findPassword
         description: send password to written email
     */
-     findPassword(){ 
+    async findPassword(){ 
          
-        // write code about find PW
+        if(this.state.email == null || this.state.email.trim() == ""){
+               alert("전송받을 이메일을 입력해주세요.");
+        }else{
 
-        // go to Login Screen
-        alert("임시비밀번호가 이메일로 전송되었습니다.");
-         this.props.navigation.goBack();
+            const response = await getApi('ApiMembers', '/members/getEmail/'+this.state.email);
+            if(response[0] != null){
+                
+                /*
+                *  write code about find PW
+                */
+    
+                alert("임시비밀번호가 이메일로 전송되었습니다.");  
+                this.props.navigation.goBack();// go to Login Screen
+            }else{
+                alert("가입된 정보가 없습니다. 회원가입을 해주세요.");
+            }
+        }
+      
 
      } 
 
@@ -55,7 +74,10 @@ import styles from './style';
                     <Text style = {styles.smallText}>비밀번호변경메일을 발송해드립니다. </Text>
                     <TextInput  
                          style={[styles.textForm, common.mt6]}  
-                         placeholder={"이메일을 입력하세요"}/> 
+                         placeholder={"이메일을 입력하세요"}
+                         keyboardType='email-address'
+                         onChangeText={value => this.setState({ 'email': value })}
+                         /> 
                  </View> 
                  
                  <View style={styles.buttonArea}> 
