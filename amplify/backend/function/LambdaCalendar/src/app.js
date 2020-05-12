@@ -118,20 +118,24 @@ app.get(path + '/getInfo' + hashKeyPath + sortKeyPath, function(req, res) {
 
   let getItemParams = {
     TableName: tableName,
-    ProjectionExpression:"nickname, email",
-    KeyConditionExpression: "#email = :email and #uuid = :uuid",
+    ProjectionExpression:"alarm, color, description, end_date, repeat, start_date, title",
+    KeyConditionExpression: "#email = :email",
+    ExpressionAttributeNames: {
+      "#email": "email"
+    },
+    ExpressionAttributeValues: {
+      "#email": "may@naver.com"
+    }
   }
 
-  dynamodb.get(getItemParams,(err, data) => {
+  dynamodb.query(getItemParams,(err, data) => {
     if(err) {
       res.statusCode = 500;
       res.json({error: 'Could not load items: ' + err.message});
     } else {
-      if (data.Item) {
-        res.json(data.Item);
-      } else {
-        res.json(data) ;
-      }
+      data.Items.forEach(function(item){
+        console.log(item);
+      });
     }
   });
 });
