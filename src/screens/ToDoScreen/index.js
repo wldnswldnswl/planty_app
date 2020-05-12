@@ -52,14 +52,13 @@ export default class AddScreen extends Component {
             CalendarModalVisible: false,
             ColorModalVisible: false,
             isVisible: false,
-            theme_color: '#2980b9',
 
             // put params start
             email: null,
             title: null,
             end_date: null,
             description: "",
-            color: 0, // View에서 값 받는 설정 아직 안함. 
+            color: "#2256bd", // View에서 값 받는 설정 아직 안함. 
             // put params end
 
             final_date: null
@@ -109,7 +108,7 @@ export default class AddScreen extends Component {
             title: this.state.title,
             end_date: this.state.end_date,
             description: this.state.description,
-            color: 1 // View에서 값 받는 설정 아직 안함. 
+            color: "#2256bd"
         }
 
         console.log(params);
@@ -160,39 +159,8 @@ export default class AddScreen extends Component {
         description: set theme color
     */
     setThemeColor(Color) {
-        this.state.theme_color = Color;
+        this.state.color = Color;
     }
-
-    /*
-        name:  handlePicker
-        description: handle datepicker
-    */
-    /* handlePicker = () => {
-        this.setState({
-            isVisible: false
-        })
-    } */
-
-    /*
-        name:  showPicker
-        description: show datepicker
-    */
-    /*  showPicker = () => {
-         this.setState({
-             isVisible: true
-         })
-     } */
-
-    /*
-        name:  hidePicker
-        description: hide picker
-    */
-    /* hidePicker = () => {
-        this.setState({
-            isVisible: false
-        })
-    }
- */
 
 
     /*
@@ -378,7 +346,7 @@ export default class AddScreen extends Component {
                         <Icon name="ios-color-palette" size={30} color={Colors.gray}></Icon>
                         {/*color*/}
                         <TouchableOpacity title="Theme" 
-                        style={[styles.theme_btn, { borderColor: this.state.theme_color }, { backgroundColor: this.state.theme_color }]} onPress={() => { this.toggleColorModal() }}
+                        style={[styles.theme_btn, { borderColor: this.state.color }, { backgroundColor: this.state.color }]} onPress={() => { this.toggleColorModal() }}
                         >
                         </TouchableOpacity>
                         <Modal isVisible={this.state.ColorModalVisible} onBackdropPress={() => { this.toggleColorModal() }}>
@@ -401,7 +369,7 @@ export default class AddScreen extends Component {
                                     <TouchableOpacity style={[styles.colorModalTheme, { borderColor: Colors._8 }, { backgroundColor: Colors._8 }, { left: wp("12%") }]} onPress={() => { this.toggleColorModal(); this.setThemeColor('#27ae60') }} />
                                     <TouchableOpacity style={[styles.colorModalTheme, { borderColor: Colors._9 }, { backgroundColor: Colors._9 }, { left: wp("16%") }]} onPress={() => { this.toggleColorModal(); this.setThemeColor('#3498db') }} />
                                     <TouchableOpacity style={[styles.colorModalTheme, { borderColor: Colors._10 }, { backgroundColor: Colors._10 }, { left: wp("20%") }]} onPress={() => { this.toggleColorModal(); this.setThemeColor('#2980b9') }} />
-                                    <TouchableOpacity style={[styles.colorModalTheme, { borderColor: Colors._11 }, { backgroundColor: Colors._11 }, { left: wp("24%") }]} onPress={() => { this.toggleColorModal(); this.setThemeColor('#0E2C40') }} />
+                                    <TouchableOpacity style={[styles.colorModalTheme, { borderColor: Colors._11 }, { backgroundColor: Colors._11 }, { left: wp("24%") }]} onPress={() => { this.toggleColorModal(); this.setThemeColor('#2256bd') }} />
                                 </View>
                                 <View style={styles.colorModalButton}>
                                     <TouchableOpacity onPress={() => this.toggleColorModal()}>
