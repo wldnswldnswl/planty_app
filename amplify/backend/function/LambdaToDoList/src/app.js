@@ -94,7 +94,7 @@ app.get(path + hashKeyPath, function(req, res) {
  * HTTP Get method for get single object *
  *****************************************/
 
-app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
+app.get(path + hashKeyPath, function(req, res) {
   var params = {};
   if (userIdPresent && req.apiGateway) {
     params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
@@ -107,30 +107,19 @@ app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
       res.json({error: 'Wrong column type ' + err});
     }
   }
-  if (hasSortKey) {
-    try {
-      params[sortKeyName] = convertUrlType(req.params[sortKeyName], sortKeyType);
-    } catch(err) {
-      res.statusCode = 500;
-      res.json({error: 'Wrong column type ' + err});
-    }
-  }
 
-  let getItemParams = {
+  let queryParams = {
     TableName: tableName,
-    Key: params
+    ProjectionExpression:"title, description, end_date,",
+    KeyConditionExpression: "email = " + params["email"]
   }
 
-  dynamodb.get(getItemParams,(err, data) => {
-    if(err) {
+  dynamodb.query(queryParams, (err, data) => {
+    if (err) {
       res.statusCode = 500;
-      res.json({error: 'Could not load items: ' + err.message});
+      res.json({error: 'Could not load items: ' + err});
     } else {
-      if (data.Item) {
-        res.json(data.Item);
-      } else {
-        res.json(data) ;
-      }
+      res.json(data.Items);
     }
   });
 });
