@@ -336,7 +336,6 @@ export default class HomeScreen extends Component {
                             selectedDayBackgroundColor: Colors.lightgray,
                             selectedDayTextColor: "black",
                             todayTextColor: Colors.darkPrimary,
-
                         }}
                         toggleCalendarModal={this.toggleCalendarModal}
                         changeYearMonth={this.changeYearMonth}
