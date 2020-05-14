@@ -28,21 +28,37 @@ import { getApi} from '../../common/common'
         this.state = {
             email: null,
             toDoList : []
-        }
+        } 
+        
+      
+        // console.log(this.state.email);
 
-        // getSession
-       //  AsyncStorage.multiGet(['email', 'password']).then((data) => {
-         AsyncStorage.multiGet(['email']).then((data) => {
-            let email_session = data[0][1];
-            // let password = data[1][1];
-
-            if (email_session != null)
-                this.state.email = email_session;
-         });
-        //  this.state.toDoList = this.getToDoList.bind(this);
-        this.getToDoList = this.getToDoList.bind(this);
-
+        // this.getToDoList = this.getToDoList.bind(this);
+       
     }
+
+    componentWillMount(){
+
+        console.log("start");
+        // getSession
+        // var value =  AsyncStorage.getItem('email');
+        //    value.then((e)=>{
+        //      this.setState({
+        //       email: e.name
+        //      })
+        //    })
+
+        AsyncStorage.getItem('email', (errs,result) => {
+            if (!errs) {
+                if (result !== null) {
+                    this.setState({email:result});
+                }
+             }
+        });
+
+        //  console.log("dddddd",this.state.email);
+        this.getToDoList = this.getToDoList.bind(this.state.email);
+       }
 
      /*
         name:  gotoToDoScreen
@@ -60,9 +76,10 @@ import { getApi} from '../../common/common'
         this.props.navigation.dispatch(DrawerActions.openDrawer());
     }
 
-    async getToDoList(){
+    async getToDoList(email){
       const response = await getApi("ApiToDoList","/todolist/"+this.state.email);
 
+      console.log("response:",response);
        var toDoList = [];
 
        response.forEach(function(data, index){
@@ -71,17 +88,23 @@ import { getApi} from '../../common/common'
            const end_date = data.end_date;
            const color = data.color;
 
+        //    console.log(data);
            toDoList.push(<ToDoListItem name = {data.title} color = {Colors._3} date = {data.end_date} seq = {index}/>);
        })
 
-       console.log(toDoList)
+    //    console.log("hh:",toDoList);
        this.state.toDoList = toDoList;
     }
 
+    makeItems = () => {
+        console.log(this.state.toDoList)
+    }
 
     // HomeScreen : 캘린더
      render(){ 
 
+        // console.log("email render: ",this.state.email);
+        // this.getToDoList(this.state.email);
         //  const title = this.props.navigation.state.params;
          return ( 
             <View style = {styles.container}>
@@ -91,9 +114,14 @@ import { getApi} from '../../common/common'
                 </View>
 
                 <View style = {styles.content}>
-                    <ScrollView> 
+                    <ScrollView>
+
                         <ToDoListItem name = "밥먹기" color = {Colors._10} date = "03.12" />
-                        {this.state.toDoList}
+                        {this.state.toDoList[0]}
+                        {/* data = {this.state.toDoList}
+                        renderItem = { ({item}) =>(
+                            <ListItem name ={result.title} color = {Colors._11} date = {result.end_date}/>
+                        )}  */}
                         {/* {this.state.toDoList.map(function (result) {
                         return <ListItem name ={result.title} color = {Colors._11} date = {result.end_date}/>;
                         })} */}

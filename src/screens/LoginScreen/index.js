@@ -55,16 +55,16 @@ export default class LoginScreen extends Component {
                 ["nickname", this.state.nickname]
                 ]);
 
-                console.log(this.state.email + " "+this.state.nickname);
+                // console.log(this.state.email + " "+this.state.nickname);
 
-                  AsyncStorage.multiGet(['email', 'nickname']).then((data) => {
-            let email_session = data[0][1];
-            let nickname_session = data[1][1];
+        //           AsyncStorage.multiGet(['email', 'nickname']).then((data) => {
+        //     let email_session = data[0][1];
+        //     let nickname_session = data[1][1];
 
-            console.log(email_session);
-            console.log(nickname_session);
+        //     console.log(email_session);
+        //     console.log(nickname_session);
            
-         });
+        //  });
 
          
 

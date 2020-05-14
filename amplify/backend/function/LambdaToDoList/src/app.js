@@ -110,7 +110,7 @@ app.get(path + hashKeyPath, function(req, res) {
 
   let queryParams = {
     TableName: tableName,
-    ProjectionExpression:"title, description, end_date,",
+    ProjectionExpression:"title, description, end_date",
     KeyConditionExpression: "email = " + params["email"]
   }
 
