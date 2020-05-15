@@ -5,6 +5,8 @@ import {
 } from 'react-native';
 import { LocaleConfig } from 'react-native-calendars';
 import Amplify, { API } from 'aws-amplify';
+import Colors from '../../styles/colors';
+
 //공통함수
 
 /*
@@ -175,4 +177,60 @@ export async function postApi(apiName, path, params, success, fail) {
 
 }
 
+
+/*
+* @name: getColor
+* @description: get Real Color from index 
+* @params: index (색깔 모달창의 n번째 인덱스)
+* @history: 이지운
+*/
+export function getColor(index) {
+
+    let color;
+
+    switch(index){
+        case 0:
+            color =  Colors._0;
+            break;
+        case 1:
+            color = Colors._1;
+            break;
+        case 2:
+            color = Colors._2;
+            break;
+        case 3:
+            color = Colors._3;
+            break;
+        case 4:
+            color =  Colors._4;
+            break;
+        case 5:
+            color = Colors._5;
+            break;
+        case 6:
+            color = Colors._6;
+            break;
+        case 7:
+            color = Colors._7;
+            break;
+        case 8:
+            color =  Colors._8;
+            break;
+        case 9:
+            color = Colors._9;
+            break;
+        case 10:
+            color = Colors._10;
+            break;
+        case 11:
+            color = Colors._11;
+            break;
+            
+
+    }
+
+    // console.log("color: ",color);
+    return color;
+
+}
 

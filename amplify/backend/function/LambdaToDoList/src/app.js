@@ -58,7 +58,7 @@ const convertUrlType = (param, type) => {
  * HTTP Get method for list objects *
  ********************************/
 
-app.get(path + "/getAll" + hashKeyPath, function(req, res) {
+app.get(path + "/getAllDayList" + hashKeyPath, function(req, res) {
   var condition = {}
   condition[partitionKeyName] = {
     ComparisonOperator: 'EQ'
@@ -94,24 +94,39 @@ app.get(path + "/getAll" + hashKeyPath, function(req, res) {
  * HTTP Get method for get single object *
  *****************************************/
 
-app.get(path + hashKeyPath, function(req, res) {
-  var params = {};
-  if (userIdPresent && req.apiGateway) {
-    params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
-  } else {
-    params[partitionKeyName] = req.params[partitionKeyName];
-    try {
-      params[partitionKeyName] = convertUrlType(req.params[partitionKeyName], partitionKeyType);
-    } catch(err) {
-      res.statusCode = 500;
-      res.json({error: 'Wrong column type ' + err});
-    }
-  }
+app.get(path + "/getCurrentDayList" + hashKeyPath + sortKeyPath, function(req, res) {
+  // var params = {};
+  // if (userIdPresent && req.apiGateway) {
+  //   params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+  // } else {
+  //   params[partitionKeyName] = req.params[partitionKeyName];
+  //   try {
+  //     params[partitionKeyName] = convertUrlType(req.params[partitionKeyName], partitionKeyType);
+  //   } catch(err) {
+  //     res.statusCode = 500;
+  //     res.json({error: 'Wrong column type ' + err});
+  //   }
+  // }
+  // if (hasSortKey) {
+  //   try {
+  //     params[sortKeyName] = convertUrlType(req.params[sortKeyName], sortKeyType);
+  //   } catch(err) {
+  //     res.statusCode = 500;
+  //     res.json({error: 'Wrong column type ' + err});
+  //   }
+  // }
 
   let queryParams = {
     TableName: tableName,
-    ProjectionExpression:"title, description, end_date",
-    KeyConditionExpression: "email = " + params["email"]
+    KeyConditions: params,
+    KeyConditionExpression: "email = :email AND contains(end_date, :end_date)",
+    ExpressionAttributeNames:{
+      "#end_date": ":end_date"
+    },
+    ExpressionAttributeValues: {
+      ":end_date": req.params["end_date"].substring(0, 23),
+      ":email": req.params["email"]
+    },
   }
 
   dynamodb.query(queryParams, (err, data) => {

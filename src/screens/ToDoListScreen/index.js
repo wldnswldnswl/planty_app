@@ -18,7 +18,7 @@ import styles from './style';
 import Colors from '../../../styles/colors';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen'; 
 import DatePicker from '../DatePicker';
-import { getApi} from '../../common/common'
+import { getApi, getColor} from '../../common/common'
 
  export default class ToDoListScreen extends Component{
 
@@ -44,8 +44,8 @@ import { getApi} from '../../common/common'
              }     
         });
 
-       const path = "/todolist/getAll/" + JSON.parse(this.state.email);
-       const response = await API.get("ApiToDoList", path);
+       const path = "/todolist/getAllDayList/" + JSON.parse(this.state.email);
+       const response = await getApi("ApiToDoList", path);
 
         this.setState({toDoList:response});
     }
@@ -82,8 +82,7 @@ import { getApi} from '../../common/common'
                    <ScrollView>
                            {this.state.toDoList&&( 
                                 this.state.toDoList.map( (data) => {
-
-                                    return <ToDoListItem name ={data.title} color = {Colors._11} date = {data.end_date}/>
+                                    return <ToDoListItem name ={data.title} color = {getColor(data.color)} date = {data.end_date}/>
                                 })
                            )}
                            

@@ -32,6 +32,7 @@ import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { SafeAreaView } from 'react-navigation';
 
 import { ScrollView } from 'react-native-gesture-handler';
+import { getApi } from '../../common/common';
 
 //일정 및 할일 색깔을 임시로 저장하는 변수
 var day_color;
@@ -48,7 +49,6 @@ export default class HomeScreen extends Component {
 
         selected: undefined
         this.state = {
-            nickname_session :"이지운",
             PickerModalVisible: false,
             CalendarModalVisible: false,
             CalendarDate: 'default',
@@ -178,10 +178,13 @@ export default class HomeScreen extends Component {
         name:  setDateModal
         description: set month, date, day in calendar modal
     */
-    setDateModal = (month, date, day) => {
+    setDateModal = async(month, date, day) => {
         this.setState({ CalendarDate: date });
         this.setState({ CalendarMonth: month });
         this.setState({ CalendarDay: this.setDayName(day) });
+        // const response = await getApi("ApiToDoList","/todolist/getCurrentDayList/planty.adm@gmail.com/2020.05.06(수) 오전 03:55_33eef3e7-d45b-4cc0-a606-9ae102ed52c3");
+        
+        // console.log("response: ",response);
     }
 
 
@@ -241,7 +244,17 @@ export default class HomeScreen extends Component {
          }
      } */
 
+    goToUpdateScreen = (index, day_list) => {
+        switch(index){
+            case 0: //캘린더
+                break;
+            case 1: //할일
+                alert("Dd");
+                this.props.navigation.navigate("ToDo", {data : day_list});
+                break;
 
+        }
+    }
     // HomeScreen : 캘린더
     render() {
 
@@ -251,7 +264,7 @@ export default class HomeScreen extends Component {
         //일정 내용들 day_list에 맵핑
         const day_list = this.state.day_data.map(day_list => {
             return (
-                <View style={styles.daymodalcontent}>
+                <View style={styles.daymodalcontent} > 
                     <View style={styles.daymodaltheme}>
                         <View style={[styles.daymodalcolortheme, { borderColor: day_list.theme_color }, { backgroundColor: day_list.theme_color }, { left: wp("1.5%") }, { top: wp("3%") }]} />
                     </View>
@@ -322,7 +335,7 @@ export default class HomeScreen extends Component {
                         style={styles.Calendar}
                         calendarHeight={500}
                         hideExtraDays={false}
-                        onDayPress={this.onDayPress}
+                        onDayPress= {this.onDayPress}
                         markedDates={{
                             [this.state.selected]: {
                                 selected: true,
@@ -370,8 +383,6 @@ export default class HomeScreen extends Component {
                                 {day_list}
                             </View>
                         </ScrollView>
-
-
 
                         <TouchableHighlight style={common.addButton}
                             underlayColor={Colors.clicked} onPress={() => {this.gotoAddScreen(); /* this.gotoAddScreen_params(true, this.state.CalendarMonth, this.state.CalendarDate, this.state.CalendarDay); */ this.toggleCalendarModal() }}>
