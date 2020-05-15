@@ -10,6 +10,7 @@ import {
     AsyncStorage
 } from 'react-native';
 import {API} from 'aws-amplify'; 
+import XDate from 'xdate';
 import Modal from 'react-native-modal';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -45,13 +46,14 @@ var minute_arr = new Array();
 export default class AddScreen extends Component {
 
     //datepicker 생성자 추가
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
 
         this.state = {
             CalendarModalVisible: false,
             ColorModalVisible: false,
             isVisible: false,
+            Calendarheader_month: props.current ? parseDate(props.current) : XDate(),
 
             // put params start
             email: null,

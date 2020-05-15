@@ -11,6 +11,7 @@ import {
     TouchableOpacity,
     AsyncStorage
 } from 'react-native';
+import XDate from 'xdate';
 import Modal from 'react-native-modal';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -48,8 +49,8 @@ var result = {
 export default class AddScreen extends Component {
 
     //datepicker 생성자 추가
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.sp_am_pm = React.createRef();
 
         /*  selected: undefined */
@@ -59,6 +60,7 @@ export default class AddScreen extends Component {
             ColorModalVisible: false,
             isVisible: false,
             final_date: null,
+            Calendarheader_month: props.current ? parseDate(props.current) : XDate(),
 
             // put params start
             email: null,
@@ -110,28 +112,28 @@ export default class AddScreen extends Component {
        description: show Home Screen
    */
     gotoHomeScreen() {
-            
-            const params = {
-                email: this.state.email,
-                title: this.state.title,
-                start_date: this.state.start_date,
-                end_date: this.state.end_date,
-                description: this.state.description,
-                color: this.state.color,
-                alarm: this.state.alarm,
-                repeat: this.state.repeat
-            }
 
-            console.log(params);
-            // console.log("getCalendar: ");
-            // console.log(getApi('ApiCalendar','/calendar'));//&& params.end_date != null && params.end_date.trim() != ""
-            if (params.title != null && params.title.trim() != "") {
-                postApi('ApiCalendar', '/calendar', params);
-                this.props.navigation.navigate("Home");
+        const params = {
+            email: this.state.email,
+            title: this.state.title,
+            start_date: this.state.start_date,
+            end_date: this.state.end_date,
+            description: this.state.description,
+            color: this.state.color,
+            alarm: this.state.alarm,
+            repeat: this.state.repeat
+        }
 
-            } else {
-                alert("일정을 입력하세요"); // 나중에 비동기 이용해 빨간글씨로 바꾸기
-            }
+        console.log(params);
+        // console.log("getCalendar: ");
+        // console.log(getApi('ApiCalendar','/calendar'));//&& params.end_date != null && params.end_date.trim() != ""
+        if (params.title != null && params.title.trim() != "") {
+            postApi('ApiCalendar', '/calendar', params);
+            this.props.navigation.navigate("Home");
+
+        } else {
+            alert("일정을 입력하세요"); // 나중에 비동기 이용해 빨간글씨로 바꾸기
+        }
     }
 
     /*
@@ -217,7 +219,12 @@ export default class AddScreen extends Component {
         //현재 분 저장
         minute = new Date().getMinutes();
 
-        // 현재 출력날짜 저장
+        /*   const { navigation }=this.props; */
+        /* 
+                if(navigation.getParam("flag"))
+                result = getDateString(navigation.getParam("year"), navigation.getParam("month"), navigation.getParam("date"), navigation.getParam("day"), hour, minute, null);
+                // 현재 출력날짜 저장
+                else */
         result = getDateString(year, day, month, date, hour, minute, null);
         this.final_date = result.final_date; // 출력날짜 상태 변경
         // this.setState({final_date : result.final_date}); 
@@ -289,6 +296,8 @@ export default class AddScreen extends Component {
                                                 selectedDotColor: "orange"
                                             }
                                         }}
+                                        calendar_flag={false}
+                                        Calendarheader_month={this.state.Calendarheader_month}
                                     />
 
                                 </View>
@@ -396,6 +405,8 @@ export default class AddScreen extends Component {
                                                 selectedDotColor: "orange"
                                             }
                                         }}
+                                        calendar_flag={false}
+                                        Calendarheader_month={this.state.Calendarheader_month}
                                     />
 
                                 </View>
