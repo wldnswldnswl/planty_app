@@ -11,11 +11,13 @@ import {
     /* ScrollView */
 } from 'react-native';
 import Modal from 'react-native-modal';
+import XDate from 'xdate';
 
 //styles
 import common from '../../../styles/common';
 import styles from './style';
 import { Calendar, calendarModal, modalReal } from 'react-native-calendars';
+import CalendarHeader from 'react-native-calendars/src/calendar/header';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Colors from '../../../styles/colors';
 import ScrollPicker from 'react-native-wheel-scroll-picker';
@@ -55,6 +57,7 @@ export default class HomeScreen extends Component {
             pickerSelection: 'default',
             year: new Date().getFullYear(),
             month: new Date().getMonth() + 1,
+            Calendarheader_month: props.current ? parseDate(props.current) : XDate(),
 
             //일정 내용 임시로 지정함, 실제 데이터 받아올때는 어떻게 할지 아직 모르겠음
             day_data: [
@@ -115,6 +118,14 @@ export default class HomeScreen extends Component {
     }
 
     /*
+       name:  gotoAddScreen_params
+       description: show Add Screen with params
+   */
+    /* gotoAddScreen_params = (flag, year, month, date, day) => {
+        this.props.navigation.navigate("Add", { "flag": flag, "year": year, "month": month, "date": date, "day": day });
+    }
+ */
+    /*
        name:  gotoSideNav
        description: show Setting Nav
    */
@@ -137,30 +148,21 @@ export default class HomeScreen extends Component {
     setDayName(en_day) {
         var ko_day;
 
-        switch (en_day) {
-            case "Sun":
-                ko_day = "일"
-                break;
-            case "Mon":
-                ko_day = "월"
-                break;
-            case 'Tue':
-                ko_day = "화"
-                break;
-            case 'Wed':
-                ko_day = "수"
-                break;
-            case 'Thu':
-                ko_day = "목"
-                break;
-            case 'Fri':
-                ko_day = "금"
-                break;
-            case 'Sat':
-                ko_day = "토"
-                break;
-        }
-        
+        if (en_day == "Sun" || en_day == 0)
+            ko_day = "일"
+        else if (en_day == "Mon" || en_day == 1)
+            ko_day = "월"
+        else if (en_day == "Tue" || en_day == 2)
+            ko_day = "화"
+        else if (en_day == "Wed" || en_day == 3)
+            ko_day = "수"
+        else if (en_day == "Thu" || en_day == 4)
+            ko_day = "목"
+        else if (en_day == "Fri" || en_day == 5)
+            ko_day = "금"
+        else
+            ko_day = "토"
+
         return (ko_day);
     }
 
@@ -188,14 +190,15 @@ export default class HomeScreen extends Component {
         name:  changeYearMonth
         description: change year, month of header, calendar modal
     */
-    changeYearMonth = (calendar_year, calendar_month) => {
-        this.setState({ year: calendar_year });
+    changeYearMonth = (calendar) => {
+        this.setState({ Calendarheader_month: calendar });
+        this.setState({ year: calendar.toString('yyyy') });
 
         //한자릿수 월들 앞의 0을 제거함 => 03 -> 3 
-        if (calendar_month < 10)
-            this.setState({ month: calendar_month.toString().substring(1) });
+        if (calendar.toString('MM') < 10)
+            this.setState({ month: calendar.toString('MM').toString().substring(1) });
         else
-            this.setState({ month: calendar_month });
+            this.setState({ month: calendar.toString('MM') });
 
         this.forceUpdate();
     }
@@ -247,17 +250,17 @@ export default class HomeScreen extends Component {
 
         //일정 내용들 day_list에 맵핑
         const day_list = this.state.day_data.map(day_list => {
-            return( 
-                    <View style={styles.daymodalcontent}>
-                <View style={styles.daymodaltheme}>
-                    <View style={[styles.daymodalcolortheme, { borderColor: day_list.theme_color }, { backgroundColor: day_list.theme_color }, { left: wp("1.5%") }, { top: wp("3%") }]} />
-                </View>
+            return (
+                <View style={styles.daymodalcontent}>
+                    <View style={styles.daymodaltheme}>
+                        <View style={[styles.daymodalcolortheme, { borderColor: day_list.theme_color }, { backgroundColor: day_list.theme_color }, { left: wp("1.5%") }, { top: wp("3%") }]} />
+                    </View>
 
-                <View style={styles.daymodaltext}>
-                    <Text style={{ fontSize: 17, color: day_list.content_color }}>{day_list.content}</Text>
-                    <Text style={{ fontSize: 10, color: Colors.darkgray}}>{day_list.time}</Text>
+                    <View style={styles.daymodaltext}>
+                        <Text style={{ fontSize: 17, color: day_list.content_color }}>{day_list.content}</Text>
+                        <Text style={{ fontSize: 10, color: Colors.darkgray }}>{day_list.time}</Text>
+                    </View>
                 </View>
-            </View>
             )
         })
 
@@ -289,7 +292,11 @@ export default class HomeScreen extends Component {
 
                             <View style={styles.modalContent}>
 
-                                <Calendar />
+                                <Calendar
+                                    style={styles.calendar}
+                                    calendar_flag={false}
+                                    Calendarheader_month={this.state.Calendarheader_month}
+                                />
 
                             </View>
 
@@ -337,12 +344,12 @@ export default class HomeScreen extends Component {
                             selectedDayBackgroundColor: Colors.lightgray,
                             selectedDayTextColor: "black",
                             todayTextColor: Colors.darkPrimary,
-
                         }}
                         toggleCalendarModal={this.toggleCalendarModal}
                         changeYearMonth={this.changeYearMonth}
                         setDateModal={this.setDateModal}
-                        dayContent={this.state.day_data}
+                    /* dayContent={this.state.day_data} */
+
                     />
                     <TouchableHighlight style={common.addButton}
                         underlayColor={Colors.clicked} onPress={this.gotoAddScreen.bind(this)}>
@@ -357,17 +364,17 @@ export default class HomeScreen extends Component {
                             <Text style={{ fontSize: 30, color: Colors.darkgray, left: wp("5%") }}>{this.state.CalendarMonth + "월" + this.state.CalendarDate + "일 " + this.state.CalendarDay}</Text>
                         </View>
                         <View style={styles.daymodalline} />
-                        
-                            <ScrollView style={styles.scrollView}>
-                               <View style={styles.daymodallist}>
+
+                        <ScrollView style={styles.scrollView}>
+                            <View style={styles.daymodallist}>
                                 {day_list}
-                               </View>
-                            </ScrollView>
-                       
+                            </View>
+                        </ScrollView>
+
 
 
                         <TouchableHighlight style={common.addButton}
-                            underlayColor={Colors.clicked} onPress={() => { this.gotoAddScreen(); this.toggleCalendarModal() }}>
+                            underlayColor={Colors.clicked} onPress={() => {this.gotoAddScreen(); /* this.gotoAddScreen_params(true, this.state.CalendarMonth, this.state.CalendarDate, this.state.CalendarDay); */ this.toggleCalendarModal() }}>
                             <Text style={{ fontSize: 50, color: 'white' }}>+</Text>
                         </TouchableHighlight>
                     </View>
