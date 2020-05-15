@@ -46,6 +46,7 @@ export default class HomeScreen extends Component {
 
         selected: undefined
         this.state = {
+            nickname_session :"이지운",
             PickerModalVisible: false,
             CalendarModalVisible: false,
             CalendarDate: 'default',
@@ -381,3 +382,4 @@ export default class HomeScreen extends Component {
 
     }
 } 
+

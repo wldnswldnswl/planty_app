@@ -2,7 +2,8 @@ import * as React from 'react';
 import { 
   Image,
   View,
-  Text
+  Text,
+  AsyncStorage
 } from 'react-native';
 import Colors from '../../styles/colors';
 import IonIcon from 'react-native-vector-icons/Ionicons';
@@ -23,12 +24,12 @@ import CustomerSupportScreen from './CustomerSupportScreen';
 const Drawer = createDrawerNavigator();
 
 function CustomDrawerContent(props) {
+
   return (
     <DrawerContentScrollView {...props}>
       <View style = {[{flexDirection : 'column'},{alignItems : 'center'}, common.mv2, common.ml4]}>
       <Image source = {require('../../assets/dry-clean.png')} style={{width: 120, height: 120}} />
         <Text style={[common.font_bold, common.font_mid, common.font_gray, common.mt2,{textAlign:'center',width:wp('100%')}]}>
-            NickName
         </Text>
       {/* 클릭가능한 버전(Drawer의 컴포넌트) */}
       {/* <DrawerItem

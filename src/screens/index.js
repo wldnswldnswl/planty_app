@@ -1,4 +1,4 @@
-import React from 'react'; 
+import React, { Component } from 'react'; 
 import LoginScreen from './LoginScreen'; 
 import JoinScreen from './JoinScreen'; 
 import FindInfoScreen from './FindInfoScreen'; 
@@ -7,6 +7,9 @@ import ToDoListScreen from './ToDoListScreen'
 import ToDoScreen from './ToDoScreen';
 import AddScreen from './AddScreen';
 import DrawerScreen from './drawer';
+import {
+    AsyncStorage
+} from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, createAppContainer } from '@react-navigation/stack'; 
@@ -19,8 +22,8 @@ Common.setCalendarConfig(); // react-native-calendars 환경설정
 Amplify.configure(awsConfig); // Amplify 환경설정
 
 export default function MyStack() {
-    return (
 
+    return (
         // 화면목록
         <NavigationContainer>
             <Stack.Navigator

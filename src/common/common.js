@@ -136,12 +136,12 @@ export function getDateString(year, day, month, date, hour, minute, is_am_pm) {
 export async function getApi(apiName, path) {
 
   try{
-    console.log(path);
+    console.log("path:",path);
     const response =  await API.get(apiName, path);
     return response;
   }catch(err){
     //   if(fail != null) alert(fail); // fail 위치 바꿔야 함
-      console.log('common.getApi error: ', err);
+      console.log('common.getApi error: ', err,'api path: ' , apiName + path);
   }
 }
 
@@ -170,7 +170,7 @@ export async function postApi(apiName, path, params, success, fail) {
     catch (err) {
         if (fail != null) alert(fail); //실패메시지
 
-        console.log('common.postApi error: ', err);
+        console.log('common.postApi error: ' , err , 'api path: ' , apiName +path);
     }
 
 }
