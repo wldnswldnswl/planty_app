@@ -49,7 +49,7 @@ export default class ToDoScreen extends Component {
     constructor(props) {
         super(props)
 
-        console.log(this.props.navigation.getParam('data',"nodata"));
+        /* console.log(this.props.navigation.getParam('data',"nodata")); */
         this.state = {
             CalendarModalVisible: false,
             ColorModalVisible: false,

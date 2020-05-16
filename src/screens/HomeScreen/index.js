@@ -196,6 +196,7 @@ export default class HomeScreen extends Component {
     changeYearMonth = (calendar) => {
         this.setState({ Calendarheader_month: calendar });
         this.setState({ year: calendar.toString('yyyy') });
+       /*  alert(JSON.stringify(calendar.toString())); */
 
         //한자릿수 월들 앞의 0을 제거함 => 03 -> 3 
         if (calendar.toString('MM') < 10)
@@ -307,8 +308,8 @@ export default class HomeScreen extends Component {
 
                                 <Calendar
                                     style={styles.calendar}
+                                    current={this.state.Calendarheader_month}
                                     calendar_flag={false}
-                                    Calendarheader_month={this.state.Calendarheader_month}
                                 />
 
                             </View>
