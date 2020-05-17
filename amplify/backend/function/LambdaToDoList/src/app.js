@@ -124,7 +124,7 @@ app.get(path + "/getCurrentDayList" + hashKeyPath + sortKeyPath, function(req, r
       "#end_date": ":end_date"
     },
     ExpressionAttributeValues: {
-      ":end_date": req.params["end_date"].substring(0, 23),
+      ":end_date": req.params["end_date"].substring(0, 10),
       ":email": req.params["email"]
     },
   }

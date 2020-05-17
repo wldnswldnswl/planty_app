@@ -225,8 +225,7 @@ export function getColor(index) {
         case 11:
             color = Colors._11;
             break;
-            
-
+        
     }
 
     // console.log("color: ",color);

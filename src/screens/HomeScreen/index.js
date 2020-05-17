@@ -58,49 +58,25 @@ export default class HomeScreen extends Component {
             year: new Date().getFullYear(),
             month: new Date().getMonth() + 1,
             Calendarheader_month: props.current ? parseDate(props.current) : XDate(),
-
-            //일정 내용 임시로 지정함, 실제 데이터 받아올때는 어떻게 할지 아직 모르겠음
-            day_data: [
-                {
-                    //날짜를 이용하여 구분
-                    day: "2020-05-06",
-                    theme_color: "#e74c3c",
-                    content: "강의 듣기",
-                    content_color: "#313340",
-                    //다른 어플들 보면 일정 시간 설정한것도 표시해서 추가함
-                    time: "하루 종일"
-                },
-                {
-                    day: "2020-05-06",
-                    theme_color: "#f1c40f",
-                    content: "멍때리기",
-                    content_color: "#f1c40f",
-                    //할일 목록은 일정 시간을 표시하지 않음
-                    time: ""
-                },
-                {
-                    day: "2020-05-08",
-                    theme_color: "#f1c40f",
-                    content: "멍때리기",
-                    content_color: "#f1c40f",
-                    //할일 목록은 일정 시간을 표시하지 않음
-                    time: ""
-                },
-                {
-                    day: "2020-05-10",
-                    theme_color: "#e74c3c",
-                    content: "강의듣기",
-                    content_color: "#313340",
-                    //할일 목록은 일정 시간을 표시하지 않음
-                    time: "하루 종일"
-                }
-            ]
+            email: "",
+            todo_list: [],
+            calendar_list: []
         }
 
         this.gotoAddScreen = this.gotoAddScreen.bind(this);
 
     };
 
+    componentDidMount = async () => {
+
+        await AsyncStorage.getItem("email", (errs, result) => {
+          if (!errs) {
+            if (result !== null) {
+              this.setState({ "email": result });
+            }
+          }
+        });
+    }
 
     onDayPress = (day) => {
         this.setState({ selected: day.dateString });
@@ -178,16 +154,17 @@ export default class HomeScreen extends Component {
         name:  setDateModal
         description: set month, date, day in calendar modal
     */
-    setDateModal = async(month, date, day) => {
+    setDateModal = async(month, date, day ) => {
         this.setState({ CalendarDate: date });
         this.setState({ CalendarMonth: month });
         this.setState({ CalendarDay: this.setDayName(day) });
-        // const response = await getApi("ApiToDoList","/todolist/getCurrentDayList/planty.adm@gmail.com/2020.05.06(수) 오전 03:55_33eef3e7-d45b-4cc0-a606-9ae102ed52c3");
+
+      /*   const path = "/todolist/getCurrentDayList/"+JSON.parse(this.state.email)+"/"+JSON.parse(this.state.year)+"."+JSON.parse(this.state.CalendarMonth)+"."+JSON.parse(this.state.CalendarDate); */
+
+        /* const response = await getApi("ApiToDoList","/todolist/getCurrentDayList/planty.adm@gmail.com/2020.05.06(수) 오전 03:55_33eef3e7-d45b-4cc0-a606-9ae102ed52c3"); */
         
-        // console.log("response: ",response);
+        /* console.log("response: ",response); */
     }
-
-
 
     /*
         name:  changeYearMonth
@@ -207,44 +184,6 @@ export default class HomeScreen extends Component {
         this.forceUpdate();
     }
 
-    /*
-        name: selyearmonth
-        description: set select for yearmonth picker
-    */
-    /*  selyearmonth(sel) {
-         select = sel;
-     } */
-
-    /*
-        name: selyearcolor
-        description: change year's color, month's color in picker
-    */
-    /*  selyearcolor = () => {
-         year_color = Colors.darkPrimary;
-         month_color = "black";
-     } */
-
-    /*
-        name: selmonthcolor
-        description: change year's color, month's color in picker
-    */
-    /*  selmonthcolor = () => {
-         year_color = "black";
-         month_color = Colors.darkPrimary;
-     } */
-
-    /*
-        name: setyeararr
-        description: set year array
-    */
-    /*  setyeararr = () => {
-         year_month.length = 0;
-         for (var i = 0; i < 12; i++) {
-             var j = String(i + 1)
-             year_month.push(j)
-         }
-     } */
-
     goToUpdateScreen = (index, day_list) => {
         switch(index){
             case 0: //캘린더
@@ -259,11 +198,8 @@ export default class HomeScreen extends Component {
     // HomeScreen : 캘린더
     render() {
 
-        /*  const [modalVisible, setModalVisible] = useState(false);
-         const [modalOutput, setModalOutput] = useState("년/월"); */
-
-        //일정 내용들 day_list에 맵핑
-        const day_list = this.state.day_data.map(day_list => {
+        //할일 목록들 day_list에 맵핑
+       /*  const day_list = this.state.day_data.map(day_list => {
             return (
                 <View style={styles.daymodalcontent} > 
                     <View style={styles.daymodaltheme}>
@@ -276,7 +212,7 @@ export default class HomeScreen extends Component {
                     </View>
                 </View>
             )
-        })
+        }) */
 
         return (
 
@@ -381,7 +317,7 @@ export default class HomeScreen extends Component {
 
                         <ScrollView style={styles.scrollView}>
                             <View style={styles.daymodallist}>
-                                {day_list}
+                               {/*  {day_list} */}
                             </View>
                         </ScrollView>
 
