@@ -107,12 +107,13 @@ export function getDateString(year, day, month, date, hour, minute, is_am_pm) {
                 hour_len = "0";
             }
             else {
-                hour_len = "";            }
+                hour_len = "";
+            }
         }
         else {
             hour -= 12;
             hour_len = "";
-            if(hour == 24) 
+            if (hour == 24)
                 result.am_pm = "오전"
             else
                 result.am_pm = "오후"
@@ -137,14 +138,14 @@ export function getDateString(year, day, month, date, hour, minute, is_am_pm) {
 */
 export async function getApi(apiName, path) {
 
-  try{
-    console.log("path:",path);
-    const response =  await API.get(apiName, path);
-    return response;
-  }catch(err){
-    //   if(fail != null) alert(fail); // fail 위치 바꿔야 함
-      console.log('common.getApi error: ', err,'api path: ' , apiName + path);
-  }
+    try {
+        console.log("path:", path);
+        const response = await API.get(apiName, path);
+        return response;
+    } catch (err) {
+        //   if(fail != null) alert(fail); // fail 위치 바꿔야 함
+        console.log('common.getApi error: ', err, 'api path: ', apiName + path);
+    }
 }
 
 
@@ -172,7 +173,7 @@ export async function postApi(apiName, path, params, success, fail) {
     catch (err) {
         if (fail != null) alert(fail); //실패메시지
 
-        console.log('common.postApi error: ' , err , 'api path: ' , apiName +path);
+        console.log('common.postApi error: ', err, 'api path: ', apiName + path);
     }
 
 }
@@ -188,9 +189,9 @@ export function getColor(index) {
 
     let color;
 
-    switch(index){
+    switch (index) {
         case 0:
-            color =  Colors._0;
+            color = Colors._0;
             break;
         case 1:
             color = Colors._1;
@@ -202,7 +203,7 @@ export function getColor(index) {
             color = Colors._3;
             break;
         case 4:
-            color =  Colors._4;
+            color = Colors._4;
             break;
         case 5:
             color = Colors._5;
@@ -214,7 +215,7 @@ export function getColor(index) {
             color = Colors._7;
             break;
         case 8:
-            color =  Colors._8;
+            color = Colors._8;
             break;
         case 9:
             color = Colors._9;
@@ -225,7 +226,7 @@ export function getColor(index) {
         case 11:
             color = Colors._11;
             break;
-        
+
     }
 
     // console.log("color: ",color);
@@ -233,3 +234,38 @@ export function getColor(index) {
 
 }
 
+/*
+* @name: change_month
+* @description: 10미만의 month에서 0을 제거해 한자릿수로 만듬 
+* @params: month 
+* @history: 서주희
+*/
+export function change_month(month) {
+
+    let result;
+
+    if (month < 10)
+        result = month.substring(1);
+    else
+        result = month;
+
+    return result;
+}
+
+/*
+* @name: change_date
+* @description: 10미만의 date에서 0을 제거해 한자릿수로 만듬 
+* @params: month 
+* @history: 서주희
+*/
+export function change_date(date) {
+
+    let result;
+
+    if (date < 10)
+        result = date.substring(1);
+    else
+        result = date;
+
+    return result;
+}

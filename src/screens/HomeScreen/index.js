@@ -32,7 +32,7 @@ import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { SafeAreaView } from 'react-navigation';
 
 import { ScrollView } from 'react-native-gesture-handler';
-import { getApi } from '../../common/common';
+import { getApi, change_date, change_month } from '../../common/common';
 
 //일정 및 할일 색깔을 임시로 저장하는 변수
 var day_color;
@@ -155,12 +155,15 @@ export default class HomeScreen extends Component {
         description: set month, date, day in calendar modal
     */
     setDateModal = async(month, date, day ) => {
-        this.setState({ CalendarDate: date });
-        this.setState({ CalendarMonth: month });
+        this.setState({ CalendarDate: change_date(date) });
+        this.setState({ CalendarMonth: change_month(month) });
         this.setState({ CalendarDay: this.setDayName(day) });
 
-      /*   const path = "/todolist/getCurrentDayList/"+JSON.parse(this.state.email)+"/"+JSON.parse(this.state.year)+"."+JSON.parse(this.state.CalendarMonth)+"."+JSON.parse(this.state.CalendarDate); */
+        const end_date = this.state.year+"."+month+"."+date;
 
+        /* const path = "/todolist/getCurrentDayList/"+JSON.parse(this.state.email)+"/"+this.state.year+"."+this.state.CalendarMonth+"."+JSON.parse(this.state.CalendarDate); */
+        const response = await getApi("ApiToDoList","/todolist/getCurrentDayList/"+this.state.email+"/"+end_date);
+        /* alert(JSON.stringify(response)); */
         /* const response = await getApi("ApiToDoList","/todolist/getCurrentDayList/planty.adm@gmail.com/2020.05.06(수) 오전 03:55_33eef3e7-d45b-4cc0-a606-9ae102ed52c3"); */
         
         /* console.log("response: ",response); */
@@ -173,17 +176,11 @@ export default class HomeScreen extends Component {
     changeYearMonth = (calendar) => {
         this.setState({ Calendarheader_month: calendar });
         this.setState({ year: calendar.toString('yyyy') });
-       /*  alert(JSON.stringify(calendar.toString())); */
-
-        //한자릿수 월들 앞의 0을 제거함 => 03 -> 3 
-        if (calendar.toString('MM') < 10)
-            this.setState({ month: calendar.toString('MM').toString().substring(1) });
-        else
-            this.setState({ month: calendar.toString('MM') });
+        this.setState({ month: change_month(calendar.toString('MM'))});
 
         this.forceUpdate();
     }
-
+    
     goToUpdateScreen = (index, day_list) => {
         switch(index){
             case 0: //캘린더
