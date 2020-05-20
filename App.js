@@ -13,6 +13,7 @@ import AppStack from './src/screens/index';
 export default function App() {
 
   return (
-   <AppStack persistor = {persistor} loading = {null} />
+   <AppStack/>
+  //  persistor = {persistor} loading = {null} 
   )
 }

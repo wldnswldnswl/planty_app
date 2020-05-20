@@ -199,7 +199,7 @@ export default class HomeScreen extends Component {
         this.setState({ CalendarDay: this.setDayName(day) });
 
         const end_date = this.state.year+"."+month+"."+date;
-        const response = await getApi("ApiToDoList","/todolist/getCurrentDayList/"+JSON.parse(this.state.email)+"/"+end_date);
+        const response = await getApi("ApiCalendar","/calendar/getCurrentDayList/"+JSON.parse(this.state.email)+"/"+end_date);
        
         /* const response = await getApi("ApiToDoList","/todolist/getCurrentDayList/planty.adm@gmail.com/2020.05.06(수) 오전 03:55_33eef3e7-d45b-4cc0-a606-9ae102ed52c3"); */
         
