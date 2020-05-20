@@ -95,37 +95,38 @@ app.get(path + "/getAllDayList" + hashKeyPath, function(req, res) {
  *****************************************/
 
 app.get(path + "/getCurrentDayList" + hashKeyPath + sortKeyPath, function(req, res) {
-  // var params = {};
-  // if (userIdPresent && req.apiGateway) {
-  //   params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
-  // } else {
-  //   params[partitionKeyName] = req.params[partitionKeyName];
-  //   try {
-  //     params[partitionKeyName] = convertUrlType(req.params[partitionKeyName], partitionKeyType);
-  //   } catch(err) {
-  //     res.statusCode = 500;
-  //     res.json({error: 'Wrong column type ' + err});
-  //   }
-  // }
-  // if (hasSortKey) {
-  //   try {
-  //     params[sortKeyName] = convertUrlType(req.params[sortKeyName], sortKeyType);
-  //   } catch(err) {
-  //     res.statusCode = 500;
-  //     res.json({error: 'Wrong column type ' + err});
-  //   }
-  // }
+  var params = {};
+  if (userIdPresent && req.apiGateway) {
+    params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+  } else {
+    params[partitionKeyName] = req.params[partitionKeyName];
+    try {
+      params[partitionKeyName] = convertUrlType(req.params[partitionKeyName], partitionKeyType);
+    } catch(err) {
+      res.statusCode = 500;
+      res.json({error: 'Wrong column type ' + err});
+    }
+  }
+  if (hasSortKey) {
+    try {
+      params[sortKeyName] = convertUrlType(req.params[sortKeyName], sortKeyType);
+    } catch(err) {
+      res.statusCode = 500;
+      res.json({error: 'Wrong column type ' + err});
+    }
+  }
 
   let queryParams = {
     TableName: tableName,
     KeyConditions: params,
-    KeyConditionExpression: "email = :email AND contains(end_date, :end_date)",
+    KeyConditionExpression: "#email = :email AND #end_date = :end_date",
     ExpressionAttributeNames:{
+      "#email": ":email",
       "#end_date": ":end_date"
     },
     ExpressionAttributeValues: {
-      ":end_date": req.params["end_date"].substring(0, 23),
-      ":email": req.params["email"]
+      ":end_date": params["end_date"].substring(0, 10),
+      ":email": params["email"]
     },
   }
 

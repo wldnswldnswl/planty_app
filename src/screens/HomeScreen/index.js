@@ -30,7 +30,7 @@ import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { SafeAreaView } from 'react-navigation';
 
 import { ScrollView } from 'react-native-gesture-handler';
-import { getApi } from '../../common/common';
+import { getApi, change_date, change_month } from '../../common/common';
 
 //일정 및 할일 색깔을 임시로 저장하는 변수
 var day_color;
@@ -96,12 +96,25 @@ export default class HomeScreen extends Component {
                     time: "하루 종일"
                 }
             ]
+            email: "",
+            todo_list: [],
+            calendar_list: []
         }
 
         this.gotoAddScreen = this.gotoAddScreen.bind(this);
 
     };
 
+    componentDidMount = async () => {
+
+        await AsyncStorage.getItem("email", (errs, result) => {
+          if (!errs) {
+            if (result !== null) {
+              this.setState({ "email": result });
+            }
+          }
+        });
+    }
 
     onDayPress = (day) => {
         this.setState({ selected: day.dateString });
@@ -180,16 +193,18 @@ export default class HomeScreen extends Component {
         name:  setDateModal
         description: set month, date, day in calendar modal
     */
-    setDateModal = async(month, date, day) => {
-        this.setState({ CalendarDate: date });
-        this.setState({ CalendarMonth: month });
+    setDateModal = async(month, date, day ) => {
+        this.setState({ CalendarDate: change_date(date) });
+        this.setState({ CalendarMonth: change_month(month) });
         this.setState({ CalendarDay: this.setDayName(day) });
-        // const response = await getApi("ApiToDoList","/todolist/getCurrentDayList/planty.adm@gmail.com/2020.05.06(수) 오전 03:55_33eef3e7-d45b-4cc0-a606-9ae102ed52c3");
+
+        const end_date = this.state.year+"."+month+"."+date;
+        const response = await getApi("ApiToDoList","/todolist/getCurrentDayList/"+JSON.parse(this.state.email)+"/"+end_date);
+       
+        /* const response = await getApi("ApiToDoList","/todolist/getCurrentDayList/planty.adm@gmail.com/2020.05.06(수) 오전 03:55_33eef3e7-d45b-4cc0-a606-9ae102ed52c3"); */
         
-        // console.log("response: ",response);
+        console.log("response: ",response);
     }
-
-
 
     /*
         name:  changeYearMonth
@@ -198,55 +213,11 @@ export default class HomeScreen extends Component {
     changeYearMonth = (calendar) => {
         this.setState({ Calendarheader_month: calendar });
         this.setState({ year: calendar.toString('yyyy') });
-       /*  alert(JSON.stringify(calendar.toString())); */
-
-        //한자릿수 월들 앞의 0을 제거함 => 03 -> 3 
-        if (calendar.toString('MM') < 10)
-            this.setState({ month: calendar.toString('MM').toString().substring(1) });
-        else
-            this.setState({ month: calendar.toString('MM') });
+        this.setState({ month: change_month(calendar.toString('MM'))});
 
         this.forceUpdate();
     }
-
-    /*
-        name: selyearmonth
-        description: set select for yearmonth picker
-    */
-    /*  selyearmonth(sel) {
-         select = sel;
-     } */
-
-    /*
-        name: selyearcolor
-        description: change year's color, month's color in picker
-    */
-    /*  selyearcolor = () => {
-         year_color = Colors.darkPrimary;
-         month_color = "black";
-     } */
-
-    /*
-        name: selmonthcolor
-        description: change year's color, month's color in picker
-    */
-    /*  selmonthcolor = () => {
-         year_color = "black";
-         month_color = Colors.darkPrimary;
-     } */
-
-    /*
-        name: setyeararr
-        description: set year array
-    */
-    /*  setyeararr = () => {
-         year_month.length = 0;
-         for (var i = 0; i < 12; i++) {
-             var j = String(i + 1)
-             year_month.push(j)
-         }
-     } */
-
+    
     goToUpdateScreen = (index, day_list) => {
         switch(index){
             case 0: //캘린더
@@ -260,11 +231,8 @@ export default class HomeScreen extends Component {
     // HomeScreen : 캘린더
     render() {
 
-        /*  const [modalVisible, setModalVisible] = useState(false);
-         const [modalOutput, setModalOutput] = useState("년/월"); */
-
-        //일정 내용들 day_list에 맵핑
-        const day_list = this.state.day_data.map(day_list => {
+        //할일 목록들 day_list에 맵핑
+       /*  const day_list = this.state.day_data.map(day_list => {
             return (
                 <View style={styles.daymodalcontent} > 
                     <View style={styles.daymodaltheme}>
@@ -277,7 +245,7 @@ export default class HomeScreen extends Component {
                     </View>
                 </View>
             )
-        })
+        }) */
 
         return (
 
@@ -382,7 +350,7 @@ export default class HomeScreen extends Component {
 
                         <ScrollView style={styles.scrollView}>
                             <View style={styles.daymodallist}>
-                                {day_list}
+                               {/*  {day_list} */}
                             </View>
                         </ScrollView>
 
