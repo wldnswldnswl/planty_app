@@ -95,7 +95,7 @@ export default class HomeScreen extends Component {
                     //할일 목록은 일정 시간을 표시하지 않음
                     time: "하루 종일"
                 }
-            ]
+            ],
             email: "",
             todo_list: [],
             calendar_list: []
