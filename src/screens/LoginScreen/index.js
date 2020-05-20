@@ -46,7 +46,6 @@ export default class LoginScreen extends Component {
             if(response.data[0] != null){
            
                 this.state.nickname = response.data[0].nickname;
-                console.log("nickname: ",this.state.nickname);
 
                  // 세션 설정 (아이디, 닉네임)
                 AsyncStorage.multiSet([ // AsyncStorage는 내부 저장소로 세션으로 사용하기에 보안이 부실할 것. 하지만 이메일, 닉네임 같은 비중요정보라 일단 저걸로 구현해놓음...!
@@ -56,12 +55,16 @@ export default class LoginScreen extends Component {
                 ["nickname", this.state.nickname]
                 ]);
 
+
+
                 // console.log(this.state.email + " "+this.state.nickname);
     
 
-                this.props.navigation.navigate('Home',{
+                this.props.navigation.navigate('Home', {screen : 'Home', params: {
+                    email : this.state.email,
                     nickname: this.state.nickname
-                }); 
+                }}); 
+            
 
             }else{
                 alert("아이디/비밀번호를 확인해주세요.");

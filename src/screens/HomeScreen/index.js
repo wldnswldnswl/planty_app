@@ -4,8 +4,6 @@ import { Component } from 'react';
 import {
     View,
     Text,
-    Button,
-    Image,
     TouchableHighlight,
     AsyncStorage
     /* ScrollView */
@@ -47,6 +45,9 @@ export default class HomeScreen extends Component {
     constructor(props) {
         super(props);
 
+        console.log("시작");
+        console.log(props);
+
         selected: undefined
         this.state = {
             PickerModalVisible: false,
@@ -58,7 +59,7 @@ export default class HomeScreen extends Component {
             year: new Date().getFullYear(),
             month: new Date().getMonth() + 1,
             Calendarheader_month: props.current ? parseDate(props.current) : XDate(),
-
+            nickname : this.props.route.params.nickname,
             //일정 내용 임시로 지정함, 실제 데이터 받아올때는 어떻게 할지 아직 모르겠음
             day_data: [
                 {
@@ -130,7 +131,8 @@ export default class HomeScreen extends Component {
        description: show Setting Nav
    */
     gotoSideNav() {
-        this.props.navigation.toggleDrawer();
+        // this.props.route.params.nickname
+        this.props.navigation.toggleDrawer(name="아이디뭐야");
     }
 
     /*
@@ -250,7 +252,6 @@ export default class HomeScreen extends Component {
             case 0: //캘린더
                 break;
             case 1: //할일
-                alert("Dd");
                 this.props.navigation.navigate("ToDo", {data : day_list});
                 break;
 

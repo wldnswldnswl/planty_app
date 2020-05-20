@@ -46,6 +46,7 @@
     "react-navigation-drawer": "2.4.4",
     "react-navigation-stack": "2.3.1",
     "react-navigation-tabs": "2.8.4",
+    "redux-persist": "6.0.0",
     "styled-components": "5.0.1"
   },
   "devDependencies": {
