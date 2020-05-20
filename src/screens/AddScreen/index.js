@@ -91,16 +91,16 @@ export default class AddScreen extends Component {
 
     }
 
-    
-    componentDidMount = async() => {
+
+    componentDidMount = async () => {
 
         //getSession
-        await AsyncStorage.getItem("email", (errs,result) => {
+        await AsyncStorage.getItem("email", (errs, result) => {
             if (!errs) {
                 if (result !== null) {
-                    this.setState({"email" : JSON.parse(result)});
+                    this.setState({ "email": JSON.parse(result) });
                 }
-             }     
+            }
         });
     }
 
@@ -227,13 +227,11 @@ export default class AddScreen extends Component {
         //현재 분 저장
         minute = new Date().getMinutes();
 
-        /*   const { navigation }=this.props; */
-        /* 
-                if(navigation.getParam("flag"))
-                result = getDateString(navigation.getParam("year"), navigation.getParam("month"), navigation.getParam("date"), navigation.getParam("day"), hour, minute, null);
-                // 현재 출력날짜 저장
-                else */
-        result = getDateString(year, day, month, date, hour, minute, null);
+        const { route } = this.props;
+
+        // 현재 출력날짜 저장
+        result = getDateString(route.params.year, route.params.day, route.params.month, route.params.date, hour, minute, null);
+
         this.final_date = result.final_date; // 출력날짜 상태 변경
         // this.setState({final_date : result.final_date}); 
         this.state.end_date = result.final_date;
@@ -517,13 +515,13 @@ export default class AddScreen extends Component {
                             style={{ height: 30, width: 370 }}
                             onValueChange={(itemValue) => this.setState({ alarm: itemValue })}
                         >
-                            <Picker.Item label="설정안함" value= {0} />
-                            <Picker.Item label="5분전" value= {1} />
-                            <Picker.Item label="10분전" value = {2} />
-                            <Picker.Item label="15분전" value = {3} />
-                            <Picker.Item label="30분전" value = {4} />
-                            <Picker.Item label="45분전" value = {5} />
-                            <Picker.Item label="1시간전" value = {6} />
+                            <Picker.Item label="설정안함" value={0} />
+                            <Picker.Item label="5분전" value={1} />
+                            <Picker.Item label="10분전" value={2} />
+                            <Picker.Item label="15분전" value={3} />
+                            <Picker.Item label="30분전" value={4} />
+                            <Picker.Item label="45분전" value={5} />
+                            <Picker.Item label="1시간전" value={6} />
                         </Picker>
 
                     </View>
@@ -573,11 +571,11 @@ export default class AddScreen extends Component {
                             style={{ height: 30, width: 370 }}
                             onValueChange={(itemValue) => this.setState({ repeat: itemValue })}
                         >
-                            <Picker.Item label="반복안함" value = {0} />
-                            <Picker.Item label="매일" value = {1} />
-                            <Picker.Item label="매주" value = {2} />
-                            <Picker.Item label="매월" value = {3} />
-                            <Picker.Item label="매년" value = {4} />
+                            <Picker.Item label="반복안함" value={0} />
+                            <Picker.Item label="매일" value={1} />
+                            <Picker.Item label="매주" value={2} />
+                            <Picker.Item label="매월" value={3} />
+                            <Picker.Item label="매년" value={4} />
                         </Picker>
                     </View>
 

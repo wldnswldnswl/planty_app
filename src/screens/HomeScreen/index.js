@@ -51,9 +51,9 @@ export default class HomeScreen extends Component {
         this.state = {
             PickerModalVisible: false,
             CalendarModalVisible: false,
-            CalendarDate: 'default',
-            CalendarMonth: 'default',
-            CalendarDay: 'default',
+            CalendarDate: new Date().getDate(),
+            CalendarMonth: new Date().getMonth() + 1,
+            CalendarDay: new Date().getDay(),
             pickerSelection: 'default',
             year: new Date().getFullYear(),
             month: new Date().getMonth() + 1,
@@ -70,11 +70,11 @@ export default class HomeScreen extends Component {
     componentDidMount = async () => {
 
         await AsyncStorage.getItem("email", (errs, result) => {
-          if (!errs) {
-            if (result !== null) {
-              this.setState({ "email": result });
+            if (!errs) {
+                if (result !== null) {
+                    this.setState({ "email": result });
+                }
             }
-          }
         });
     }
 
@@ -87,20 +87,16 @@ export default class HomeScreen extends Component {
 
     /*
        name:  gotoAddScreen
-       description: show Add Screen
-   */
-    gotoAddScreen = () => {
-        this.props.navigation.navigate("Add");
-    }
-
-    /*
-       name:  gotoAddScreen_params
        description: show Add Screen with params
    */
-    /* gotoAddScreen_params = (flag, year, month, date, day) => {
-        this.props.navigation.navigate("Add", { "flag": flag, "year": year, "month": month, "date": date, "day": day });
+    gotoAddScreen = () => {
+        this.props.navigation.navigate("Add", { 
+            year: this.state.year,
+            month: this.state.CalendarMonth, 
+            date: this.state.CalendarDate, 
+            day: this.state.CalendarDay });
     }
- */
+
     /*
        name:  gotoSideNav
        description: show Setting Nav
@@ -154,17 +150,17 @@ export default class HomeScreen extends Component {
         name:  setDateModal
         description: set month, date, day in calendar modal
     */
-    setDateModal = async(month, date, day ) => {
+    setDateModal = async (month, date, day) => {
         this.setState({ CalendarDate: change_date(date) });
         this.setState({ CalendarMonth: change_month(month) });
         this.setState({ CalendarDay: this.setDayName(day) });
 
-        const end_date = this.state.year+"."+month+"."+date;
-        const response = await getApi("ApiToDoList","/todolist/getCurrentDayList/"+JSON.parse(this.state.email)+"/"+end_date);
-       
+        const end_date = this.state.year + "." + month + "." + date;
+        const response = await getApi("ApiToDoList", "/todolist/getCurrentDayList/" + JSON.parse(this.state.email) + "/" + end_date);
+
         /* const response = await getApi("ApiToDoList","/todolist/getCurrentDayList/planty.adm@gmail.com/2020.05.06(수) 오전 03:55_33eef3e7-d45b-4cc0-a606-9ae102ed52c3"); */
-        
-        console.log("response: ",response);
+
+        console.log("response: ", response);
     }
 
     /*
@@ -174,18 +170,18 @@ export default class HomeScreen extends Component {
     changeYearMonth = (calendar) => {
         this.setState({ Calendarheader_month: calendar });
         this.setState({ year: calendar.toString('yyyy') });
-        this.setState({ month: change_month(calendar.toString('MM'))});
+        this.setState({ month: change_month(calendar.toString('MM')) });
 
         this.forceUpdate();
     }
-    
+
     goToUpdateScreen = (index, day_list) => {
-        switch(index){
+        switch (index) {
             case 0: //캘린더
                 break;
             case 1: //할일
                 alert("Dd");
-                this.props.navigation.navigate("ToDo", {data : day_list});
+                this.props.navigation.navigate("ToDo", { data: day_list });
                 break;
 
         }
@@ -194,20 +190,20 @@ export default class HomeScreen extends Component {
     render() {
 
         //할일 목록들 day_list에 맵핑
-       /*  const day_list = this.state.day_data.map(day_list => {
-            return (
-                <View style={styles.daymodalcontent} > 
-                    <View style={styles.daymodaltheme}>
-                        <View style={[styles.daymodalcolortheme, { borderColor: day_list.theme_color }, { backgroundColor: day_list.theme_color }, { left: wp("1.5%") }, { top: wp("3%") }]} />
-                    </View>
-
-                    <View style={styles.daymodaltext}>
-                        <Text style={{ fontSize: 17, color: day_list.content_color }}>{day_list.content}</Text>
-                        <Text style={{ fontSize: 10, color: Colors.darkgray }}>{day_list.time}</Text>
-                    </View>
-                </View>
-            )
-        }) */
+        /*  const day_list = this.state.day_data.map(day_list => {
+             return (
+                 <View style={styles.daymodalcontent} > 
+                     <View style={styles.daymodaltheme}>
+                         <View style={[styles.daymodalcolortheme, { borderColor: day_list.theme_color }, { backgroundColor: day_list.theme_color }, { left: wp("1.5%") }, { top: wp("3%") }]} />
+                     </View>
+ 
+                     <View style={styles.daymodaltext}>
+                         <Text style={{ fontSize: 17, color: day_list.content_color }}>{day_list.content}</Text>
+                         <Text style={{ fontSize: 10, color: Colors.darkgray }}>{day_list.time}</Text>
+                     </View>
+                 </View>
+             )
+         }) */
 
         return (
 
@@ -267,7 +263,7 @@ export default class HomeScreen extends Component {
                         style={styles.Calendar}
                         calendarHeight={500}
                         hideExtraDays={false}
-                        onDayPress= {this.onDayPress}
+                        onDayPress={this.onDayPress}
                         markedDates={{
                             [this.state.selected]: {
                                 selected: true,
@@ -293,14 +289,17 @@ export default class HomeScreen extends Component {
                         toggleCalendarModal={this.toggleCalendarModal}
                         changeYearMonth={this.changeYearMonth}
                         setDateModal={this.setDateModal}
+                        gotoAddScreen={this.gotoAddScreen}
                     /* dayContent={this.state.day_data} */
 
                     />
-                    <TouchableHighlight style={common.addButton}
-                        underlayColor={Colors.clicked} onPress={this.gotoAddScreen.bind(this)}>
-                        <Text style={{ fontSize: 50, color: 'white' }}>+</Text>
-                    </TouchableHighlight>
+
                 </View>
+
+                <TouchableHighlight style={common.addButton}
+                    underlayColor={Colors.clicked} onPress={this.gotoAddScreen.bind(this)}>
+                    <Text style={{ fontSize: 50, color: 'white' }}>+</Text>
+                </TouchableHighlight>
 
                 <Modal isVisible={this.state.CalendarModalVisible} onBackdropPress={() => { this.toggleCalendarModal() }} >
                     <View style={styles.daymodal_container} >
@@ -312,12 +311,12 @@ export default class HomeScreen extends Component {
 
                         <ScrollView style={styles.scrollView}>
                             <View style={styles.daymodallist}>
-                               {/*  {day_list} */}
+                                {/*  {day_list} */}
                             </View>
                         </ScrollView>
 
                         <TouchableHighlight style={common.addButton}
-                            underlayColor={Colors.clicked} onPress={() => {this.gotoAddScreen(); /* this.gotoAddScreen_params(true, this.state.CalendarMonth, this.state.CalendarDate, this.state.CalendarDay); */ this.toggleCalendarModal() }}>
+                            underlayColor={Colors.clicked} onPress={() => {this.gotoAddScreen(this); this.toggleCalendarModal() }}>
                             <Text style={{ fontSize: 50, color: 'white' }}>+</Text>
                         </TouchableHighlight>
                     </View>
@@ -327,9 +326,6 @@ export default class HomeScreen extends Component {
 
         );
 
-
-
-
     }
-} 
+}
 

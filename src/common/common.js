@@ -70,6 +70,7 @@ export function getDateString(year, day, month, date, hour, minute, is_am_pm) {
             break;
         case 6: ko_day = "토";
             break;
+        default: ko_day = day;
     }
 
     //1~9월을 두자릿수로 설정
