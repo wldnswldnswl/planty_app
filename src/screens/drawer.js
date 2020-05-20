@@ -5,6 +5,7 @@ import {
   Text,
   AsyncStorage
 } from 'react-native';
+import {useState} from 'react';
 import Colors from '../../styles/colors';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -13,8 +14,7 @@ import common from '../../styles/common';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
-  DrawerItemList,
-  DrawerItem,
+  DrawerItemList
 } from '@react-navigation/drawer';import ToDoListScreen from './ToDoListScreen';
 import SettingScreen from './SettingScreen';
 import HomeScreen from './HomeScreen';
@@ -24,12 +24,12 @@ import CustomerSupportScreen from './CustomerSupportScreen';
 const Drawer = createDrawerNavigator();
 
 function CustomDrawerContent(props) {
-
   return (
     <DrawerContentScrollView {...props}>
       <View style = {[{flexDirection : 'column'},{alignItems : 'center'}, common.mv2, common.ml4]}>
       <Image source = {require('../../assets/dry-clean.png')} style={{width: 120, height: 120}} />
         <Text style={[common.font_bold, common.font_mid, common.font_gray, common.mt2,{textAlign:'center',width:wp('100%')}]}>
+          {/* {props} */}{console.log("p:",props.descriptors)}
         </Text>
       {/* 클릭가능한 버전(Drawer의 컴포넌트) */}
       {/* <DrawerItem
@@ -43,11 +43,15 @@ function CustomDrawerContent(props) {
   );
 }
 
+
 export default function App() {
-  
+
+  // const nickname = useState("미미");
+  console.log("drawer");
+  console.log(this.props);
   return (
       <Drawer.Navigator 
-        drawerContent={props => <CustomDrawerContent {...props} />}
+        drawerContent={props =>   <CustomDrawerContent  {...props} />}
         initialRouteName = "Home"
         backBehavior = "initialRoute" 
         drawerContentOptions = {

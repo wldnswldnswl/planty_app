@@ -4,8 +4,6 @@ import { Component } from 'react';
 import {
     View,
     Text,
-    Button,
-    Image,
     TouchableHighlight,
     AsyncStorage
     /* ScrollView */
@@ -47,6 +45,9 @@ export default class HomeScreen extends Component {
     constructor(props) {
         super(props);
 
+        console.log("시작");
+        console.log(props);
+
         selected: undefined
         this.state = {
             PickerModalVisible: false,
@@ -58,6 +59,43 @@ export default class HomeScreen extends Component {
             year: new Date().getFullYear(),
             month: new Date().getMonth() + 1,
             Calendarheader_month: props.current ? parseDate(props.current) : XDate(),
+            nickname : /* this.props.route.params.nickname */'default',
+            //일정 내용 임시로 지정함, 실제 데이터 받아올때는 어떻게 할지 아직 모르겠음
+            day_data: [
+                {
+                    //날짜를 이용하여 구분
+                    day: "2020-05-06",
+                    theme_color: "#e74c3c",
+                    content: "강의 듣기",
+                    content_color: "#313340",
+                    //다른 어플들 보면 일정 시간 설정한것도 표시해서 추가함
+                    time: "하루 종일"
+                },
+                {
+                    day: "2020-05-06",
+                    theme_color: "#f1c40f",
+                    content: "멍때리기",
+                    content_color: "#f1c40f",
+                    //할일 목록은 일정 시간을 표시하지 않음
+                    time: ""
+                },
+                {
+                    day: "2020-05-08",
+                    theme_color: "#f1c40f",
+                    content: "멍때리기",
+                    content_color: "#f1c40f",
+                    //할일 목록은 일정 시간을 표시하지 않음
+                    time: ""
+                },
+                {
+                    day: "2020-05-10",
+                    theme_color: "#e74c3c",
+                    content: "강의듣기",
+                    content_color: "#313340",
+                    //할일 목록은 일정 시간을 표시하지 않음
+                    time: "하루 종일"
+                }
+            ],
             email: "",
             todo_list: [],
             calendar_list: []
@@ -102,7 +140,8 @@ export default class HomeScreen extends Component {
        description: show Setting Nav
    */
     gotoSideNav() {
-        this.props.navigation.toggleDrawer();
+        // this.props.route.params.nickname
+        this.props.navigation.toggleDrawer(name="아이디뭐야");
     }
 
     /*
@@ -155,9 +194,9 @@ export default class HomeScreen extends Component {
         this.setState({ CalendarMonth: change_month(month) });
         this.setState({ CalendarDay: this.setDayName(day) });
 
-        const end_date = this.state.year + "." + month + "." + date;
-        const response = await getApi("ApiToDoList", "/todolist/getCurrentDayList/" + JSON.parse(this.state.email) + "/" + end_date);
-
+        const end_date = this.state.year+"."+month+"."+date;
+        const response = await getApi("ApiCalendar","/calendar/getCurrentDayList/"+JSON.parse(this.state.email)+"/"+end_date);
+       
         /* const response = await getApi("ApiToDoList","/todolist/getCurrentDayList/planty.adm@gmail.com/2020.05.06(수) 오전 03:55_33eef3e7-d45b-4cc0-a606-9ae102ed52c3"); */
 
         console.log("response: ", response);
@@ -180,8 +219,7 @@ export default class HomeScreen extends Component {
             case 0: //캘린더
                 break;
             case 1: //할일
-                alert("Dd");
-                this.props.navigation.navigate("ToDo", { data: day_list });
+                this.props.navigation.navigate("ToDo", {data : day_list});
                 break;
 
         }
