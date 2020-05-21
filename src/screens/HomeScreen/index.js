@@ -59,43 +59,7 @@ export default class HomeScreen extends Component {
             year: new Date().getFullYear(),
             month: new Date().getMonth() + 1,
             Calendarheader_month: props.current ? parseDate(props.current) : XDate(),
-            nickname : /* this.props.route.params.nickname */'default',
-            //일정 내용 임시로 지정함, 실제 데이터 받아올때는 어떻게 할지 아직 모르겠음
-            day_data: [
-                {
-                    //날짜를 이용하여 구분
-                    day: "2020-05-06",
-                    theme_color: "#e74c3c",
-                    content: "강의 듣기",
-                    content_color: "#313340",
-                    //다른 어플들 보면 일정 시간 설정한것도 표시해서 추가함
-                    time: "하루 종일"
-                },
-                {
-                    day: "2020-05-06",
-                    theme_color: "#f1c40f",
-                    content: "멍때리기",
-                    content_color: "#f1c40f",
-                    //할일 목록은 일정 시간을 표시하지 않음
-                    time: ""
-                },
-                {
-                    day: "2020-05-08",
-                    theme_color: "#f1c40f",
-                    content: "멍때리기",
-                    content_color: "#f1c40f",
-                    //할일 목록은 일정 시간을 표시하지 않음
-                    time: ""
-                },
-                {
-                    day: "2020-05-10",
-                    theme_color: "#e74c3c",
-                    content: "강의듣기",
-                    content_color: "#313340",
-                    //할일 목록은 일정 시간을 표시하지 않음
-                    time: "하루 종일"
-                }
-            ],
+            nickname : this.props.route.params.nickname,
             email: "",
             todo_list: [],
             calendar_list: []
@@ -195,11 +159,19 @@ export default class HomeScreen extends Component {
         this.setState({ CalendarDay: this.setDayName(day) });
 
         const end_date = this.state.year+"."+month+"."+date;
-        const response = await getApi("ApiCalendar","/calendar/getCurrentDayList/"+JSON.parse(this.state.email)+"/"+end_date);
+        const start_date = this.state.year+"."+month+"."+date;
+        const path_todolist = "/todolist/getCurrentDayList/"+JSON.parse(this.state.email)+"/"+end_date;
+        const path_calendarlist = "/calendar/getCurrentDayList/"+JSON.parse(this.state.email)+"/"+start_date;
+        const response_todolist = await getApi("ApiToDoList",path_todolist);
+        const response_calendarlist = await getApi("ApiCalendar",path_calendarlist); 
        
         /* const response = await getApi("ApiToDoList","/todolist/getCurrentDayList/planty.adm@gmail.com/2020.05.06(수) 오전 03:55_33eef3e7-d45b-4cc0-a606-9ae102ed52c3"); */
 
-        console.log("response: ", response);
+        console.log("response_todolist: ", response_todolist);
+        console.log("response_calendarlist: ", response_calendarlist);
+
+        this.setState({todo_list :response_todolist });
+        this.setState({calendar_list :response_calendarlist });
     }
 
     /*

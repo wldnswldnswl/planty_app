@@ -119,15 +119,15 @@ app.get(path + "/getCurrentDayList" + hashKeyPath + sortKeyPath, function(req, r
   let queryParams = {
     TableName: tableName,
     KeyConditions: params,
-    KeyConditionExpression: "#email = :email AND #end_date = :end_date",
+    KeyConditionExpression: "#email = :email AND contains(#end_date, :end_date)",
     ExpressionAttributeNames:{
       "#email": ":email",
       "#end_date": ":end_date"
     },
     ExpressionAttributeValues: {
-      ":end_date": params["end_date"].substring(0, 10),
-      ":email": params["email"]
-    },
+      ":email": params["email"],
+      ":end_date": params["end_date"]
+    }
   }
 
   dynamodb.query(queryParams, (err, data) => {
