@@ -118,13 +118,14 @@ app.get(path + "/getCurrentDayList" + hashKeyPath + sortKeyPath, function(req, r
 
   let getItemParams = {
     TableName: tableName,
-    ProjectionExpression:"alarm, color, description, end_date, repeat, start_date, title",
-    KeyConditionExpression: "#email = :email",
+    KeyConditionExpression: "#email = :email AND begins_with(#start_date, :start_date)",
     ExpressionAttributeNames: {
-      "#email": "email"
+      "#email": "email",
+      "#start_date": "start_date"
     },
     ExpressionAttributeValues: {
-      "#email": "may@naver.com"
+      ":email": params["email"],
+      ":start_date": "2020.05.13"
     }
   }
 

@@ -118,15 +118,14 @@ app.get(path + "/getCurrentDayList" + hashKeyPath + sortKeyPath, function(req, r
 
   let queryParams = {
     TableName: tableName,
-    KeyConditions: params,
-    KeyConditionExpression: "#email = :email AND contains(#end_date, :end_date)",
+    KeyConditionExpression: "#email = :email AND begins_with(#end_date, :end_date)",
     ExpressionAttributeNames:{
-      "#email": ":email",
-      "#end_date": ":end_date"
+      "#email": "email",
+      "#end_date": "end_date"
     },
     ExpressionAttributeValues: {
       ":email": params["email"],
-      ":end_date": params["end_date"]
+      ":end_date": "2020.05.13"
     }
   }
 
