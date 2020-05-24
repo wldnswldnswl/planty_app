@@ -53,7 +53,7 @@ export default class AddScreen extends Component {
         super(props);
         this.sp_am_pm = React.createRef();
 
-        /*  selected: undefined */
+         selected: undefined
         this.state = {
             StartCalendarModalVisible: false,
             EndCalendarModalVisible: false,
@@ -104,14 +104,6 @@ export default class AddScreen extends Component {
         });
     }
 
-
-
-
-    onDayPress = (day) => {
-        this.setState({ selected: day.dateString });
-    }
-
-
     // functions
 
     /*
@@ -147,8 +139,15 @@ export default class AddScreen extends Component {
         name:  gotoToDoScreen
         description: show ToDo Screen
     */
-    gotoToDoScreen() {
-        this.props.navigation.navigate("ToDo");
+    gotoToDoScreen = () => {
+        const{route} = this.props;
+        this.props.navigation.navigate("ToDo", {
+            year: route.params.year,
+            month: route.params.month,
+            date: route.params.date,
+            day: route.params.day,
+            calendarheader_month: this.state.Calendarheader_month
+        });
     }
 
     /*
@@ -232,6 +231,7 @@ export default class AddScreen extends Component {
         // 현재 출력날짜 저장
         result = getDateString(route.params.year, route.params.day, route.params.month, route.params.date, hour, minute, null);
 
+        this.state.Calendarheader_month = route.params.calendarheader_month;
         this.final_date = result.final_date; // 출력날짜 상태 변경
         // this.setState({final_date : result.final_date}); 
         this.state.end_date = result.final_date;
@@ -284,25 +284,27 @@ export default class AddScreen extends Component {
                             <View style={styles.modal_container}>
                                 <View style={styles.modalheader}>
                                 </View>
-                                <View style={styles.modalyearmonth}>
-                                    <TouchableHighlight  >
-                                        <Text style={[common.font_title, { color: 'black' }, { fontSize: 30 }]}>{year}년{month}월</Text>
-                                    </TouchableHighlight>
-                                </View>
                                 <View style={styles.modalCalendar}>
                                     <Calendar
                                         style={styles.calendar}
                                         hideExtraDays
                                         // 캘린더 날짜 선택 시, 해당 날짜로 year, month, date, day변수 변경
                                         onDayPress={(thisDay) => { this.onDayPress, year = thisDay.year, month = thisDay.month, date = thisDay.day, day = new Date(thisDay.dateString).getDay() }}
-                                        markedDates={{
+                                    
+                                        /* markedDates={{
                                             [this.state.selected]: {
                                                 selected: true,
                                                 disableTouchEvent: true,
                                                 selectedDotColor: "orange"
                                             }
                                         }}
-                                        calendar_flag={false}
+                                        theme={{
+                                            textSectionTitleColor: Colors.darkgray,
+                                            selectedDayBackgroundColor: Colors.lightgray,
+                                            selectedDayTextColor: "black",
+                                            todayTextColor: Colors.darkPrimary,
+                                        }} */
+                                        calendar_flag={3}
                                         Calendarheader_month={this.state.Calendarheader_month}
                                     />
 
@@ -393,27 +395,28 @@ export default class AddScreen extends Component {
                             <View style={styles.modal_container}>
                                 <View style={styles.modalheader}>
                                 </View>
-                                <View style={styles.modalyearmonth}>
-                                    <TouchableHighlight  >
-                                        <Text style={[common.font_title, { color: 'black' }, { fontSize: 30 }]}>{year}년{month}월</Text>
-                                    </TouchableHighlight>
-                                </View>
                                 <View style={styles.modalCalendar}>
-                                    <Calendar
-                                        style={styles.calendar}
-                                        hideExtraDays
-                                        // 캘린더 날짜 선택 시, 해당 날짜로 year, month, date, day변수 변경
-                                        onDayPress={(thisDay) => { this.onDayPress, year = thisDay.year, month = thisDay.month, date = thisDay.day, day = new Date(thisDay.dateString).getDay() }}
-                                        markedDates={{
-                                            [this.state.selected]: {
-                                                selected: true,
-                                                disableTouchEvent: true,
-                                                selectedDotColor: "orange"
-                                            }
-                                        }}
-                                        calendar_flag={false}
-                                        Calendarheader_month={this.state.Calendarheader_month}
-                                    />
+                                <Calendar
+                                    style={styles.calendar}
+                                    hideExtraDays
+                                    // 캘린더 날짜 선택 시, 해당 날짜로 year, month, date, day변수 변경
+                                    onDayPress= {(thisDay) => {this.onDayPress, year = thisDay.year, month = thisDay.month, date = thisDay.day, day = new Date(thisDay.dateString).getDay()}}
+                                    /* markedDates={{
+                                        [this.state.selected]: {
+                                            selected: true,
+                                            disableTouchEvent: true,
+                                            selectedDotColor: "orange"
+                                        }
+                                    }}
+                                    theme={{
+                                        textSectionTitleColor: Colors.darkgray,
+                                        selectedDayBackgroundColor: Colors.lightgray,
+                                        selectedDayTextColor: "black",
+                                        todayTextColor: Colors.darkPrimary,
+                                    }} */
+                                    calendar_flag={3}
+                                    Calendarheader_month={this.state.Calendarheader_month}
+                                />
 
                                 </View>
                                 <View style={styles.modalHourContainer}>

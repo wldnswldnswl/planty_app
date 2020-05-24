@@ -191,8 +191,12 @@ export default class ToDoScreen extends Component {
         //현재 분 저장
         minute = new Date().getMinutes();
 
+        const { route } = this.props;
+
         // 현재 출력날짜 저장
-        result = getDateString(year, day, month, date, hour, minute, null);
+        result = getDateString(route.params.year, route.params.day, route.params.month, route.params.date, hour, minute, null);
+
+        this.state.Calendarheader_month = route.params.calendarheader_month;
         this.final_date = result.final_date; // 출력날짜 상태 변경
         // this.setState({final_date : result.final_date}); 
         this.state.end_date = result.final_date;
@@ -243,11 +247,6 @@ export default class ToDoScreen extends Component {
                         <View style={styles.modal_container}>
                             <View style={styles.modalheader}>
                             </View>
-                            <View style={styles.modalyearmonth}>
-                                <TouchableHighlight  >
-                                    <Text style={[common.font_title, { color: 'black' }, { fontSize: 30 }]}>{year}년{month}월</Text>
-                                </TouchableHighlight>
-                            </View>
                             <View style={styles.modalCalendar}>
                                 <Calendar
                                     style={styles.calendar}
@@ -261,6 +260,14 @@ export default class ToDoScreen extends Component {
                                             selectedDotColor: "orange"
                                         }
                                     }}
+                                    theme={{
+                                        textSectionTitleColor: Colors.darkgray,
+                                        selectedDayBackgroundColor: Colors.lightgray,
+                                        selectedDayTextColor: "black",
+                                        todayTextColor: Colors.darkPrimary,
+                                    }}
+                                    calendar_flag={3}
+                                    Calendarheader_month={this.state.Calendarheader_month}
                                 />
 
                             </View>

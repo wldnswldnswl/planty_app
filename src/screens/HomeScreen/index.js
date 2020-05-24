@@ -32,12 +32,7 @@ import { SafeAreaView } from 'react-navigation';
 import { ScrollView } from 'react-native-gesture-handler';
 import { getApi, change_date, change_month } from '../../common/common';
 
-//일정 및 할일 색깔을 임시로 저장하는 변수
-var day_color;
-//일정 및 할일을 임시로 저장하는 변수
-var day_content;
-//일정 및 할일 데이터를 저장하는 변수
-/* var day_data = []; */
+const temp_calendar = 'default';
 
 export default class HomeScreen extends Component {
 
@@ -55,7 +50,9 @@ export default class HomeScreen extends Component {
             CalendarDate: new Date().getDate(),
             CalendarMonth: new Date().getMonth() + 1,
             CalendarDay: new Date().getDay(),
-            pickerSelection: 'default',
+            PickerYear: new Date().getFullYear(),
+            PickerMonth: new Date().getMonth() + 1,
+            PicekrCalendar: props.current ? parseDate(props.current) : XDate(),
             year: new Date().getFullYear(),
             month: new Date().getMonth() + 1,
             Calendarheader_month: props.current ? parseDate(props.current) : XDate(),
@@ -96,7 +93,8 @@ export default class HomeScreen extends Component {
             year: this.state.year,
             month: this.state.CalendarMonth,
             date: this.state.CalendarDate,
-            day: this.state.CalendarDay
+            day: this.state.CalendarDay,
+            calendarheader_month: this.state.Calendarheader_month
         });
     }
 
@@ -121,12 +119,22 @@ export default class HomeScreen extends Component {
         name:  changePickerModal
         description: change year,month in pickerModal
     */
-    changePickerModal = (date) => {
-        this.setState({ year: date.year });
-        this.setState({ month: date.month});
+    changePickerModal = (date, calendar) => {
+        this.setState({ PickerYear: date.year });
+        this.setState({ PickerMonth: date.month });
+        this.setState({ PickerCalendar: calendar});
 
         this.forceUpdate();
     } 
+
+    /*
+        name:  setPickerModal
+        description: set year,month in pickerModal when press the header
+    */
+    setPickerModal() {
+        this.setState({ PickerYear: this.state.year });
+        this.setState({ PickerMonth: this.state.month });
+    }
 
     /*
         name:  setDayName
@@ -172,6 +180,7 @@ export default class HomeScreen extends Component {
 
         const end_date = this.state.year + "." + month + "." + date;
         const start_date = this.state.year + "." + month + "." + date;
+        
         const path_todolist = "/todolist/getCurrentDayList/" + JSON.parse(this.state.email) + "/" + end_date;
         const path_calendarlist = "/calendar/getCurrentDayList/" + JSON.parse(this.state.email) + "/" + start_date;
         const response_todolist = await getApi("ApiToDoList", path_todolist);
@@ -235,7 +244,7 @@ export default class HomeScreen extends Component {
                         onPress={this.gotoSideNav.bind(this)}
                     ></Icon>
 
-                    <TouchableOpacity onPress={() => { this.togglePickerModal() }}>
+                    <TouchableOpacity onPress={() => { this.togglePickerModal(); this.setPickerModal() }}>
                         <Text style={[common.font_title, { color: Colors.gray }]}>{this.state.year}.{this.state.month}</Text>
                     </TouchableOpacity>
                     <Modal isVisible={this.state.PickerModalVisible} onBackdropPress={() => { this.togglePickerModal() }} >
@@ -246,9 +255,9 @@ export default class HomeScreen extends Component {
 
                             <View style={styles.modalyearmonth}>
 
-                                <Text style={[common.font_title, { color: Colors.darkPrimary }, { fontSize: 43 }]}>{this.state.year}</Text>
+                                <Text style={[common.font_title, { color: Colors.darkPrimary }, { fontSize: 43 }]}>{this.state.PickerYear}</Text>
 
-                                <Text style={[common.font_title, { color: Colors.darkPrimary }, { fontSize: 28 }]}>{this.state.month}월</Text>
+                                <Text style={[common.font_title, { color: Colors.darkPrimary }, { fontSize: 28 }]}>{this.state.PickerMonth}월</Text>
 
                             </View>
 
@@ -257,7 +266,7 @@ export default class HomeScreen extends Component {
 
                                 <Calendar
                                     style={styles.calendar}
-                                    calendar_flag={false}
+                                    calendar_flag={2}
                                     onDayPress={this.onDayPress}
                                     Calendarheader_month={this.state.Calendarheader_month}
                                     onDayPress={this.onDayPress}
@@ -281,7 +290,7 @@ export default class HomeScreen extends Component {
 
 
                             <View style={styles.modalButton}>
-                                <TouchableHighlight onPress={() => { this.togglePickerModal() }}>
+                                <TouchableHighlight onPress={() => { this.togglePickerModal(); this.changeYearMonth(this.state.PickerCalendar); }}>
                                     <Text style={[common.font_mid, { color: Colors.darkPrimary }]}>완료</Text>
                                 </TouchableHighlight>
                             </View>
@@ -300,6 +309,7 @@ export default class HomeScreen extends Component {
                     <Calendar
                         style={styles.Calendar}
                         calendarHeight={500}
+                        Calendarheader_month={this.state.Calendarheader_month}
                         hideExtraDays={false}
                         onDayPress={this.onDayPress}
                         markedDates={{
@@ -309,7 +319,7 @@ export default class HomeScreen extends Component {
                                 selectedDotColor: "orange"
                             }
                         }}
-                        calendar_flag={true}
+                        calendar_flag={1}
 
                         theme={{
                             "stylesheet.calendar.header": {
