@@ -25,7 +25,7 @@ if(process.env.ENV && process.env.ENV !== "NONE") {
 const userIdPresent = false; // TODO: update in case is required to use that definition
 const partitionKeyName = "email";
 const partitionKeyType = "S";
-const sortKeyName = "uuid";
+const sortKeyName = "end_date";
 const sortKeyType = "S";
 const hasSortKey = sortKeyName !== "";
 const path = "/todolist";
@@ -118,7 +118,6 @@ app.get(path + "/getCurrentDayList" + hashKeyPath + sortKeyPath, function(req, r
 
   let getItemParams = {
     TableName: tableName,
-    KeyConditions: condition,
     ProjectionExpression: "color, title",
     KeyConditionExpression: "#email = :email AND begins_with(#end_date, :end_date)",
     ExpressionAttributeNames:{
