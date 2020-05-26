@@ -71,7 +71,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "amplify-plantyapp-dev-42358-deployment",
-					"S3Key": "amplify-builds/LambdaCalendar-664e354f697068426a58-build.zip"
+					"S3Key": "amplify-builds/LambdaCalendar-3643796b3344724e652f-build.zip"
 				}
 			}
 		},

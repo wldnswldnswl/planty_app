@@ -30,7 +30,7 @@ import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { SafeAreaView } from 'react-navigation';
 
 import { ScrollView } from 'react-native-gesture-handler';
-import { getApi, change_date, change_month } from '../../common/common';
+import { getApi, change_date, change_month, getColor } from '../../common/common';
 
 const temp_calendar = 'default';
 
@@ -52,14 +52,14 @@ export default class HomeScreen extends Component {
             CalendarDay: new Date().getDay(),
             PickerYear: new Date().getFullYear(),
             PickerMonth: new Date().getMonth() + 1,
-            PicekrCalendar: props.current ? parseDate(props.current) : XDate(),
+            PickerCalendar: props.current ? parseDate(props.current) : XDate(),
             year: new Date().getFullYear(),
             month: new Date().getMonth() + 1,
             Calendarheader_month: props.current ? parseDate(props.current) : XDate(),
             nickname: this.props.route.params.nickname,
             email: "",
-            todo_list: [],
-            calendar_list: []
+            CalendarList: [],
+            TodoList: []
         }
 
         this.gotoAddScreen = this.gotoAddScreen.bind(this);
@@ -180,19 +180,20 @@ export default class HomeScreen extends Component {
 
         const end_date = this.state.year + "." + month + "." + date;
         const start_date = this.state.year + "." + month + "." + date;
+
+        console.log("month: ", month);
         
         const path_todolist = "/todolist/getCurrentDayList/" + JSON.parse(this.state.email) + "/" + end_date;
         const path_calendarlist = "/calendar/getCurrentDayList/" + JSON.parse(this.state.email) + "/" + start_date;
         const response_todolist = await getApi("ApiToDoList", path_todolist);
-        const response_calendarlist = await getApi("ApiCalendar", path_calendarlist);
-
-        /* const response = await getApi("ApiToDoList","/todolist/getCurrentDayList/planty.adm@gmail.com/2020.05.06(수) 오전 03:55_33eef3e7-d45b-4cc0-a606-9ae102ed52c3"); */
+        /* const response_calendarlist = await getApi("ApiCalendar", path_calendarlist); */
 
         console.log("response_todolist: ", response_todolist);
-        console.log("response_calendarlist: ", response_calendarlist);
+        /* console.log("response_calendarlist: ", response_calendarlist); */
 
-        this.setState({ todo_list: response_todolist });
-        this.setState({ calendar_list: response_calendarlist });
+        this.setState({ TodoList: response_todolist });
+       /*  this.setState({ calendar_list: response_calendarlist }); */
+
     }
 
     /*
@@ -204,7 +205,7 @@ export default class HomeScreen extends Component {
         this.setState({ year: calendar.toString('yyyy') });
         this.setState({ month: change_month(calendar.toString('MM')) });
 
-        this.forceUpdate();
+       /*  this.forceUpdate(); */
     }
 
     goToUpdateScreen = (index, day_list) => {
@@ -221,20 +222,19 @@ export default class HomeScreen extends Component {
     render() {
 
         //할일 목록들 day_list에 맵핑
-        /*  const day_list = this.state.day_data.map(day_list => {
+         const todo_list = this.state.TodoList.map(todo_list => {
              return (
                  <View style={styles.daymodalcontent} > 
                      <View style={styles.daymodaltheme}>
-                         <View style={[styles.daymodalcolortheme, { borderColor: day_list.theme_color }, { backgroundColor: day_list.theme_color }, { left: wp("1.5%") }, { top: wp("3%") }]} />
+                         <View style={[styles.daymodalcolortheme, { borderColor: getColor(todo_list.color) }, { backgroundColor: getColor(todo_list.color) }, { left: wp("1.5%") }, { top: wp("3%") }]} />
                      </View>
  
                      <View style={styles.daymodaltext}>
-                         <Text style={{ fontSize: 17, color: day_list.content_color }}>{day_list.content}</Text>
-                         <Text style={{ fontSize: 10, color: Colors.darkgray }}>{day_list.time}</Text>
+                         <Text style={{ fontSize: 17, color: getColor(todo_list.color) }}>{todo_list.title}</Text>
                      </View>
                  </View>
              )
-         }) */
+         })
 
         return (
 
@@ -338,6 +338,7 @@ export default class HomeScreen extends Component {
                         changeYearMonth={this.changeYearMonth}
                         setDateModal={this.setDateModal}
                         gotoAddScreen={this.gotoAddScreen}
+                        CalendarheaderMonth={this.state.calendarheader_month}
                     /* dayContent={this.state.day_data} */
 
                     />
@@ -359,7 +360,7 @@ export default class HomeScreen extends Component {
 
                         <ScrollView style={styles.scrollView}>
                             <View style={styles.daymodallist}>
-                                {/*  {day_list} */}
+                                 {todo_list}
                             </View>
                         </ScrollView>
 

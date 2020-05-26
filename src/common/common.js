@@ -245,7 +245,7 @@ export function change_month(month) {
 
     let result;
 
-    if (month.length == 2 && month < 10)
+    if (month < 10)
         result = month.substring(1);
     else
         result = month;
@@ -263,7 +263,7 @@ export function change_date(date) {
 
     let result;
 
-    if (date.length == 2 && date < 10)
+    if (date < 10)
         result = date.substring(1);
     else
         result = date;
