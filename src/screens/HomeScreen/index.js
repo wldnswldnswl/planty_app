@@ -122,10 +122,10 @@ export default class HomeScreen extends Component {
     changePickerModal = (date, calendar) => {
         this.setState({ PickerYear: date.year });
         this.setState({ PickerMonth: date.month });
-        this.setState({ PickerCalendar: calendar});
+        this.setState({ PickerCalendar: calendar });
 
         this.forceUpdate();
-    } 
+    }
 
     /*
         name:  setPickerModal
@@ -181,18 +181,13 @@ export default class HomeScreen extends Component {
         const end_date = this.state.year + "." + month + "." + date;
         const start_date = this.state.year + "." + month + "." + date;
 
-        console.log("month: ", month);
-        
         const path_todolist = "/todolist/getCurrentDayList/" + JSON.parse(this.state.email) + "/" + end_date;
         const path_calendarlist = "/calendar/getCurrentDayList/" + JSON.parse(this.state.email) + "/" + start_date;
         const response_todolist = await getApi("ApiToDoList", path_todolist);
-        /* const response_calendarlist = await getApi("ApiCalendar", path_calendarlist); */
-
-        console.log("response_todolist: ", response_todolist);
-        /* console.log("response_calendarlist: ", response_calendarlist); */
+        const response_calendarlist = await getApi("ApiCalendar", path_calendarlist);
 
         this.setState({ TodoList: response_todolist });
-       /*  this.setState({ calendar_list: response_calendarlist }); */
+        this.setState({ CalendarList: response_calendarlist });
 
     }
 
@@ -205,7 +200,7 @@ export default class HomeScreen extends Component {
         this.setState({ year: calendar.toString('yyyy') });
         this.setState({ month: change_month(calendar.toString('MM')) });
 
-       /*  this.forceUpdate(); */
+        /*  this.forceUpdate(); */
     }
 
     goToUpdateScreen = (index, day_list) => {
@@ -222,19 +217,55 @@ export default class HomeScreen extends Component {
     render() {
 
         //할일 목록들 day_list에 맵핑
-         const todo_list = this.state.TodoList.map(todo_list => {
-             return (
-                 <View style={styles.daymodalcontent} > 
-                     <View style={styles.daymodaltheme}>
-                         <View style={[styles.daymodalcolortheme, { borderColor: getColor(todo_list.color) }, { backgroundColor: getColor(todo_list.color) }, { left: wp("1.5%") }, { top: wp("3%") }]} />
-                     </View>
- 
-                     <View style={styles.daymodaltext}>
-                         <Text style={{ fontSize: 17, color: getColor(todo_list.color) }}>{todo_list.title}</Text>
-                     </View>
-                 </View>
-             )
-         })
+        const todo_list = this.state.TodoList.map(todo_list => {
+            return (
+                <View style={styles.daymodalcontent} >
+                    <View style={styles.daymodaltheme}>
+                        <View style={[styles.daymodalcolortheme, { borderColor: getColor(todo_list.color) }, { backgroundColor: getColor(todo_list.color) }, { left: wp("1.5%") }, { top: wp("3%") }]} />
+                    </View>
+
+                    <View style={styles.daymodaltext}>
+                        <Text style={{ fontSize: 17, color: getColor(todo_list.color) }}>{todo_list.title}</Text>
+                    </View>
+                </View>
+            )
+        })
+
+        //일정 목록들 day_list에 맵핑
+        const calendar_list = this.state.CalendarList.map(calendar_list => {
+            if (calendar_list.start_date.slice(0, 10) == calendar_list.end_date.slice(0, 10)) {
+                return (
+                    <View style={styles.daymodalcontent} >
+                        <View style={styles.daymodaltheme}>
+                            <View style={[styles.daymodalcolortheme, { borderColor: getColor(calendar_list.color) }, { backgroundColor: getColor(calendar_list.color) }, { left: wp("1.5%") }, { top: wp("3%") }]} />
+                        </View>
+
+                        <View style={styles.daymodaltext}>
+                            <Text style={{ fontSize: 17, color: "black" }}>{calendar_list.title}</Text>
+
+                            <Text style={{ fontSize: 10, color: "gray" }}>{calendar_list.start_date.slice(14, 22)} - {calendar_list.end_date.slice(14, 22)}</Text>
+                        </View>
+                    </View>
+                )
+            }
+            else {
+                /* const start_time = calendar_list.start_date */
+                return (
+                    <View style={styles.daymodalcontent} >
+                        <View style={styles.daymodaltheme}>
+                            <View style={[styles.daymodalcolortheme, { borderColor: getColor(calendar_list.color) }, { backgroundColor: getColor(calendar_list.color) }, { left: wp("1.5%") }, { top: wp("3%") }]} />
+                        </View>
+
+                        <View style={styles.daymodaltext}>
+                            <Text style={{ fontSize: 17, color: "black" }}>{calendar_list.title}</Text>
+                        </View>
+                        <View style={styles.daymodaltime}>
+                            <Text style={{ fontSize: 7, color: "gray" }}></Text>
+                        </View>
+                    </View>
+                )
+            }
+        })
 
         return (
 
@@ -339,8 +370,6 @@ export default class HomeScreen extends Component {
                         setDateModal={this.setDateModal}
                         gotoAddScreen={this.gotoAddScreen}
                         CalendarheaderMonth={this.state.calendarheader_month}
-                    /* dayContent={this.state.day_data} */
-
                     />
 
                 </View>
@@ -360,7 +389,8 @@ export default class HomeScreen extends Component {
 
                         <ScrollView style={styles.scrollView}>
                             <View style={styles.daymodallist}>
-                                 {todo_list}
+                                {todo_list}
+                                {calendar_list}
                             </View>
                         </ScrollView>
 
