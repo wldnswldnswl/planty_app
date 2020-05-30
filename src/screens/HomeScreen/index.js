@@ -249,18 +249,23 @@ export default class HomeScreen extends Component {
                 )
             }
             else {
-                /* const start_time = calendar_list.start_date */
+                const start_date = calendar_list.start_date.toString();
+                const end_date = calendar_list.end_date.toString();
+                const start_date_mon = change_month(start_date.slice(5, 7));
+                const start_date_date = change_date(start_date.slice(8, 10));
+                const end_date_mon = change_month(end_date.slice(5, 7));
+                const end_date_date = change_month(end_date.slice(8, 10));
+
                 return (
                     <View style={styles.daymodalcontent} >
                         <View style={styles.daymodaltheme}>
                             <View style={[styles.daymodalcolortheme, { borderColor: getColor(calendar_list.color) }, { backgroundColor: getColor(calendar_list.color) }, { left: wp("1.5%") }, { top: wp("3%") }]} />
                         </View>
-
+                        
                         <View style={styles.daymodaltext}>
                             <Text style={{ fontSize: 17, color: "black" }}>{calendar_list.title}</Text>
-                        </View>
-                        <View style={styles.daymodaltime}>
-                            <Text style={{ fontSize: 7, color: "gray" }}></Text>
+            
+                            <Text style={{ fontSize: 10, color: "gray" }}>{start_date_mon}. {start_date_date}. {start_date.slice(11, 12)} {start_date.slice(14)} - {end_date_mon}. {end_date_date}. {end_date.slice(11, 12)} {end_date.slice(14)}</Text>
                         </View>
                     </View>
                 )
