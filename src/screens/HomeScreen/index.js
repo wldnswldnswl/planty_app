@@ -32,10 +32,7 @@ import { SafeAreaView } from 'react-navigation';
 import { ScrollView } from 'react-native-gesture-handler';
 import { getApi, change_date, change_month, getColor } from '../../common/common';
 
-const temp_calendar = 'default';
-
 export default class HomeScreen extends Component {
-
 
     constructor(props) {
         super(props);
@@ -124,7 +121,7 @@ export default class HomeScreen extends Component {
         this.setState({ PickerMonth: date.month });
         this.setState({ PickerCalendar: calendar });
 
-        this.forceUpdate();
+        /* this.forceUpdate(); */
     }
 
     /*
@@ -200,7 +197,7 @@ export default class HomeScreen extends Component {
         this.setState({ year: calendar.toString('yyyy') });
         this.setState({ month: change_month(calendar.toString('MM')) });
 
-        /*  this.forceUpdate(); */
+        this.forceUpdate();
     }
 
     goToUpdateScreen = (index, day_list) => {
@@ -261,10 +258,10 @@ export default class HomeScreen extends Component {
                         <View style={styles.daymodaltheme}>
                             <View style={[styles.daymodalcolortheme, { borderColor: getColor(calendar_list.color) }, { backgroundColor: getColor(calendar_list.color) }, { left: wp("1.5%") }, { top: wp("3%") }]} />
                         </View>
-                        
+
                         <View style={styles.daymodaltext}>
                             <Text style={{ fontSize: 17, color: "black" }}>{calendar_list.title}</Text>
-            
+
                             <Text style={{ fontSize: 10, color: "gray" }}>{start_date_mon}. {start_date_date}. {start_date.slice(11, 12)} {start_date.slice(14)} - {end_date_mon}. {end_date_date}. {end_date.slice(11, 12)} {end_date.slice(14)}</Text>
                         </View>
                     </View>
@@ -305,7 +302,6 @@ export default class HomeScreen extends Component {
                                     calendar_flag={2}
                                     onDayPress={this.onDayPress}
                                     Calendarheader_month={this.state.Calendarheader_month}
-                                    onDayPress={this.onDayPress}
                                     markedDates={{
                                         [this.state.selected]: {
                                             selected: true,
@@ -374,7 +370,6 @@ export default class HomeScreen extends Component {
                         changeYearMonth={this.changeYearMonth}
                         setDateModal={this.setDateModal}
                         gotoAddScreen={this.gotoAddScreen}
-                        CalendarheaderMonth={this.state.calendarheader_month}
                     />
 
                 </View>
