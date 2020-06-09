@@ -17,14 +17,40 @@ import * as Common from '../common/common';
 import Amplify from 'aws-amplify';
 import awsConfig from '../aws-exports';
 
+// about redux-persist
+// import { connect } from 'react-redux';
+// import { login, logout } from '../common/reducers/status.reducer';
+import { Provider } from 'react-redux';
+import configureStore from '../common/store';
+// import { reducer } from '../common/reducers';
+
 const Stack  = createStackNavigator();
 Common.setCalendarConfig(); // react-native-calendars 환경설정
 Amplify.configure(awsConfig); // Amplify 환경설정
 
 export default function MyStack() {
 
+    //  const mapStateToProps = (state) => ({
+
+    //     number: state.isLogin.status
+      
+    //   });
+
+    //   const mapDispatchToProps = (dispatch) => ({
+
+    //     increment: () => dispatch(increment()),
+      
+    //     decrement: () => dispatch(decrement())
+      
+    //   });
+
+    //   const Container = connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
+      const { store, persistor } = configureStore();
+
+      console.log("상태: ", persistor);
     return (
         // 화면목록
+        <Provider store={store}>
         <NavigationContainer>
             <Stack.Navigator
                 screenOptions={{
@@ -49,6 +75,7 @@ export default function MyStack() {
 
             
         </NavigationContainer>
+        </Provider>
                        
 
 

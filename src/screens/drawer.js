@@ -92,6 +92,7 @@ export default function App() {
             }
           }
         />
+        {/* //로그아웃 버튼 생성하기 */}
       </Drawer.Navigator>
   );
 }

@@ -8,11 +8,18 @@ import {
     TouchableOpacity,
     AsyncStorage
 } from 'react-native';
-import { getApi, postApi } from '../../common/common'
+import {
+    Switch,
+    Route,
+    Link
+} from "react-router-dom";
+import { getApi, postApi } from '../../common/common';
 import common from '../../../styles/common'; // common styles
 import styles from './style';
 import { color } from 'react-native-reanimated';
-
+import { login, logout }  from '../../common/reducers/status.reducer';
+import isLogin  from '../../common/reducers/status.reducer';
+import { connect } from 'react-redux';
 
 export default class LoginScreen extends Component {
 
@@ -24,14 +31,16 @@ export default class LoginScreen extends Component {
             pwd: null,
             nickname: null
         }
+
+
     }
 
-    //functions
+    //functions  
     /*
         name: _doLogin
         description: show Login Screen
     */
-    async _doLogin(){ 
+    async _doLogin() { 
      
         // alert(JSON.stringify(this.state));
         //get
@@ -59,7 +68,12 @@ export default class LoginScreen extends Component {
 
                 // console.log(this.state.email + " "+this.state.nickname);
     
-
+                const isLoginContainer = connect(mapStateToProps, mapDispatchToProps)(LoginScreen);
+                // console.log(isLoginContainer);
+                // console.log(login().type);
+                // console.log("뭘까:",isLogin(login().type));
+                // this.handleLogin =  handleLogin.bind();
+                // console.log(isLogin);
                 this.props.navigation.navigate('Home', {screen : 'Home', params: {
                     email : this.state.email,
                     nickname: this.state.nickname
@@ -77,7 +91,6 @@ export default class LoginScreen extends Component {
         description: login with Naver account
     */
     _doNaverLogin(){
-        alert("Ddd");
         this.props.navigation.navigate('Home'); // 임시로 써놓음. 네이버연동 알아보는 사람이 알아서 만들기,,
     }
 
@@ -102,6 +115,7 @@ export default class LoginScreen extends Component {
     */
     render() {
         return (
+            
             <View style={styles.container}>
                 <View style={styles.titleArea}>
                     {/* 로고 이미지 삽입 */}
@@ -130,28 +144,57 @@ export default class LoginScreen extends Component {
                 </View>
 
                 <View style={styles.buttonArea}>
-                    <TouchableOpacity
-                        style={[styles.button, styles.blue]}
-                        onPress={this._doLogin.bind(this)}>
-                        <Text style={styles.buttonTitle}>로그인</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={this._doNaverLogin.bind(this)}
-                        style={[styles.button, styles.green]}>
-                        <Image source={require('../../../assets/naver_login_green.jpg')}
-                            style={{ width: 287, height: 50 }} />
-                    </TouchableOpacity>
-                    <Text style={[styles.smallText, common.mt2_5]}>아직 회원이 아니신가요?
-                         <Text
-                            style={common.linkEffect}
-                            onPress={this._goJoinScreen.bind(this)}>회원가입</Text>
-                    </Text>
-                </View>
+        <TouchableOpacity
+            style={[styles.button, styles.blue]}
+            onPress={this._doLogin.bind(this)}>
+            <Text style={styles.buttonTitle}>로그인</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+            onPress={this._doNaverLogin.bind(this)}
+            style={[styles.button, styles.green]}>
+            <Image source={require('../../../assets/naver_login_green.jpg')}
+                style={{ width: 287, height: 50 }} />
+        </TouchableOpacity>
+        <Text style={[styles.smallText, common.mt2_5]}>아직 회원이 아니신가요?
+             <Text
+                style={common.linkEffect}
+                onPress={this._goJoinScreen.bind(this)}>회원가입</Text>
+        </Text>
+    </View>
                    
-            </View>
-            
+            </View>            
         );
     }
 }
 
 
+
+const mapStateToProps = (state) => ({
+
+    isLogin : state.isLogin.status
+  
+});
+
+const mapDispatchToProps = (dispatch) => ({
+
+    login: () => dispatch(login()),
+  
+    logout: () => dispatch(logout())
+  
+  });
+
+  const LoginButton = (props) => {
+    const { status, login, logout } = props;
+    
+    const handleLogin = () => {
+      login();
+    };
+  
+    const handleLogout = () => {
+      logout();
+    };
+  
+    return (
+       <View></View>
+    );
+  };
