@@ -85,8 +85,21 @@ export default class HomeScreen extends Component {
        name:  gotoAddScreen
        description: show Add Screen with params
    */
-    gotoAddScreen = () => {
+    gotoAddScreen = (bool_params) => {
+
         this.props.navigation.navigate("Add", {
+            isNew: bool_params,
+            year: this.state.year,
+            month: this.state.CalendarMonth,
+            date: this.state.CalendarDate,
+            day: this.state.CalendarDay,
+            calendarheader_month: this.state.Calendarheader_month
+        });
+    }
+
+    gotoToDoScreen = (bool_params) => {
+        this.props.navigation.navigate("ToDo", {
+            isNew: bool_params,
             year: this.state.year,
             month: this.state.CalendarMonth,
             date: this.state.CalendarDate,
@@ -205,18 +218,19 @@ export default class HomeScreen extends Component {
             case 0: //캘린더
                 break;
             case 1: //할일
-                this.props.navigation.navigate("ToDo", { data: day_list });
+                this.props.navigation.navigate("ToDo", { data: day_lis });
                 break;
 
         }
     }
     // HomeScreen : 캘린더
+    
     render() {
-
+        
         //할일 목록들 day_list에 맵핑
         const todo_list = this.state.TodoList.map(todo_list => {
             return (
-                <View style={styles.daymodalcontent} >
+                <View style={styles.daymodalcontent}  onStartShouldSetResponder = {() => {this.gotoToDoScreen(false); this.toggleCalendarModal();}}>
                     <View style={styles.daymodaltheme}>
                         <View style={[styles.daymodalcolortheme, { borderColor: getColor(todo_list.color) }, { backgroundColor: getColor(todo_list.color) }, { left: wp("1.5%") }, { top: wp("3%") }]} />
                     </View>
@@ -232,13 +246,13 @@ export default class HomeScreen extends Component {
         const calendar_list = this.state.CalendarList.map(calendar_list => {
             if (calendar_list.start_date.slice(0, 10) == calendar_list.end_date.slice(0, 10)) {
                 return (
-                    <View style={styles.daymodalcontent} >
+                    <View style={styles.daymodalcontent} onStartShouldSetResponder = {() => {this.gotoAddScreen(false); this.toggleCalendarModal();}}>
                         <View style={styles.daymodaltheme}>
                             <View style={[styles.daymodalcolortheme, { borderColor: getColor(calendar_list.color) }, { backgroundColor: getColor(calendar_list.color) }, { left: wp("1.5%") }, { top: wp("3%") }]} />
                         </View>
 
                         <View style={styles.daymodaltext}>
-                            <Text style={{ fontSize: 17, color: "black" }}>{calendar_list.title}</Text>
+                            <Text style={{ fontSize: 17, color: "black" }} >{calendar_list.title}</Text>
 
                             <Text style={{ fontSize: 10, color: "gray" }}>{calendar_list.start_date.slice(14, 22)} - {calendar_list.end_date.slice(14, 22)}</Text>
                         </View>
@@ -261,16 +275,13 @@ export default class HomeScreen extends Component {
 
                         <View style={styles.daymodaltext}>
                             <Text style={{ fontSize: 17, color: "black" }}>{calendar_list.title}</Text>
-
                             <Text style={{ fontSize: 10, color: "gray" }}>{start_date_mon}. {start_date_date}. {start_date.slice(11, 12)} {start_date.slice(14)} - {end_date_mon}. {end_date_date}. {end_date.slice(11, 12)} {end_date.slice(14)}</Text>
                         </View>
                     </View>
                 )
             }
         })
-
         return (
-
             <View style={styles.container}>
                 <View style={styles.nav}>
                     <Icon name="ios-menu" size={30} color={Colors.gray}
@@ -374,11 +385,13 @@ export default class HomeScreen extends Component {
 
                 </View>
 
+                {/* 달력페이지 모달 */}
                 <TouchableHighlight style={common.addButton}
-                    underlayColor={Colors.clicked} onPress={this.gotoAddScreen.bind(this)}>
+                    underlayColor={Colors.clicked} onPress={this.gotoAddScreen.bind(this,true)}>
                     <Text style={{ fontSize: 50, color: 'white' }}>+</Text>
                 </TouchableHighlight>
 
+                 {/* 팝업창 내 모달 */}
                 <Modal isVisible={this.state.CalendarModalVisible} onBackdropPress={() => { this.toggleCalendarModal() }} >
                     <View style={styles.daymodal_container} >
                         <View style={styles.daymodalheader} />
@@ -387,15 +400,15 @@ export default class HomeScreen extends Component {
                         </View>
                         <View style={styles.daymodalline} />
 
-                        <ScrollView style={styles.scrollView}>
-                            <View style={styles.daymodallist}>
+                        <ScrollView style={styles.scrollView}> 
+                            <View style={styles.daymodallist}>    
                                 {todo_list}
                                 {calendar_list}
                             </View>
                         </ScrollView>
 
                         <TouchableHighlight style={common.addButton}
-                            underlayColor={Colors.clicked} onPress={() => { this.gotoAddScreen(this); this.toggleCalendarModal() }}>
+                            underlayColor={Colors.clicked} onPress={() => { this.gotoAddScreen(true); this.toggleCalendarModal() }}>
                             <Text style={{ fontSize: 50, color: 'white' }}>+</Text>
                         </TouchableHighlight>
                     </View>

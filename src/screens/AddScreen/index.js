@@ -29,6 +29,7 @@ import { getApi, postApi, getDateString, getColor } from '../../common/common'
 import common from '../../../styles/common';
 import styles from './style';
 import { RotationGestureHandler } from 'react-native-gesture-handler';
+import { API } from 'aws-amplify';
 
 // 시간을 저장하는 배열 생성
 var hour_arr = new Array();
@@ -53,6 +54,7 @@ export default class AddScreen extends Component {
         super(props);
         this.sp_am_pm = React.createRef();
 
+        console.log("props: ",props);
          selected: undefined
         this.state = {
             StartCalendarModalVisible: false,
@@ -72,36 +74,42 @@ export default class AddScreen extends Component {
             repeat: 0,
             color: 0,
             // put params end
-        }
-
-        //시간배열에 데이터 삽입
-        for (var i = 0; i < 12; i++) {
-            var j = String(i + 1)
-            hour_arr.push(j)
-        }
-
-        //분배열에 데이터 삽입
-        for (var i = 0; i < 59; i++) {
-            var j = String(i + 1)
-            minute_arr.push(j)
-        }
-
-
-        this.getCurrentDate();
+        } 
 
     }
 
+    componentDidMount = async() => {
 
-    componentDidMount = async () => {
-
-        //getSession
-        await AsyncStorage.getItem("email", (errs, result) => {
+         //getSession
+         await AsyncStorage.getItem("email", (errs, result) => {
             if (!errs) {
                 if (result !== null) {
                     this.setState({ "email": JSON.parse(result) });
                 }
             }
         });
+
+          // 1) 새로 추가
+          if(this.props.route.params.isNew){ 
+            //시간배열에 데이터 삽입
+               for (var i = 0; i < 12; i++) {
+                   var j = String(i + 1)
+                   hour_arr.push(j)
+               }
+
+               //분배열에 데이터 삽입
+               for (var i = 0; i < 59; i++) {
+                   var j = String(i + 1)
+                   minute_arr.push(j)
+               }
+
+               this.getCurrentDate();
+       } 
+       // 2) 기존 데이터 수정 
+       else{
+           this.getSelectedInfo();
+       }
+
     }
 
     // functions
@@ -241,6 +249,13 @@ export default class AddScreen extends Component {
         // this.sp_am_pm.scrollToIndex(result.am_pm_i);
         // alert(final_date);
         // console.log("i: ",result.am_pm_i);
+    }
+
+    getSelectedInfo = async () => {
+        // console.log("email: ",this.state.email);
+        // const path_calendarlist = "/calendar/getCurrentDayList/" + JSON.parse(this.state.email) + "/" + start_date;
+        // const response_calendarlist = await getApi("ApiCalendar", path_calendarlist);
+        // console.log("list: ",response_calendarlist);
     }
 
     // AddScreen: 일정(0), 할일(1) (전달된 파라미터에 따라 다른 view 생성하기!!!)

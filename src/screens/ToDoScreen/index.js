@@ -66,20 +66,6 @@ export default class ToDoScreen extends Component {
 
             final_date: null
         }
-
-        //시간배열에 데이터 삽입
-        for (var i = 0; i < 12; i++) {
-            var j = String(i + 1)
-            hour_arr.push(j)
-        }
-
-        //분배열에 데이터 삽입
-        for (var i = 0; i < 59; i++) {
-            var j = String(i + 1)
-            minute_arr.push(j)
-        }
-       
-        this.getCurrentDate();
        
     }
 
@@ -93,6 +79,28 @@ export default class ToDoScreen extends Component {
                 }
              }     
         });
+
+        // 1) 새로 추가
+        if(this.props.route.params.isNew){ 
+            //시간배열에 데이터 삽입
+            for (var i = 0; i < 12; i++) {
+                var j = String(i + 1)
+                hour_arr.push(j)
+            }
+
+            //분배열에 데이터 삽입
+            for (var i = 0; i < 59; i++) {
+                var j = String(i + 1)
+                minute_arr.push(j)
+            }
+        
+            this.getCurrentDate();
+        }
+        // 2) 기존 데이터 수정 
+        else{
+            // this.getSelectedInfo();
+        }
+        
     }
 
     // functions
