@@ -116,21 +116,21 @@ app.get(path + "/getCurrentDayList" + hashKeyPath + sortKeyPath, function(req, r
     }
   }
 
-  let queryParams = {
+  let getItemParams = {
     TableName: tableName,
-    KeyConditions: params,
-    KeyConditionExpression: "#email = :email AND #end_date = :end_date",
+    ProjectionExpression: "color, title",
+    KeyConditionExpression: "#email = :email AND begins_with(#uuid, :uuid)",
     ExpressionAttributeNames:{
-      "#email": ":email",
-      "#end_date": ":end_date"
+      "#email": "email",
+      "#uuid": "uuid"
     },
     ExpressionAttributeValues: {
-      ":end_date": params["end_date"].substring(0, 10),
-      ":email": params["email"]
-    },
+      ":email": params["email"],
+      ":uuid": params["uuid"]
+    }
   }
 
-  dynamodb.query(queryParams, (err, data) => {
+  dynamodb.query(getItemParams, (err, data) => {
     if (err) {
       res.statusCode = 500;
       res.json({error: 'Could not load items: ' + err});

@@ -118,24 +118,24 @@ app.get(path + "/getCurrentDayList" + hashKeyPath + sortKeyPath, function(req, r
 
   let getItemParams = {
     TableName: tableName,
-    ProjectionExpression:"alarm, color, description, end_date, repeat, start_date, title",
-    KeyConditionExpression: "#email = :email",
-    ExpressionAttributeNames: {
-      "#email": "email"
+    ProjectionExpression: "color, end_date, start_date, title",
+    KeyConditionExpression: "#email = :email AND begins_with(#uuid, :uuid)",
+    ExpressionAttributeNames:{
+      "#email": "email",
+      "#uuid": "uuid"
     },
     ExpressionAttributeValues: {
-      "#email": "may@naver.com"
+      ":email": params["email"],
+      ":uuid": params["uuid"]
     }
   }
 
-  dynamodb.query(getItemParams,(err, data) => {
-    if(err) {
+  dynamodb.query(getItemParams, (err, data) => {
+    if (err) {
       res.statusCode = 500;
-      res.json({error: 'Could not load items: ' + err.message});
+      res.json({error: 'Could not load items: ' + err});
     } else {
-      data.Items.forEach(function(item){
-        console.log(item);
-      });
+      res.json(data.Items);
     }
   });
 });
@@ -175,7 +175,7 @@ app.post(path, function(req, res) {
     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
   }
 
-  let body = {
+   let body = {
     email : req.body.email, // 세션값
     start_date  : req.body.start_date, // must
     end_date : req.body.end_date,  // must
@@ -193,7 +193,6 @@ app.post(path, function(req, res) {
     TableName: tableName,
     Item: body
   }
-
   dynamodb.put(putItemParams, (err, data) => {
     if(err) {
       res.statusCode = 500;

@@ -83,7 +83,7 @@ import Colors from '../../../styles/colors'
     daymodal_container: {
         alignItems:"center",
         width:340,
-        height:480,
+        height:460,
         backgroundColor: 'white',
         borderRadius: 10,
         left: wp("4%")
@@ -132,7 +132,7 @@ import Colors from '../../../styles/colors'
 
     daymodaltext: {
         width: "100%",
-        height: "20%",
+        height: "30%",
         marginVertical: 15,
         marginLeft: 3
     },
@@ -140,9 +140,6 @@ import Colors from '../../../styles/colors'
     scrollView: {
         width:"90%"
     },
-
-    
-
 
 }) 
 

@@ -30,17 +30,9 @@ import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { SafeAreaView } from 'react-navigation';
 
 import { ScrollView } from 'react-native-gesture-handler';
-import { getApi, change_date, change_month } from '../../common/common';
-
-//일정 및 할일 색깔을 임시로 저장하는 변수
-var day_color;
-//일정 및 할일을 임시로 저장하는 변수
-var day_content;
-//일정 및 할일 데이터를 저장하는 변수
-/* var day_data = []; */
+import { getApi, change_date, change_month, getColor } from '../../common/common';
 
 export default class HomeScreen extends Component {
-
 
     constructor(props) {
         super(props);
@@ -52,53 +44,19 @@ export default class HomeScreen extends Component {
         this.state = {
             PickerModalVisible: false,
             CalendarModalVisible: false,
-            CalendarDate: 'default',
-            CalendarMonth: 'default',
-            CalendarDay: 'default',
-            pickerSelection: 'default',
+            CalendarDate: new Date().getDate(),
+            CalendarMonth: new Date().getMonth() + 1,
+            CalendarDay: new Date().getDay(),
+            PickerYear: new Date().getFullYear(),
+            PickerMonth: new Date().getMonth() + 1,
+            PickerCalendar: props.current ? parseDate(props.current) : XDate(),
             year: new Date().getFullYear(),
             month: new Date().getMonth() + 1,
             Calendarheader_month: props.current ? parseDate(props.current) : XDate(),
-            nickname : this.props.route.params.nickname,
-            //일정 내용 임시로 지정함, 실제 데이터 받아올때는 어떻게 할지 아직 모르겠음
-            day_data: [
-                {
-                    //날짜를 이용하여 구분
-                    day: "2020-05-06",
-                    theme_color: "#e74c3c",
-                    content: "강의 듣기",
-                    content_color: "#313340",
-                    //다른 어플들 보면 일정 시간 설정한것도 표시해서 추가함
-                    time: "하루 종일"
-                },
-                {
-                    day: "2020-05-06",
-                    theme_color: "#f1c40f",
-                    content: "멍때리기",
-                    content_color: "#f1c40f",
-                    //할일 목록은 일정 시간을 표시하지 않음
-                    time: ""
-                },
-                {
-                    day: "2020-05-08",
-                    theme_color: "#f1c40f",
-                    content: "멍때리기",
-                    content_color: "#f1c40f",
-                    //할일 목록은 일정 시간을 표시하지 않음
-                    time: ""
-                },
-                {
-                    day: "2020-05-10",
-                    theme_color: "#e74c3c",
-                    content: "강의듣기",
-                    content_color: "#313340",
-                    //할일 목록은 일정 시간을 표시하지 않음
-                    time: "하루 종일"
-                }
-            ],
+            nickname: this.props.route.params.nickname,
             email: "",
-            todo_list: [],
-            calendar_list: []
+            CalendarList: [],
+            TodoList: []
         }
 
         this.gotoAddScreen = this.gotoAddScreen.bind(this);
@@ -108,11 +66,11 @@ export default class HomeScreen extends Component {
     componentDidMount = async () => {
 
         await AsyncStorage.getItem("email", (errs, result) => {
-          if (!errs) {
-            if (result !== null) {
-              this.setState({ "email": result });
+            if (!errs) {
+                if (result !== null) {
+                    this.setState({ "email": result });
+                }
             }
-          }
         });
     }
 
@@ -125,27 +83,25 @@ export default class HomeScreen extends Component {
 
     /*
        name:  gotoAddScreen
-       description: show Add Screen
-   */
-    gotoAddScreen = () => {
-        this.props.navigation.navigate("Add");
-    }
-
-    /*
-       name:  gotoAddScreen_params
        description: show Add Screen with params
    */
-    /* gotoAddScreen_params = (flag, year, month, date, day) => {
-        this.props.navigation.navigate("Add", { "flag": flag, "year": year, "month": month, "date": date, "day": day });
+    gotoAddScreen = () => {
+        this.props.navigation.navigate("Add", {
+            year: this.state.year,
+            month: this.state.CalendarMonth,
+            date: this.state.CalendarDate,
+            day: this.state.CalendarDay,
+            calendarheader_month: this.state.Calendarheader_month
+        });
     }
- */
+
     /*
        name:  gotoSideNav
        description: show Setting Nav
    */
     gotoSideNav() {
         // this.props.route.params.nickname
-        this.props.navigation.toggleDrawer(name="아이디뭐야");
+        this.props.navigation.toggleDrawer(name = "아이디뭐야");
     }
 
     /*
@@ -154,6 +110,27 @@ export default class HomeScreen extends Component {
     */
     togglePickerModal = () => {
         this.setState({ PickerModalVisible: !this.state.PickerModalVisible });
+    }
+
+    /*
+        name:  changePickerModal
+        description: change year,month in pickerModal
+    */
+    changePickerModal = (date, calendar) => {
+        this.setState({ PickerYear: date.year });
+        this.setState({ PickerMonth: date.month });
+        this.setState({ PickerCalendar: calendar });
+
+        /* this.forceUpdate(); */
+    }
+
+    /*
+        name:  setPickerModal
+        description: set year,month in pickerModal when press the header
+    */
+    setPickerModal() {
+        this.setState({ PickerYear: this.state.year });
+        this.setState({ PickerMonth: this.state.month });
     }
 
     /*
@@ -193,17 +170,22 @@ export default class HomeScreen extends Component {
         name:  setDateModal
         description: set month, date, day in calendar modal
     */
-    setDateModal = async(month, date, day ) => {
+    setDateModal = async (month, date, day) => {
         this.setState({ CalendarDate: change_date(date) });
         this.setState({ CalendarMonth: change_month(month) });
         this.setState({ CalendarDay: this.setDayName(day) });
 
-        const end_date = this.state.year+"."+month+"."+date;
-        const response = await getApi("ApiCalendar","/calendar/getCurrentDayList/"+JSON.parse(this.state.email)+"/"+end_date);
-       
-        /* const response = await getApi("ApiToDoList","/todolist/getCurrentDayList/planty.adm@gmail.com/2020.05.06(수) 오전 03:55_33eef3e7-d45b-4cc0-a606-9ae102ed52c3"); */
-        
-        console.log("response: ",response);
+        const end_date = this.state.year + "." + month + "." + date;
+        const start_date = this.state.year + "." + month + "." + date;
+
+        const path_todolist = "/todolist/getCurrentDayList/" + JSON.parse(this.state.email) + "/" + end_date;
+        const path_calendarlist = "/calendar/getCurrentDayList/" + JSON.parse(this.state.email) + "/" + start_date;
+        const response_todolist = await getApi("ApiToDoList", path_todolist);
+        const response_calendarlist = await getApi("ApiCalendar", path_calendarlist);
+
+        this.setState({ TodoList: response_todolist });
+        this.setState({ CalendarList: response_calendarlist });
+
     }
 
     /*
@@ -213,17 +195,17 @@ export default class HomeScreen extends Component {
     changeYearMonth = (calendar) => {
         this.setState({ Calendarheader_month: calendar });
         this.setState({ year: calendar.toString('yyyy') });
-        this.setState({ month: change_month(calendar.toString('MM'))});
+        this.setState({ month: change_month(calendar.toString('MM')) });
 
         this.forceUpdate();
     }
-    
+
     goToUpdateScreen = (index, day_list) => {
-        switch(index){
+        switch (index) {
             case 0: //캘린더
                 break;
             case 1: //할일
-                this.props.navigation.navigate("ToDo", {data : day_list});
+                this.props.navigation.navigate("ToDo", { data: day_list });
                 break;
 
         }
@@ -232,20 +214,60 @@ export default class HomeScreen extends Component {
     render() {
 
         //할일 목록들 day_list에 맵핑
-       /*  const day_list = this.state.day_data.map(day_list => {
+        const todo_list = this.state.TodoList.map(todo_list => {
             return (
-                <View style={styles.daymodalcontent} > 
+                <View style={styles.daymodalcontent} >
                     <View style={styles.daymodaltheme}>
-                        <View style={[styles.daymodalcolortheme, { borderColor: day_list.theme_color }, { backgroundColor: day_list.theme_color }, { left: wp("1.5%") }, { top: wp("3%") }]} />
+                        <View style={[styles.daymodalcolortheme, { borderColor: getColor(todo_list.color) }, { backgroundColor: getColor(todo_list.color) }, { left: wp("1.5%") }, { top: wp("3%") }]} />
                     </View>
 
                     <View style={styles.daymodaltext}>
-                        <Text style={{ fontSize: 17, color: day_list.content_color }}>{day_list.content}</Text>
-                        <Text style={{ fontSize: 10, color: Colors.darkgray }}>{day_list.time}</Text>
+                        <Text style={{ fontSize: 17, color: getColor(todo_list.color) }}>{todo_list.title}</Text>
                     </View>
                 </View>
             )
-        }) */
+        })
+
+        //일정 목록들 day_list에 맵핑
+        const calendar_list = this.state.CalendarList.map(calendar_list => {
+            if (calendar_list.start_date.slice(0, 10) == calendar_list.end_date.slice(0, 10)) {
+                return (
+                    <View style={styles.daymodalcontent} >
+                        <View style={styles.daymodaltheme}>
+                            <View style={[styles.daymodalcolortheme, { borderColor: getColor(calendar_list.color) }, { backgroundColor: getColor(calendar_list.color) }, { left: wp("1.5%") }, { top: wp("3%") }]} />
+                        </View>
+
+                        <View style={styles.daymodaltext}>
+                            <Text style={{ fontSize: 17, color: "black" }}>{calendar_list.title}</Text>
+
+                            <Text style={{ fontSize: 10, color: "gray" }}>{calendar_list.start_date.slice(14, 22)} - {calendar_list.end_date.slice(14, 22)}</Text>
+                        </View>
+                    </View>
+                )
+            }
+            else {
+                const start_date = calendar_list.start_date.toString();
+                const end_date = calendar_list.end_date.toString();
+                const start_date_mon = change_month(start_date.slice(5, 7));
+                const start_date_date = change_date(start_date.slice(8, 10));
+                const end_date_mon = change_month(end_date.slice(5, 7));
+                const end_date_date = change_month(end_date.slice(8, 10));
+
+                return (
+                    <View style={styles.daymodalcontent} >
+                        <View style={styles.daymodaltheme}>
+                            <View style={[styles.daymodalcolortheme, { borderColor: getColor(calendar_list.color) }, { backgroundColor: getColor(calendar_list.color) }, { left: wp("1.5%") }, { top: wp("3%") }]} />
+                        </View>
+
+                        <View style={styles.daymodaltext}>
+                            <Text style={{ fontSize: 17, color: "black" }}>{calendar_list.title}</Text>
+
+                            <Text style={{ fontSize: 10, color: "gray" }}>{start_date_mon}. {start_date_date}. {start_date.slice(11, 12)} {start_date.slice(14)} - {end_date_mon}. {end_date_date}. {end_date.slice(11, 12)} {end_date.slice(14)}</Text>
+                        </View>
+                    </View>
+                )
+            }
+        })
 
         return (
 
@@ -255,7 +277,7 @@ export default class HomeScreen extends Component {
                         onPress={this.gotoSideNav.bind(this)}
                     ></Icon>
 
-                    <TouchableOpacity onPress={() => { this.togglePickerModal() }}>
+                    <TouchableOpacity onPress={() => { this.togglePickerModal(); this.setPickerModal() }}>
                         <Text style={[common.font_title, { color: Colors.gray }]}>{this.state.year}.{this.state.month}</Text>
                     </TouchableOpacity>
                     <Modal isVisible={this.state.PickerModalVisible} onBackdropPress={() => { this.togglePickerModal() }} >
@@ -266,9 +288,9 @@ export default class HomeScreen extends Component {
 
                             <View style={styles.modalyearmonth}>
 
-                                <Text style={[common.font_title, { color: Colors.darkPrimary }, { fontSize: 43 }]}>{this.state.year}</Text>
+                                <Text style={[common.font_title, { color: Colors.darkPrimary }, { fontSize: 43 }]}>{this.state.PickerYear}</Text>
 
-                                <Text style={[common.font_title, { color: Colors.darkPrimary }, { fontSize: 28 }]}>{this.state.month}월</Text>
+                                <Text style={[common.font_title, { color: Colors.darkPrimary }, { fontSize: 28 }]}>{this.state.PickerMonth}월</Text>
 
                             </View>
 
@@ -277,15 +299,30 @@ export default class HomeScreen extends Component {
 
                                 <Calendar
                                     style={styles.calendar}
-                                    current={this.state.Calendarheader_month}
-                                    calendar_flag={false}
+                                    calendar_flag={2}
+                                    onDayPress={this.onDayPress}
+                                    Calendarheader_month={this.state.Calendarheader_month}
+                                    markedDates={{
+                                        [this.state.selected]: {
+                                            selected: true,
+                                            disableTouchEvent: true,
+                                            selectedDotColor: "orange"
+                                        }
+                                    }}
+                                    theme={{
+                                        textSectionTitleColor: Colors.darkgray,
+                                        selectedDayBackgroundColor: Colors.lightgray,
+                                        selectedDayTextColor: "black",
+                                        todayTextColor: Colors.darkPrimary,
+                                    }}
+                                    changePickerModal={this.changePickerModal}
                                 />
 
                             </View>
 
 
                             <View style={styles.modalButton}>
-                                <TouchableHighlight onPress={() => { this.togglePickerModal() }}>
+                                <TouchableHighlight onPress={() => { this.togglePickerModal(); this.changeYearMonth(this.state.PickerCalendar); }}>
                                     <Text style={[common.font_mid, { color: Colors.darkPrimary }]}>완료</Text>
                                 </TouchableHighlight>
                             </View>
@@ -304,8 +341,9 @@ export default class HomeScreen extends Component {
                     <Calendar
                         style={styles.Calendar}
                         calendarHeight={500}
+                        Calendarheader_month={this.state.Calendarheader_month}
                         hideExtraDays={false}
-                        onDayPress= {this.onDayPress}
+                        onDayPress={this.onDayPress}
                         markedDates={{
                             [this.state.selected]: {
                                 selected: true,
@@ -313,7 +351,7 @@ export default class HomeScreen extends Component {
                                 selectedDotColor: "orange"
                             }
                         }}
-                        calendar_flag={true}
+                        calendar_flag={1}
 
                         theme={{
                             "stylesheet.calendar.header": {
@@ -331,14 +369,15 @@ export default class HomeScreen extends Component {
                         toggleCalendarModal={this.toggleCalendarModal}
                         changeYearMonth={this.changeYearMonth}
                         setDateModal={this.setDateModal}
-                    /* dayContent={this.state.day_data} */
-
+                        gotoAddScreen={this.gotoAddScreen}
                     />
-                    <TouchableHighlight style={common.addButton}
-                        underlayColor={Colors.clicked} onPress={this.gotoAddScreen.bind(this)}>
-                        <Text style={{ fontSize: 50, color: 'white' }}>+</Text>
-                    </TouchableHighlight>
+
                 </View>
+
+                <TouchableHighlight style={common.addButton}
+                    underlayColor={Colors.clicked} onPress={this.gotoAddScreen.bind(this)}>
+                    <Text style={{ fontSize: 50, color: 'white' }}>+</Text>
+                </TouchableHighlight>
 
                 <Modal isVisible={this.state.CalendarModalVisible} onBackdropPress={() => { this.toggleCalendarModal() }} >
                     <View style={styles.daymodal_container} >
@@ -350,12 +389,13 @@ export default class HomeScreen extends Component {
 
                         <ScrollView style={styles.scrollView}>
                             <View style={styles.daymodallist}>
-                               {/*  {day_list} */}
+                                {todo_list}
+                                {calendar_list}
                             </View>
                         </ScrollView>
 
                         <TouchableHighlight style={common.addButton}
-                            underlayColor={Colors.clicked} onPress={() => {this.gotoAddScreen(); /* this.gotoAddScreen_params(true, this.state.CalendarMonth, this.state.CalendarDate, this.state.CalendarDay); */ this.toggleCalendarModal() }}>
+                            underlayColor={Colors.clicked} onPress={() => { this.gotoAddScreen(this); this.toggleCalendarModal() }}>
                             <Text style={{ fontSize: 50, color: 'white' }}>+</Text>
                         </TouchableHighlight>
                     </View>
@@ -365,9 +405,6 @@ export default class HomeScreen extends Component {
 
         );
 
-
-
-
     }
-} 
+}
 

@@ -98,7 +98,7 @@ import common from '../../../styles/common'
     modal_container: {
         alignItems:"center",
         width:330,
-        height:600,
+        height:550,
         left:wp("5%"),
         backgroundColor: 'white',
         borderRadius: 3,
@@ -106,7 +106,7 @@ import common from '../../../styles/common'
 
     modalheader: {
         width:'100%',
-        height:'3%',
+        height:'2.5%',
         justifyContent: 'center',
         alignItems: 'center',
         borderTopLeftRadius: 3,
@@ -114,16 +114,16 @@ import common from '../../../styles/common'
         backgroundColor:Colors.darkPrimary
     },
     
-    modalyearmonth: {
+    /* modalyearmonth: {
         width : '100%',
         height: '8%',
         justifyContent: 'center',
         alignItems: 'center'
-    },
+    }, */
 
     modalCalendar: {
         width : '100%',
-        height: '60%',
+        height: '65.5%',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'white'
@@ -131,7 +131,7 @@ import common from '../../../styles/common'
 
     modalHourContainer: {
         width : '100%',
-        height: '22%',
+        height: '24%',
         flexDirection: 'row'
     },
 
@@ -152,7 +152,7 @@ import common from '../../../styles/common'
 
     modalButton: {
         width : '100%',
-        height: '7%',
+        height: '8%',
         flexDirection: 'row',
         borderBottomLeftRadius: 3,
         borderBottomRightRadius: 3
