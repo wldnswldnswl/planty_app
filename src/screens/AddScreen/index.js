@@ -54,9 +54,9 @@ export default class AddScreen extends Component {
         super(props);
         this.sp_am_pm = React.createRef();
 
-        console.log("props: ",props);
-         selected: undefined
+        selected: undefined;
         this.state = {
+            isNew : this.props.route.params.isNew,
             StartCalendarModalVisible: false,
             EndCalendarModalVisible: false,
             ColorModalVisible: false,
@@ -78,20 +78,12 @@ export default class AddScreen extends Component {
 
     }
 
-    componentDidMount = async() => {
-
-         //getSession
-         await AsyncStorage.getItem("email", (errs, result) => {
-            if (!errs) {
-                if (result !== null) {
-                    this.setState({ "email": JSON.parse(result) });
-                }
-            }
-        });
+    componentWillMount = async() => {         
 
           // 1) 새로 추가
-          if(this.props.route.params.isNew){ 
-            //시간배열에 데이터 삽입
+          if(this.state.isNew){ 
+
+               //시간배열에 데이터 삽입
                for (var i = 0; i < 12; i++) {
                    var j = String(i + 1)
                    hour_arr.push(j)
@@ -110,6 +102,17 @@ export default class AddScreen extends Component {
            this.getSelectedInfo();
        }
 
+    }
+
+    componentDidMount = async() => {
+        //getSession
+        await AsyncStorage.getItem("email", (errs, result) => {
+            if (!errs) {
+                if (result !== null) {
+                    this.setState({ "email": JSON.parse(result) });
+                }
+            }
+        });
     }
 
     // functions
@@ -131,7 +134,7 @@ export default class AddScreen extends Component {
             repeat: this.state.repeat
         }
 
-        console.log(params);
+        // console.log(params);
         // console.log("getCalendar: ");
         // console.log(getApi('ApiCalendar','/calendar'));//&& params.end_date != null && params.end_date.trim() != ""
         if (params.title != null && params.title.trim() != "") {
@@ -150,6 +153,7 @@ export default class AddScreen extends Component {
     gotoToDoScreen = () => {
         const{route} = this.props;
         this.props.navigation.navigate("ToDo", {
+            isNew: this.state.isNew,
             year: route.params.year,
             month: route.params.month,
             date: route.params.date,
@@ -211,7 +215,6 @@ export default class AddScreen extends Component {
     */
     setThemeColor(Color) {
         this.state.color = Color;
-        console.log(this.state.color);
     }
 
     /*
@@ -220,7 +223,7 @@ export default class AddScreen extends Component {
     * @params: 
     * @history: 이지운
     */
-    getCurrentDate() {
+    getCurrentDate = () => {
         //현재 년도 저장
         year = new Date().getFullYear();
         //현재 월 저장
@@ -247,23 +250,35 @@ export default class AddScreen extends Component {
         result.am_pm == '오전' ? result.am_pm_i = 0 : 1;
 
         // this.sp_am_pm.scrollToIndex(result.am_pm_i);
-        // alert(final_date);
+        // console.log(result.final_date);
         // console.log("i: ",result.am_pm_i);
     }
 
     getSelectedInfo = async () => {
-        // console.log("email: ",this.state.email);
-        // const path_calendarlist = "/calendar/getCurrentDayList/" + JSON.parse(this.state.email) + "/" + start_date;
-        // const response_calendarlist = await getApi("ApiCalendar", path_calendarlist);
-        // console.log("list: ",response_calendarlist);
+        // const path_calendarlist = "/calendar/getCurrentDayList/" + JSON.parse(this.state.email) + "/" + this.state.start_date;
+        const path_calendarlist = "/calendar/getCurrentDayList/" + JSON.parse(this.state.email)+"/2020.06.17";
+
+        const response_calendarlist = await getApi("ApiCalendar", path_calendarlist);
+        console.log("===============================");
+        console.log("list: ",response_calendarlist);
+    }
+
+    deleteThisCalendar = () => {
+       
     }
 
     // AddScreen: 일정(0), 할일(1) (전달된 파라미터에 따라 다른 view 생성하기!!!)
     render() {
         //  const params = this.props.navigation.state;
         //  const itemId = params ? params.itemId : null;
-
         const { onValueChange } = this;
+        const isLoggedIn = !this.state.isNew;
+        let deleteBtn = null;
+        if(isLoggedIn){
+            deleteBtn  = <TouchableOpacity style={[styles.delete_btn]} onPress={this.deleteThisCalendar(this)}>
+                            <Text style={styles.off}>삭제</Text>
+                         </TouchableOpacity>;
+        }else deleteBtn = null;
 
         return (
 
@@ -275,7 +290,9 @@ export default class AddScreen extends Component {
                     <TouchableOpacity style={[styles.tab_btn, styles.off]} onPress={this.gotoToDoScreen.bind(this)}>
                         <Text style={styles.off}>할일</Text>
                     </TouchableOpacity>
+                    <View isLoggedIn = {isLoggedIn}>{deleteBtn}</View>               
                 </View>
+
                 <View style={styles.mainText}>
                     <TextInput style={[common.font_small, styles.textForm]} placeholder={'일정을 입력하세요'}
                         onChangeText={(text) => { this.setState({ title: text }) }}
@@ -596,7 +613,7 @@ export default class AddScreen extends Component {
                             <Picker.Item label="매년" value={4} />
                         </Picker>
                     </View>
-
+                                          
                     <TouchableOpacity style={[common.addButton, { left: 10 }]}
                         underlayColor={Colors.clicked} onPress={this.Back.bind(this)}>
                         <Text style={{ fontSize: 30, color: 'white' }}>X</Text>

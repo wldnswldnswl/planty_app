@@ -76,11 +76,20 @@ import common from '../../../styles/common'
         borderRadius:50,
         borderWidth:1,
         borderColor: Colors.darkPrimary,
+        backgroundColor:Colors.darkPrimary,
         padding:wp('2%'),
         width:wp('20%'),
         height:hp('5%'),
-        backgroundColor:Colors.darkPrimary,
         marginLeft: wp('2.5%')
+    },  
+
+    delete_btn:{
+        borderWidth:1,
+        borderColor: Colors.darkPrimary,
+        padding:wp('2%'),
+        width:wp('20%'),
+        height:hp('5%'),
+        marginLeft: wp('32%'),
     },  
 
     on:{

@@ -29,7 +29,8 @@ function CustomDrawerContent(props) {
       <View style = {[{flexDirection : 'column'},{alignItems : 'center'}, common.mv2, common.ml4]}>
       <Image source = {require('../../assets/dry-clean.png')} style={{width: 120, height: 120}} />
         <Text style={[common.font_bold, common.font_mid, common.font_gray, common.mt2,{textAlign:'center',width:wp('100%')}]}>
-          {/* {props} */}{console.log("p:",props.descriptors)}
+          {/* {props} */}
+          {/* {console.log("p:",props.descriptors)} */}
         </Text>
       {/* 클릭가능한 버전(Drawer의 컴포넌트) */}
       {/* <DrawerItem

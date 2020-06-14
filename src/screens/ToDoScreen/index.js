@@ -51,6 +51,7 @@ export default class ToDoScreen extends Component {
 
         /* console.log(this.props.navigation.getParam('data',"nodata")); */
         this.state = {
+            isNew : this.props.route.params.isNew,
             CalendarModalVisible: false,
             ColorModalVisible: false,
             isVisible: false,
@@ -69,19 +70,11 @@ export default class ToDoScreen extends Component {
        
     }
 
-    componentDidMount = async() => {
-
-        //getSession
-        await AsyncStorage.getItem("email", (errs,result) => {
-            if (!errs) {
-                if (result !== null) {
-                    this.setState({"email" : JSON.parse(result)});
-                }
-             }     
-        });
+    componentWillMount = async() => {
 
         // 1) 새로 추가
-        if(this.props.route.params.isNew){ 
+        if(this.state.isNew){ 
+
             //시간배열에 데이터 삽입
             for (var i = 0; i < 12; i++) {
                 var j = String(i + 1)
@@ -98,11 +91,21 @@ export default class ToDoScreen extends Component {
         }
         // 2) 기존 데이터 수정 
         else{
-            // this.getSelectedInfo();
+            this.getSelectedInfo();
         }
         
     }
 
+    componentDidMount = async() => {
+        //getSession
+        await AsyncStorage.getItem("email", (errs, result) => {
+            if (!errs) {
+                if (result !== null) {
+                    this.setState({ "email": JSON.parse(result) });
+                }
+            }
+        });
+    }
     // functions
 
     /*
@@ -110,7 +113,7 @@ export default class ToDoScreen extends Component {
         description: show Add Screen
     */
     gotoAddScreen() {
-        this.props.navigation.navigate("Add");
+        this.props.navigation.navigate("Add",  {isNew: this.state.isNew});
     }
 
     /*
@@ -126,7 +129,6 @@ export default class ToDoScreen extends Component {
             color: this.state.color
         }
 
-        console.log(params);
         // console.log("getToDoList: ");
         // console.log(getApi('ApiToDoList','/todolist'));//&& params.end_date != null && params.end_date.trim() != ""
         if(params.title != null && params.title.trim() != ""){
@@ -174,7 +176,6 @@ export default class ToDoScreen extends Component {
         description: set theme color
     */
     setThemeColor(Color) {
-        console.log("Color: ",Color);
         this.state.color = Color;
     }
 
@@ -185,7 +186,7 @@ export default class ToDoScreen extends Component {
     * @params: 
     * @history: 이지운
     */
-    getCurrentDate(){
+    getCurrentDate = () => {
         //현재 년도 저장
         year = new Date().getFullYear();
         //현재 월 저장
@@ -210,9 +211,22 @@ export default class ToDoScreen extends Component {
         this.state.end_date = result.final_date;
         result.am_pm == '오전' ? result.am_pm_i = 0 : 1;
         
-        
-        // alert(final_date);
+        // console.log("dd");
+        // console.log(result.final_date);
         // console.log("i: ",result.am_pm_i);
+    }
+
+    getSelectedInfo = async () => {
+        // const path_calendarlist = "/calendar/getCurrentDayList/" + JSON.parse(this.state.email) + "/" + this.state.start_date;
+        const path_calendarlist = "/calendar/getCurrentDayList/" + JSON.parse(this.state.email)+"/2020.06.17";
+
+        const response_calendarlist = await getApi("ApiCalendar", path_calendarlist);
+        console.log("===============================");
+        console.log("list: ",response_calendarlist);
+    }
+
+    deleteThisCalendar = () => {
+       
     }
 
     // AddScreen: 일정(0), 할일(1) (전달된 파라미터에 따라 다른 view 생성하기!!!)
@@ -220,7 +234,13 @@ export default class ToDoScreen extends Component {
         //  const params = this.props.navigation.state;
         //  const itemId = params ? params.itemId : null;
 
-
+            const isLoggedIn = !this.state.isNew;
+            let deleteBtn = null;
+            if(isLoggedIn){
+                deleteBtn  = <TouchableOpacity style={[styles.delete_btn]} onPress={this.deleteThisCalendar(this)}>
+                                <Text style={styles.off}>삭제</Text>
+                            </TouchableOpacity>;
+            }else deleteBtn = null;
         return (
 
             <View style={styles.container}>
@@ -231,6 +251,7 @@ export default class ToDoScreen extends Component {
                     <TouchableHighlight style={[styles.tab_btn, styles.on]} >
                         <Text style={styles.on}>할일</Text>
                     </TouchableHighlight>
+                    <View isLoggedIn = {isLoggedIn}>{deleteBtn}</View> 
                 </View>
                 <View style={styles.mainText}>
                     {/* title */}

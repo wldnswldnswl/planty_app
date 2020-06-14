@@ -37,9 +37,6 @@ export default class HomeScreen extends Component {
     constructor(props) {
         super(props);
 
-        console.log("시작");
-        console.log(props);
-
         selected: undefined
         this.state = {
             PickerModalVisible: false,
@@ -59,7 +56,7 @@ export default class HomeScreen extends Component {
             TodoList: []
         }
 
-        this.gotoAddScreen = this.gotoAddScreen.bind(this);
+        // this.gotoAddScreen = this.gotoAddScreen.bind(this);
 
     };
 

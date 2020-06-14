@@ -47,7 +47,7 @@ export default function MyStack() {
     //   const Container = connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
       const { store, persistor } = configureStore();
 
-      console.log("상태: ", persistor);
+    //   console.log("상태: ", persistor);
     return (
         // 화면목록
         <Provider store={store}>
