@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import LoginScreen from './LoginScreen'; 
 import JoinScreen from './JoinScreen'; 
 import FindInfoScreen from './FindInfoScreen'; 
+import ContentsScreen from './CustomerSupportItem/ContentsScreen';
 import HomeScreen from './HomeScreen'; 
-import ToDoListScreen from './ToDoListScreen'
+import ToDoListScreen from './ToDoListScreen';
 import ToDoScreen from './ToDoScreen';
 import AddScreen from './AddScreen';
 import DrawerScreen from './drawer';
@@ -68,9 +69,9 @@ export default function MyStack() {
                 {/* 3. 할일 화면 */}
                 <Stack.Screen name = "ToDo" component={ToDoScreen} /> 
 
-                {/* 4. 환경설정 메뉴바 */}
+                {/* 4. 고객지원 내용*/}
                 {/* <Stack.Screen name="ToDoList" component={ToDoListScreen} /> */}
-                {/* <Drawer.Screen name="Temp" component={TempScreen} /> */}
+                <Stack.Screen name="Contents" component={ContentsScreen} />
             </Stack.Navigator>  
 
             

@@ -30,7 +30,9 @@ function CustomDrawerContent(props) {
       <Image source = {require('../../assets/dry-clean.png')} style={{width: 120, height: 120}} />
         <Text style={[common.font_bold, common.font_mid, common.font_gray, common.mt2,{textAlign:'center',width:wp('100%')}]}>
           {/* {props} */}
-          {/* {console.log("p:",props.descriptors)} */}
+          {/* {console.log("p:",props)} */}
+          {/* {props.route.params.nickname} */}
+          {props.nickname}
         </Text>
       {/* 클릭가능한 버전(Drawer의 컴포넌트) */}
       {/* <DrawerItem
@@ -38,28 +40,28 @@ function CustomDrawerContent(props) {
         activeTintColor = "white"
         labelStyle = {[common.font_bold, common.font_mid]}
       /> */}
+     
       </View>
       <DrawerItemList {...props} />
     </DrawerContentScrollView>
   );
 }
 
-
 export default function App() {
 
-  // const nickname = useState("미미");
+  // const {navigation} = this.props;
   console.log("drawer");
-  console.log(this.props);
   return (
+
       <Drawer.Navigator 
-        drawerContent={props =>   <CustomDrawerContent  {...props} />}
+        drawerContent={props =>   <CustomDrawerContent  {...props} nickname = "닉네임" />}
         initialRouteName = "Home"
         backBehavior = "initialRoute" 
         drawerContentOptions = {
           {
             activeTintColor : Colors.darkPrimary
           }
-        } >
+        }> 
         <Drawer.Screen name="Home" component={HomeScreen}  
           options = {
             {
@@ -68,7 +70,7 @@ export default function App() {
           
             }
           }
-        />
+        />          
         <Drawer.Screen name="ToDoList" component={ToDoListScreen} 
           options = {
             {

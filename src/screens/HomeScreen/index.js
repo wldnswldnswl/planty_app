@@ -21,13 +21,12 @@ import Colors from '../../../styles/colors';
 import ScrollPicker from 'react-native-wheel-scroll-picker';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 
-import { createStackNavigator } from '@react-navigation/drawer';
-import { DrawerActions } from 'react-navigation-drawer';
-
+// import { createStackNavigator } from '@react-navigation/drawer';
+// import { DrawerActions } from 'react-navigation-drawer';
+import { DrawerActions } from "react-navigation-drawer";
 import Drawer from '../drawer';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import { SafeAreaView } from 'react-navigation';
 
 import { ScrollView } from 'react-native-gesture-handler';
 import { getApi, change_date, change_month, getColor } from '../../common/common';
@@ -53,10 +52,12 @@ export default class HomeScreen extends Component {
             nickname: this.props.route.params.nickname,
             email: "",
             CalendarList: [],
-            TodoList: []
+            TodoList: [],
+            nickname: this.props.route.params.nickname
         }
 
         // this.gotoAddScreen = this.gotoAddScreen.bind(this);
+        console.log("home: ",this.props.route.params);
 
     };
 
@@ -82,10 +83,11 @@ export default class HomeScreen extends Component {
        name:  gotoAddScreen
        description: show Add Screen with params
    */
-    gotoAddScreen = (bool_params) => {
+    gotoAddScreen = (bool_params, data) => {
 
         this.props.navigation.navigate("Add", {
             isNew: bool_params,
+            uuid: data,
             year: this.state.year,
             month: this.state.CalendarMonth,
             date: this.state.CalendarDate,
@@ -94,9 +96,10 @@ export default class HomeScreen extends Component {
         });
     }
 
-    gotoToDoScreen = (bool_params) => {
+    gotoToDoScreen = (bool_params, data) => {
         this.props.navigation.navigate("ToDo", {
             isNew: bool_params,
+            uuid: data,
             year: this.state.year,
             month: this.state.CalendarMonth,
             date: this.state.CalendarDate,
@@ -111,7 +114,8 @@ export default class HomeScreen extends Component {
    */
     gotoSideNav() {
         // this.props.route.params.nickname
-        this.props.navigation.toggleDrawer(name = "아이디뭐야");
+        this.props.navigation.toggleDrawer({nickname:this.state.nickname});
+        // this.props.navigation.dispatch(DrawerActions.toggleDrawer());
     }
 
     /*
@@ -227,7 +231,7 @@ export default class HomeScreen extends Component {
         //할일 목록들 day_list에 맵핑
         const todo_list = this.state.TodoList.map(todo_list => {
             return (
-                <View style={styles.daymodalcontent}  onStartShouldSetResponder = {() => {this.gotoToDoScreen(false); this.toggleCalendarModal();}}>
+                <View style={styles.daymodalcontent}  onStartShouldSetResponder = {() => {this.gotoToDoScreen(false, todo_list.uuid); this.toggleCalendarModal();}}>
                     <View style={styles.daymodaltheme}>
                         <View style={[styles.daymodalcolortheme, { borderColor: getColor(todo_list.color) }, { backgroundColor: getColor(todo_list.color) }, { left: wp("1.5%") }, { top: wp("3%") }]} />
                     </View>
@@ -243,7 +247,7 @@ export default class HomeScreen extends Component {
         const calendar_list = this.state.CalendarList.map(calendar_list => {
             if (calendar_list.start_date.slice(0, 10) == calendar_list.end_date.slice(0, 10)) {
                 return (
-                    <View style={styles.daymodalcontent} onStartShouldSetResponder = {() => {this.gotoAddScreen(false); this.toggleCalendarModal();}}>
+                    <View style={styles.daymodalcontent} onStartShouldSetResponder = {() => {this.gotoAddScreen(false, calendar_list.uuid); this.toggleCalendarModal();}}>
                         <View style={styles.daymodaltheme}>
                             <View style={[styles.daymodalcolortheme, { borderColor: getColor(calendar_list.color) }, { backgroundColor: getColor(calendar_list.color) }, { left: wp("1.5%") }, { top: wp("3%") }]} />
                         </View>

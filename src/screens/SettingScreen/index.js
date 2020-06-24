@@ -67,7 +67,7 @@ export default class CustomerSupportScreen extends Component {
         return (
             <View style={styles.container}>
 
-                <MyActionBar title="설정" />
+                <MyActionBar title="설정" prev = {this.props} />
 
                 <View style={styles.content}>
                     <ScrollView>

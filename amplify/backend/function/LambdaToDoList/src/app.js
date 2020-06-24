@@ -118,7 +118,7 @@ app.get(path + "/getCurrentDayList" + hashKeyPath + sortKeyPath, function(req, r
 
   let getItemParams = {
     TableName: tableName,
-    ProjectionExpression: "color, title",
+    ProjectionExpression: "color, title, #uuid",
     KeyConditionExpression: "#email = :email AND begins_with(#uuid, :uuid)",
     ExpressionAttributeNames:{
       "#email": "email",
@@ -129,6 +129,57 @@ app.get(path + "/getCurrentDayList" + hashKeyPath + sortKeyPath, function(req, r
       ":uuid": params["uuid"]
     }
   }
+
+  dynamodb.query(getItemParams, (err, data) => {
+    if (err) {
+      res.statusCode = 500;
+      res.json({error: 'Could not load items: ' + err});
+    } else {
+      res.json(data.Items);
+    }
+  });
+});
+
+
+/*****************************************
+ * HTTP Get method for get single object *
+ *****************************************/
+
+app.get(path + "/getModifyData" + hashKeyPath + sortKeyPath, function(req, res) {
+  var params = {};
+  if (userIdPresent && req.apiGateway) {
+    params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+  } else {
+    params[partitionKeyName] = req.params[partitionKeyName];
+    try {
+      params[partitionKeyName] = convertUrlType(req.params[partitionKeyName], partitionKeyType);
+    } catch(err) {
+      res.statusCode = 500;
+      res.json({error: 'Wrong column type ' + err});
+    }
+  }
+  if (hasSortKey) {
+    try {
+      params[sortKeyName] = convertUrlType(req.params[sortKeyName], sortKeyType);
+    } catch(err) {
+      res.statusCode = 500;
+      res.json({error: 'Wrong column type ' + err});
+    }
+  }
+
+  let getItemParams = {
+    TableName: tableName,
+    KeyConditionExpression: "#email = :email AND #uuid = :uuid",
+    ExpressionAttributeNames:{
+      "#email": "email",
+      "#uuid": "uuid"
+    },
+    ExpressionAttributeValues: {
+      ":email": params["email"],
+      ":uuid": params["uuid"]
+    }
+  }
+
 
   dynamodb.query(getItemParams, (err, data) => {
     if (err) {
@@ -161,6 +212,55 @@ app.put(path, function(req, res) {
       res.json({error: err, url: req.url, body: req.body});
     } else{
       res.json({success: 'put call succeed!', url: req.url, data: data})
+    }
+  });
+});
+
+
+/************************************
+* HTTP put method for insert object *
+*************************************/
+
+app.post(path+"/updateData", function(req, res) {
+
+  if (userIdPresent) {
+    req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+  }
+  
+   let body = {
+    email : req.body.email, // 세션값
+    end_date : req.body.end_date,  // 필수입력
+    uuid :  null, // 필수입력
+    title : req.body.title, // 필수입력
+    description : req.body.description == '' ? null :  req.body.description, // null이면 true가 push됨
+    color : req.body.color // 필수입력
+  }
+
+  body.uuid = body.end_date +"_"+ req.body.uuid.substring(23);
+
+  let putItemParams = {
+    TableName: tableName,
+    Key:{
+        "email" : body.email,
+        "uuid" : body.uuid
+    },
+    UpdateExpression: "set uuid = :uuid, end_date= :end_date, title = :title, description = :description, color = :color",
+    ExpressionAttributeValues:{
+      ":uuid" : body.uuid,
+      ":end_date":body.end_date,
+      ":title" : body.title,
+      ":description" : body.description,
+      ":color" : body.color
+    },
+    ReturnValues:"UPDATED_NEW"
+  }
+
+  dynamodb.update(putItemParams, (err, data) => {
+    if(err) {
+      res.statusCode = 500;
+      res.json({error: err, url: req.url, body: req.body});
+    } else{
+      res.json({success: 'post call succeed!', url: req.url, data: data})
     }
   });
 });
@@ -200,6 +300,7 @@ app.post(path, function(req, res) {
   });
 });
 
+
 /**************************************
 * HTTP remove method to delete object *
 ***************************************/
@@ -228,7 +329,10 @@ app.delete(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
 
   let removeItemParams = {
     TableName: tableName,
-    Key: params
+    Key: {
+      "email" : params["email"],
+      "uuid" : params["uuid"]
+    }
   }
   dynamodb.delete(removeItemParams, (err, data)=> {
     if(err) {

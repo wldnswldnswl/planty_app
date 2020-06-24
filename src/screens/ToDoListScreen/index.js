@@ -53,17 +53,23 @@ import { getApi, getColor} from '../../common/common'
         name:  gotoToDoScreen
         description: show ToDo Screen
     */
-    gotoToDoScreen(){
-        this.props.navigation.navigate("ToDo"/* , { itemId:1 } */); // ** 할일(itemId:1)추가로 이동    
+    gotoToDoScreen(){        
+        this.props.navigation.navigate("ToDo", {
+            isNew: true,
+            year: new Date().getFullYear(),
+            month: new Date().getMonth() + 1,
+            date: new Date().getDate(),
+            day: new Date().getDay()
+        });
     }
 
      /*
         name:  gotoSideNav
         description: show Setting Nav
     */
-    gotoSideNav(){
-        this.props.navigation.dispatch(DrawerActions.openDrawer());
-    }
+    // gotoSideNav(){
+    //     this.props.navigation.dispatch(DrawerActions.openDrawer());
+    // }
 
     // HomeScreen : 캘린더
      render(){ 
@@ -73,7 +79,7 @@ import { getApi, getColor} from '../../common/common'
         // this.getToDoList =  this.getToDoList.bind("planty.adm@gmail.com");
         return ( 
            <View style = {styles.container}>
-               <MyActionBar title = "내 할 일"/>
+               <MyActionBar prev = {this.props} title = "내 할 일" />
                    <View style = {styles.nav}> 
                        
                </View>

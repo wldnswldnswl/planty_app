@@ -88,7 +88,7 @@ import common from '../../../styles/common'
         padding:wp('2%'),
         width:wp('20%'),
         height:hp('5%'),
-        marginLeft: wp('32%'),
+        marginLeft: wp('54%'),
     },  
     
     on:{

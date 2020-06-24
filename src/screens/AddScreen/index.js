@@ -57,6 +57,7 @@ export default class AddScreen extends Component {
         selected: undefined;
         this.state = {
             isNew : this.props.route.params.isNew,
+            uuid: this.props.route.params.uuid,
             StartCalendarModalVisible: false,
             EndCalendarModalVisible: false,
             ColorModalVisible: false,
@@ -97,10 +98,6 @@ export default class AddScreen extends Component {
 
                this.getCurrentDate();
        } 
-       // 2) 기존 데이터 수정 
-       else{
-           this.getSelectedInfo();
-       }
 
     }
 
@@ -113,6 +110,11 @@ export default class AddScreen extends Component {
                 }
             }
         });
+
+         // 2) 기존 데이터 수정 
+         if(!this.state.isNew){
+            this.getSelectedInfo();
+        }
     }
 
     // functions
@@ -255,16 +257,26 @@ export default class AddScreen extends Component {
     }
 
     getSelectedInfo = async () => {
-        // const path_calendarlist = "/calendar/getCurrentDayList/" + JSON.parse(this.state.email) + "/" + this.state.start_date;
-        const path_calendarlist = "/calendar/getCurrentDayList/" + JSON.parse(this.state.email)+"/2020.06.17";
+        // 기존 할일 불러오기
+        const path_calendarlist = "/calendar/getModifyData/" + this.state.email+"/"+this.state.uuid;
+        const response_calendarlist = (await getApi("ApiCalendar", path_calendarlist))[0];
 
-        const response_calendarlist = await getApi("ApiCalendar", path_calendarlist);
-        console.log("===============================");
-        console.log("list: ",response_calendarlist);
+        // 기존 내용으로 변수 갱신
+        this.setState({"start_date" : response_calendarlist.start_date});
+        this.setState({"end_date" : response_calendarlist.end_date});
+        result.final_date = response_calendarlist.start_date;
+        result.am_pm == '오전' ? result.am_pm_i = 0 : 1;
+
+        this.setState({"title":response_calendarlist.title})
+        if(this.state.description != null) this.setState({"description":response_calendarlist.description});
+        this.setState({"alarm":response_calendarlist.alarm});
+        this.setState({"color":response_calendarlist.color});
+        this.setState({"repeat":response_calendarlist.repeat});
+        console.log("R: ",response_calendarlist);
     }
 
     deleteThisCalendar = () => {
-       
+        
     }
 
     // AddScreen: 일정(0), 할일(1) (전달된 파라미터에 따라 다른 view 생성하기!!!)
@@ -274,11 +286,20 @@ export default class AddScreen extends Component {
         const { onValueChange } = this;
         const isLoggedIn = !this.state.isNew;
         let deleteBtn = null;
+        let todoBtn = null;
+
+        // View 동적 생성(삭제버튼, 캘린더 수정 시 캘린더 버튼만 띄우기)
         if(isLoggedIn){
             deleteBtn  = <TouchableOpacity style={[styles.delete_btn]} onPress={this.deleteThisCalendar(this)}>
                             <Text style={styles.off}>삭제</Text>
                          </TouchableOpacity>;
-        }else deleteBtn = null;
+            todoBtn = null;
+        }else {
+            todoBtn = <TouchableOpacity style={[styles.tab_btn, styles.off]} onPress={this.gotoToDoScreen.bind(this)}>
+                        <Text style={styles.off}>할일</Text>
+            </TouchableOpacity>;
+            deleteBtn = null;
+        }
 
         return (
 
@@ -287,15 +308,14 @@ export default class AddScreen extends Component {
                     <TouchableOpacity style={[styles.tab_btn, styles.on]}>
                         <Text style={styles.on}>일정</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.tab_btn, styles.off]} onPress={this.gotoToDoScreen.bind(this)}>
-                        <Text style={styles.off}>할일</Text>
-                    </TouchableOpacity>
+                    <View isLoggedIn = {isLoggedIn}>{todoBtn}</View>            
                     <View isLoggedIn = {isLoggedIn}>{deleteBtn}</View>               
                 </View>
 
                 <View style={styles.mainText}>
                     <TextInput style={[common.font_small, styles.textForm]} placeholder={'일정을 입력하세요'}
                         onChangeText={(text) => { this.setState({ title: text }) }}
+                        value = {this.state.title}
                     ></TextInput>
                 </View>
                 <View style={styles.content}>
@@ -539,7 +559,9 @@ export default class AddScreen extends Component {
                         <MIcon name="file-document-outline" size={30} color={Colors.gray}></MIcon>
                         <TextInput style={[common.font_small, styles.descriptionForm]}
                             onChangeText={(text) => { this.setState({ description: text }) }}
-                            placeholder={'설명'}></TextInput>
+                            placeholder={'설명'}
+                            value = {this.state.description}
+                            ></TextInput>
                     </View>
 
                     <View style={styles.content_element_sub}>

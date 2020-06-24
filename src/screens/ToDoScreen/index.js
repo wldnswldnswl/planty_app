@@ -52,6 +52,7 @@ export default class ToDoScreen extends Component {
         /* console.log(this.props.navigation.getParam('data',"nodata")); */
         this.state = {
             isNew : this.props.route.params.isNew,
+            uuid: this.props.route.params.uuid,
             CalendarModalVisible: false,
             ColorModalVisible: false,
             isVisible: false,
@@ -67,6 +68,8 @@ export default class ToDoScreen extends Component {
 
             final_date: null
         }
+        
+       
        
     }
 
@@ -89,10 +92,7 @@ export default class ToDoScreen extends Component {
         
             this.getCurrentDate();
         }
-        // 2) 기존 데이터 수정 
-        else{
-            this.getSelectedInfo();
-        }
+        
         
     }
 
@@ -105,6 +105,12 @@ export default class ToDoScreen extends Component {
                 }
             }
         });
+
+
+        // 2) 기존 데이터 수정 
+        if(!this.state.isNew){
+            this.getSelectedInfo();
+        }
     }
     // functions
 
@@ -113,7 +119,11 @@ export default class ToDoScreen extends Component {
         description: show Add Screen
     */
     gotoAddScreen() {
-        this.props.navigation.navigate("Add",  {isNew: this.state.isNew});
+        this.props.navigation.navigate("Add",  {isNew: this.state.isNew,
+            year: new Date().getFullYear(),
+            month: new Date().getMonth() + 1,
+            date: new Date().getDate(),
+            day: new Date().getDay()});
     }
 
     /*
@@ -129,10 +139,11 @@ export default class ToDoScreen extends Component {
             color: this.state.color
         }
 
-        // console.log("getToDoList: ");
+        console.log("getToDoList: ",this.state.isNew);
         // console.log(getApi('ApiToDoList','/todolist'));//&& params.end_date != null && params.end_date.trim() != ""
         if(params.title != null && params.title.trim() != ""){
-            postApi('ApiToDoList','/todolist', params);
+            if(this.state.isNew) postApi('ApiToDoList','/todolist', params);
+            else postApi('ApiToDoList','/todolist/updateData',params);
             this.props.navigation.navigate("Home");
 
         }else{
@@ -217,16 +228,33 @@ export default class ToDoScreen extends Component {
     }
 
     getSelectedInfo = async () => {
-        // const path_calendarlist = "/calendar/getCurrentDayList/" + JSON.parse(this.state.email) + "/" + this.state.start_date;
-        const path_calendarlist = "/calendar/getCurrentDayList/" + JSON.parse(this.state.email)+"/2020.06.17";
 
-        const response_calendarlist = await getApi("ApiCalendar", path_calendarlist);
-        console.log("===============================");
-        console.log("list: ",response_calendarlist);
+        // 기존 할일 불러오기
+        const path_todolist = "/todolist/getModifyData/" + this.state.email+"/"+this.state.uuid;
+        const response_todolist = (await getApi("ApiToDoList", path_todolist))[0];
+
+        // 기존 내용으로 변수 갱신
+        result.final_date = response_todolist.end_date;
+        result.am_pm == '오전' ? result.am_pm_i = 0 : 1;
+        this.setState({"title":response_todolist.title})
+        if(this.state.description != null) this.setState({"description":response_todolist.description});
+        this.setState({"color":response_todolist.color});
+        // console.log("R: ",response_todolist);
+        
     }
 
-    deleteThisCalendar = () => {
-       
+     deleteThisCalendar = async() => {
+        console.log("삭제버튼");
+        console.log(this.state.email);
+        console.log(this.state.uuid);
+    //     const data = await API.del("ApiToDoList","/object/"+this.state.email+"/"+this.state.uuid).then(response => {
+    //         // Add your code here
+    //         console.log('deleted');
+    //       }).catch(error => {
+    //         console.log("error",error.response);
+    //       });
+    //    console.log(data);
+       this.props.navigation.navigate("Home");
     }
 
     // AddScreen: 일정(0), 할일(1) (전달된 파라미터에 따라 다른 view 생성하기!!!)
@@ -236,18 +264,27 @@ export default class ToDoScreen extends Component {
 
             const isLoggedIn = !this.state.isNew;
             let deleteBtn = null;
+            let calendarBtn = null;
+
+            // View 동적 생성(삭제버튼, 할일 수정 시 할일 버튼만 띄우기)
             if(isLoggedIn){
-                deleteBtn  = <TouchableOpacity style={[styles.delete_btn]} onPress={this.deleteThisCalendar(this)}>
+                deleteBtn  = <TouchableOpacity style={[styles.delete_btn]} onPress={this.deleteThisCalendar.bind(this)}>
                                 <Text style={styles.off}>삭제</Text>
                             </TouchableOpacity>;
-            }else deleteBtn = null;
+                calendarBtn = null;
+            }else {
+                calendarBtn = <TouchableHighlight style={[styles.tab_btn, styles.off]} onPress={this.gotoAddScreen.bind(this)}>
+                                <Text style={styles.off}>일정</Text>
+                           </TouchableHighlight>;
+                deleteBtn = null;
+            }
+
+    
         return (
 
             <View style={styles.container}>
                 <View style={styles.nav}>
-                    <TouchableHighlight style={[styles.tab_btn, styles.off]} onPress={this.gotoAddScreen.bind(this)}>
-                        <Text style={styles.off}>일정</Text>
-                    </TouchableHighlight>
+                <View isLoggedIn = {isLoggedIn}>{calendarBtn}</View>
                     <TouchableHighlight style={[styles.tab_btn, styles.on]} >
                         <Text style={styles.on}>할일</Text>
                     </TouchableHighlight>
@@ -258,6 +295,7 @@ export default class ToDoScreen extends Component {
                     <TextInput style={[common.font_small, styles.textForm]} 
                                placeholder={'할일을 입력하세요'}
                                onChangeText={(text) => { this.setState({title : text}) }}
+                               value = {this.state.title}
                             //    {apiData :{title: text, description:this.state.apiData['description'], end_date: this.state.apiData['end_date'], color: this.state.apiData['color']}})
                     ></TextInput>
                 </View>
@@ -383,7 +421,8 @@ export default class ToDoScreen extends Component {
                         <MIcon name="file-document-outline" size={30} color={Colors.gray}></MIcon>
                         <TextInput style={[common.font_small, styles.descriptionForm]} 
                                    onChangeText={(text) => { this.setState( {description: text}) }}
-                                   placeholder={'설명'}></TextInput>
+                                   placeholder={'설명'}
+                                   value = {this.state.description}></TextInput>
                     </View>
 
                     <View style={styles.content_element_sub}>

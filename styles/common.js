@@ -18,6 +18,10 @@ import Colors from './colors';
         fontSize : wp('4.5%')
     },
 
+    font_mid_small:{
+        fontSize : wp('4%')
+    },
+
     font_small:{
         fontSize : wp('3.5%')
     },
