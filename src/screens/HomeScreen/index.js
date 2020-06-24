@@ -130,12 +130,10 @@ export default class HomeScreen extends Component {
         name:  changePickerModal
         description: change year,month in pickerModal
     */
-    changePickerModal = (date, calendar) => {
-        this.setState({ PickerYear: date.year });
-        this.setState({ PickerMonth: date.month });
+    changePickerModal = (calendar) => {
+        this.setState({ PickerYear: calendar.toString("yyyy") });
+        this.setState({ PickerMonth: change_month(calendar.toString("MM")) });
         this.setState({ PickerCalendar: calendar });
-
-        /* this.forceUpdate(); */
     }
 
     /*
@@ -210,7 +208,7 @@ export default class HomeScreen extends Component {
         this.setState({ Calendarheader_month: calendar });
         this.setState({ year: calendar.toString('yyyy') });
         this.setState({ month: change_month(calendar.toString('MM')) });
-
+        
         this.forceUpdate();
     }
 
@@ -382,6 +380,7 @@ export default class HomeScreen extends Component {
                         changeYearMonth={this.changeYearMonth}
                         setDateModal={this.setDateModal}
                         gotoAddScreen={this.gotoAddScreen}
+                        changePickerModal={this.changePickerModal}
                     />
 
                 </View>
@@ -421,4 +420,3 @@ export default class HomeScreen extends Component {
 
     }
 }
-
