@@ -9,7 +9,10 @@ import {
     TouchableHighlight,
     Picker,
     TouchableOpacity,
-    AsyncStorage
+    AsyncStorage,
+    RefreshControlBase,
+    RefreshControlComponent,
+    RefreshControl
 } from 'react-native';
 import XDate from 'xdate';
 import Modal from 'react-native-modal';
@@ -56,7 +59,7 @@ export default class AddScreen extends Component {
 
         selected: undefined;
         this.state = {
-            isNew : this.props.route.params.isNew,
+            isNew: this.props.route.params.isNew,
             uuid: this.props.route.params.uuid,
             StartCalendarModalVisible: false,
             EndCalendarModalVisible: false,
@@ -75,33 +78,35 @@ export default class AddScreen extends Component {
             repeat: 0,
             color: 0,
             // put params end
-        } 
+
+            seleceted: null
+        }
 
     }
 
-    componentWillMount = async() => {         
+    componentWillMount = async () => {
 
-          // 1) 새로 추가
-          if(this.state.isNew){ 
+        // 1) 새로 추가
+        if (this.state.isNew) {
 
-               //시간배열에 데이터 삽입
-               for (var i = 0; i < 12; i++) {
-                   var j = String(i + 1)
-                   hour_arr.push(j)
-               }
+            //시간배열에 데이터 삽입
+            for (var i = 0; i < 12; i++) {
+                var j = String(i + 1)
+                hour_arr.push(j)
+            }
 
-               //분배열에 데이터 삽입
-               for (var i = 0; i < 59; i++) {
-                   var j = String(i + 1)
-                   minute_arr.push(j)
-               }
+            //분배열에 데이터 삽입
+            for (var i = 0; i < 59; i++) {
+                var j = String(i + 1)
+                minute_arr.push(j)
+            }
 
-               this.getCurrentDate();
-       } 
+            this.getCurrentDate();
+        }
 
     }
 
-    componentDidMount = async() => {
+    componentDidMount = async () => {
         //getSession
         await AsyncStorage.getItem("email", (errs, result) => {
             if (!errs) {
@@ -111,8 +116,8 @@ export default class AddScreen extends Component {
             }
         });
 
-         // 2) 기존 데이터 수정 
-         if(!this.state.isNew){
+        // 2) 기존 데이터 수정 
+        if (!this.state.isNew) {
             this.getSelectedInfo();
         }
     }
@@ -141,7 +146,7 @@ export default class AddScreen extends Component {
         // console.log(getApi('ApiCalendar','/calendar'));//&& params.end_date != null && params.end_date.trim() != ""
         if (params.title != null && params.title.trim() != "") {
             postApi('ApiCalendar', '/calendar', params);
-            this.props.navigation.navigate("Home");
+            this.props.navigation.navigate("Home", {refresh: RefreshControl});
 
         } else {
             alert("일정을 입력하세요"); // 나중에 비동기 이용해 빨간글씨로 바꾸기
@@ -153,7 +158,7 @@ export default class AddScreen extends Component {
         description: show ToDo Screen
     */
     gotoToDoScreen = () => {
-        const{route} = this.props;
+        const { route } = this.props;
         this.props.navigation.navigate("ToDo", {
             isNew: this.state.isNew,
             year: route.params.year,
@@ -219,6 +224,13 @@ export default class AddScreen extends Component {
         this.state.color = Color;
     }
 
+    setCalDate(cal_year, cal_month, cal_date, cal_day) {
+        year = cal_year;
+        month = cal_month;
+        date = cal_date;
+        day = cal_day;
+    }
+
     /*
     * @name: getCurrentDate
     * @description: 현재 날짜,시간으로 변수 초기화
@@ -258,25 +270,42 @@ export default class AddScreen extends Component {
 
     getSelectedInfo = async () => {
         // 기존 할일 불러오기
-        const path_calendarlist = "/calendar/getModifyData/" + this.state.email+"/"+this.state.uuid;
+        const path_calendarlist = "/calendar/getModifyData/" + this.state.email + "/" + this.state.uuid;
         const response_calendarlist = (await getApi("ApiCalendar", path_calendarlist))[0];
 
         // 기존 내용으로 변수 갱신
-        this.setState({"start_date" : response_calendarlist.start_date});
-        this.setState({"end_date" : response_calendarlist.end_date});
+        this.setState({ "start_date": response_calendarlist.start_date });
+        this.setState({ "end_date": response_calendarlist.end_date });
         result.final_date = response_calendarlist.start_date;
         result.am_pm == '오전' ? result.am_pm_i = 0 : 1;
 
-        this.setState({"title":response_calendarlist.title})
-        if(this.state.description != null) this.setState({"description":response_calendarlist.description});
-        this.setState({"alarm":response_calendarlist.alarm});
-        this.setState({"color":response_calendarlist.color});
-        this.setState({"repeat":response_calendarlist.repeat});
-        console.log("R: ",response_calendarlist);
+        this.setState({ "title": response_calendarlist.title })
+        if (this.state.description != null) this.setState({ "description": response_calendarlist.description });
+        this.setState({ "alarm": response_calendarlist.alarm });
+        this.setState({ "color": response_calendarlist.color });
+        this.setState({ "repeat": response_calendarlist.repeat });
+        console.log("R: ", response_calendarlist);
     }
 
     deleteThisCalendar = () => {
-        
+
+    }
+
+    /*
+        name:  changeYearMonth
+        description: change year, month of header, calendar modal
+    */
+    changeYearMonth = (calendar) => {
+        this.setState({ Calendarheader_month: calendar });
+        this.setState({ year: calendar.toString('yyyy') });
+        this.setState({ month: change_month(calendar.toString('MM')) });
+        console.log(calendar);
+
+    }
+
+
+    onDayPress = (day) => {
+        this.setState({ selected: day.dateString });
     }
 
     // AddScreen: 일정(0), 할일(1) (전달된 파라미터에 따라 다른 view 생성하기!!!)
@@ -289,14 +318,14 @@ export default class AddScreen extends Component {
         let todoBtn = null;
 
         // View 동적 생성(삭제버튼, 캘린더 수정 시 캘린더 버튼만 띄우기)
-        if(isLoggedIn){
-            deleteBtn  = <TouchableOpacity style={[styles.delete_btn]} onPress={this.deleteThisCalendar(this)}>
-                            <Text style={styles.off}>삭제</Text>
-                         </TouchableOpacity>;
+        if (isLoggedIn) {
+            deleteBtn = <TouchableOpacity style={[styles.delete_btn]} onPress={this.deleteThisCalendar(this)}>
+                <Text style={styles.off}>삭제</Text>
+            </TouchableOpacity>;
             todoBtn = null;
-        }else {
+        } else {
             todoBtn = <TouchableOpacity style={[styles.tab_btn, styles.off]} onPress={this.gotoToDoScreen.bind(this)}>
-                        <Text style={styles.off}>할일</Text>
+                <Text style={styles.off}>할일</Text>
             </TouchableOpacity>;
             deleteBtn = null;
         }
@@ -308,14 +337,14 @@ export default class AddScreen extends Component {
                     <TouchableOpacity style={[styles.tab_btn, styles.on]}>
                         <Text style={styles.on}>일정</Text>
                     </TouchableOpacity>
-                    <View isLoggedIn = {isLoggedIn}>{todoBtn}</View>            
-                    <View isLoggedIn = {isLoggedIn}>{deleteBtn}</View>               
+                    <View isLoggedIn={isLoggedIn}>{todoBtn}</View>
+                    <View isLoggedIn={isLoggedIn}>{deleteBtn}</View>
                 </View>
 
                 <View style={styles.mainText}>
                     <TextInput style={[common.font_small, styles.textForm]} placeholder={'일정을 입력하세요'}
                         onChangeText={(text) => { this.setState({ title: text }) }}
-                        value = {this.state.title}
+                        value={this.state.title}
                     ></TextInput>
                 </View>
                 <View style={styles.content}>
@@ -339,11 +368,8 @@ export default class AddScreen extends Component {
                                 <View style={styles.modalCalendar}>
                                     <Calendar
                                         style={styles.calendar}
-                                        hideExtraDays
-                                        // 캘린더 날짜 선택 시, 해당 날짜로 year, month, date, day변수 변경
-                                        onDayPress={(thisDay) => { this.onDayPress, year = thisDay.year, month = thisDay.month, date = thisDay.day, day = new Date(thisDay.dateString).getDay() }}
-                                    
-                                        /* markedDates={{
+                                        onDayPress={this.onDayPress}
+                                        markedDates={{
                                             [this.state.selected]: {
                                                 selected: true,
                                                 disableTouchEvent: true,
@@ -355,9 +381,11 @@ export default class AddScreen extends Component {
                                             selectedDayBackgroundColor: Colors.lightgray,
                                             selectedDayTextColor: "black",
                                             todayTextColor: Colors.darkPrimary,
-                                        }} */
+                                        }}
                                         calendar_flag={3}
                                         Calendarheader_month={this.state.Calendarheader_month}
+                                        setCalDate={this.setCalDate}
+                                        changeYearMonth={this.changeYearMonth}
                                     />
 
                                 </View>
@@ -448,27 +476,27 @@ export default class AddScreen extends Component {
                                 <View style={styles.modalheader}>
                                 </View>
                                 <View style={styles.modalCalendar}>
-                                <Calendar
-                                    style={styles.calendar}
-                                    hideExtraDays
-                                    // 캘린더 날짜 선택 시, 해당 날짜로 year, month, date, day변수 변경
-                                    onDayPress= {(thisDay) => {this.onDayPress, year = thisDay.year, month = thisDay.month, date = thisDay.day, day = new Date(thisDay.dateString).getDay()}}
-                                    /* markedDates={{
-                                        [this.state.selected]: {
-                                            selected: true,
-                                            disableTouchEvent: true,
-                                            selectedDotColor: "orange"
-                                        }
-                                    }}
-                                    theme={{
-                                        textSectionTitleColor: Colors.darkgray,
-                                        selectedDayBackgroundColor: Colors.lightgray,
-                                        selectedDayTextColor: "black",
-                                        todayTextColor: Colors.darkPrimary,
-                                    }} */
-                                    calendar_flag={3}
-                                    Calendarheader_month={this.state.Calendarheader_month}
-                                />
+                                    <Calendar
+                                        style={styles.calendar}
+                                        onDayPress={this.onDayPress}
+                                        markedDates={{
+                                            [this.state.selected]: {
+                                                selected: true,
+                                                disableTouchEvent: true,
+                                                selectedDotColor: "orange"
+                                            }
+                                        }}
+                                        theme={{
+                                            textSectionTitleColor: Colors.darkgray,
+                                            selectedDayBackgroundColor: Colors.lightgray,
+                                            selectedDayTextColor: "black",
+                                            todayTextColor: Colors.darkPrimary,
+                                        }}
+                                        calendar_flag={3}
+                                        Calendarheader_month={this.state.Calendarheader_month}
+                                        setCalDate={this.setCalDate}
+                                        changeYearMonth={this.changeYearMonth}
+                                    />
 
                                 </View>
                                 <View style={styles.modalHourContainer}>
@@ -560,8 +588,8 @@ export default class AddScreen extends Component {
                         <TextInput style={[common.font_small, styles.descriptionForm]}
                             onChangeText={(text) => { this.setState({ description: text }) }}
                             placeholder={'설명'}
-                            value = {this.state.description}
-                            ></TextInput>
+                            value={this.state.description}
+                        ></TextInput>
                     </View>
 
                     <View style={styles.content_element_sub}>
@@ -635,7 +663,7 @@ export default class AddScreen extends Component {
                             <Picker.Item label="매년" value={4} />
                         </Picker>
                     </View>
-                                          
+
                     <TouchableOpacity style={[common.addButton, { left: 10 }]}
                         underlayColor={Colors.clicked} onPress={this.Back.bind(this)}>
                         <Text style={{ fontSize: 30, color: 'white' }}>X</Text>

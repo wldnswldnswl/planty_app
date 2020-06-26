@@ -245,9 +245,9 @@ export function change_month(month) {
 
     let result;
 
-    if (month < 10)
+    if (month.length == 2 && month < 10)
         result = month.substring(1);
-    else
+    else if (month.length == 1 || month >= 10)
         result = month;
 
     return result;

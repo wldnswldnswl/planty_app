@@ -57,7 +57,7 @@ export default class HomeScreen extends Component {
         }
 
         // this.gotoAddScreen = this.gotoAddScreen.bind(this);
-        console.log("home: ",this.props.route.params);
+        console.log("home: ", this.props.route.params);
 
     };
 
@@ -114,7 +114,7 @@ export default class HomeScreen extends Component {
    */
     gotoSideNav() {
         // this.props.route.params.nickname
-        this.props.navigation.toggleDrawer({nickname:this.state.nickname});
+        this.props.navigation.toggleDrawer({ nickname: this.state.nickname });
         // this.props.navigation.dispatch(DrawerActions.toggleDrawer());
     }
 
@@ -164,8 +164,10 @@ export default class HomeScreen extends Component {
             ko_day = "목"
         else if (en_day == "Fri" || en_day == 5)
             ko_day = "금"
-        else
+        else if (en_day == "Sat" || en_day == 6)
             ko_day = "토"
+        else 
+            ko_day = en_day;
 
         return (ko_day);
     }
@@ -179,10 +181,10 @@ export default class HomeScreen extends Component {
     }
 
     /*
-        name:  setDateModal
+        name: setDateModal
         description: set month, date, day in calendar modal
     */
-    setDateModal = async (month, date, day) => {
+    setDateModal = async (flag, month, date, day) => {
         this.setState({ CalendarDate: change_date(date) });
         this.setState({ CalendarMonth: change_month(month) });
         this.setState({ CalendarDay: this.setDayName(day) });
@@ -192,11 +194,14 @@ export default class HomeScreen extends Component {
 
         const path_todolist = "/todolist/getCurrentDayList/" + JSON.parse(this.state.email) + "/" + end_date;
         const path_calendarlist = "/calendar/getCurrentDayList/" + JSON.parse(this.state.email) + "/" + start_date;
-        const response_todolist = await getApi("ApiToDoList", path_todolist);
-        const response_calendarlist = await getApi("ApiCalendar", path_calendarlist);
 
-        this.setState({ TodoList: response_todolist });
-        this.setState({ CalendarList: response_calendarlist });
+        if (flag) {
+            const response_todolist = await getApi("ApiToDoList", path_todolist);
+            const response_calendarlist = await getApi("ApiCalendar", path_calendarlist);
+
+            this.setState({ TodoList: response_todolist });
+            this.setState({ CalendarList: response_calendarlist });
+        }
 
     }
 
@@ -208,7 +213,7 @@ export default class HomeScreen extends Component {
         this.setState({ Calendarheader_month: calendar });
         this.setState({ year: calendar.toString('yyyy') });
         this.setState({ month: change_month(calendar.toString('MM')) });
-        
+
         this.forceUpdate();
     }
 
@@ -223,13 +228,13 @@ export default class HomeScreen extends Component {
         }
     }
     // HomeScreen : 캘린더
-    
+
     render() {
-        
+
         //할일 목록들 day_list에 맵핑
         const todo_list = this.state.TodoList.map(todo_list => {
             return (
-                <View style={styles.daymodalcontent}  onStartShouldSetResponder = {() => {this.gotoToDoScreen(false, todo_list.uuid); this.toggleCalendarModal();}}>
+                <View style={styles.daymodalcontent} onStartShouldSetResponder={() => { this.gotoToDoScreen(false, todo_list.uuid); this.toggleCalendarModal(); }}>
                     <View style={styles.daymodaltheme}>
                         <View style={[styles.daymodalcolortheme, { borderColor: getColor(todo_list.color) }, { backgroundColor: getColor(todo_list.color) }, { left: wp("1.5%") }, { top: wp("3%") }]} />
                     </View>
@@ -245,7 +250,7 @@ export default class HomeScreen extends Component {
         const calendar_list = this.state.CalendarList.map(calendar_list => {
             if (calendar_list.start_date.slice(0, 10) == calendar_list.end_date.slice(0, 10)) {
                 return (
-                    <View style={styles.daymodalcontent} onStartShouldSetResponder = {() => {this.gotoAddScreen(false, calendar_list.uuid); this.toggleCalendarModal();}}>
+                    <View style={styles.daymodalcontent} onStartShouldSetResponder={() => { this.gotoAddScreen(false, calendar_list.uuid); this.toggleCalendarModal(); }}>
                         <View style={styles.daymodaltheme}>
                             <View style={[styles.daymodalcolortheme, { borderColor: getColor(calendar_list.color) }, { backgroundColor: getColor(calendar_list.color) }, { left: wp("1.5%") }, { top: wp("3%") }]} />
                         </View>
@@ -326,6 +331,7 @@ export default class HomeScreen extends Component {
                                         todayTextColor: Colors.darkPrimary,
                                     }}
                                     changePickerModal={this.changePickerModal}
+                                    setDateModal={this.setDateModal}
                                 />
 
                             </View>
@@ -387,11 +393,11 @@ export default class HomeScreen extends Component {
 
                 {/* 달력페이지 모달 */}
                 <TouchableHighlight style={common.addButton}
-                    underlayColor={Colors.clicked} onPress={this.gotoAddScreen.bind(this,true)}>
+                    underlayColor={Colors.clicked} onPress={this.gotoAddScreen.bind(this, true)}>
                     <Text style={{ fontSize: 50, color: 'white' }}>+</Text>
                 </TouchableHighlight>
 
-                 {/* 팝업창 내 모달 */}
+                {/* 팝업창 내 모달 */}
                 <Modal isVisible={this.state.CalendarModalVisible} onBackdropPress={() => { this.toggleCalendarModal() }} >
                     <View style={styles.daymodal_container} >
                         <View style={styles.daymodalheader} />
@@ -400,8 +406,8 @@ export default class HomeScreen extends Component {
                         </View>
                         <View style={styles.daymodalline} />
 
-                        <ScrollView style={styles.scrollView}> 
-                            <View style={styles.daymodallist}>    
+                        <ScrollView style={styles.scrollView}>
+                            <View style={styles.daymodallist}>
                                 {todo_list}
                                 {calendar_list}
                             </View>

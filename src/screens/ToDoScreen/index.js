@@ -9,7 +9,7 @@ import {
     TouchableOpacity,
     AsyncStorage
 } from 'react-native';
-import {API} from 'aws-amplify'; 
+import { API } from 'aws-amplify';
 import XDate from 'xdate';
 import Modal from 'react-native-modal';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -19,20 +19,20 @@ import Colors from '../../../styles/colors';
 import ScrollPicker from 'react-native-wheel-scroll-picker';
 import { Calendar } from 'react-native-calendars';
 
-import {getApi, postApi,getDateString, getSession, getColor} from '../../common/common'
+import { getApi, postApi, getDateString, getSession, getColor } from '../../common/common'
 //styles
 import common from '../../../styles/common';
 import styles from './style';
 // import { ScrollView } from 'react-native-gesture-handler';
 
 //현재 년도/월/일자/요일/시간 저장
-var year, month,date,day,hour, minute;
+var year, month, date, day, hour, minute;
 // var am_pm, am_pm_i;
 
 // 출력값 계산 결과
 var result = {
-    final_date : null,//최종 날짜
-    am_pm : null,
+    final_date: null,//최종 날짜
+    am_pm: null,
     am_pm_i: null
 }
 // , final_date = null;
@@ -51,7 +51,7 @@ export default class ToDoScreen extends Component {
 
         /* console.log(this.props.navigation.getParam('data',"nodata")); */
         this.state = {
-            isNew : this.props.route.params.isNew,
+            isNew: this.props.route.params.isNew,
             uuid: this.props.route.params.uuid,
             CalendarModalVisible: false,
             ColorModalVisible: false,
@@ -66,17 +66,18 @@ export default class ToDoScreen extends Component {
             color: 0, // View에서 값 받는 설정 아직 안함. 
             // put params end
 
-            final_date: null
+            final_date: null,
+            selected: null
         }
-        
-       
-       
+
+
+
     }
 
-    componentWillMount = async() => {
+    componentWillMount = async () => {
 
         // 1) 새로 추가
-        if(this.state.isNew){ 
+        if (this.state.isNew) {
 
             //시간배열에 데이터 삽입
             for (var i = 0; i < 12; i++) {
@@ -89,14 +90,14 @@ export default class ToDoScreen extends Component {
                 var j = String(i + 1)
                 minute_arr.push(j)
             }
-        
+
             this.getCurrentDate();
         }
-        
-        
+
+
     }
 
-    componentDidMount = async() => {
+    componentDidMount = async () => {
         //getSession
         await AsyncStorage.getItem("email", (errs, result) => {
             if (!errs) {
@@ -108,7 +109,7 @@ export default class ToDoScreen extends Component {
 
 
         // 2) 기존 데이터 수정 
-        if(!this.state.isNew){
+        if (!this.state.isNew) {
             this.getSelectedInfo();
         }
     }
@@ -119,37 +120,39 @@ export default class ToDoScreen extends Component {
         description: show Add Screen
     */
     gotoAddScreen() {
-        this.props.navigation.navigate("Add",  {isNew: this.state.isNew,
+        this.props.navigation.navigate("Add", {
+            isNew: this.state.isNew,
             year: new Date().getFullYear(),
             month: new Date().getMonth() + 1,
             date: new Date().getDate(),
-            day: new Date().getDay()});
+            day: new Date().getDay()
+        });
     }
 
     /*
         name:  gotoHomeScreen
         description: show Home Screen
     */
-   gotoHomeScreen() {
+    gotoHomeScreen() {
         const params = {
-            email : this.state.email,
+            email: this.state.email,
             title: this.state.title,
             end_date: this.state.end_date,
             description: this.state.description,
             color: this.state.color
         }
 
-        console.log("getToDoList: ",this.state.isNew);
+        console.log("getToDoList: ", this.state.isNew);
         // console.log(getApi('ApiToDoList','/todolist'));//&& params.end_date != null && params.end_date.trim() != ""
-        if(params.title != null && params.title.trim() != ""){
-            if(this.state.isNew) postApi('ApiToDoList','/todolist', params);
-            else postApi('ApiToDoList','/todolist/updateData',params);
+        if (params.title != null && params.title.trim() != "") {
+            if (this.state.isNew) postApi('ApiToDoList', '/todolist', params);
+            else postApi('ApiToDoList', '/todolist/updateData', params);
             this.props.navigation.navigate("Home");
 
-        }else{
+        } else {
             alert("할 일을 입력하세요"); // 나중에 비동기 이용해 빨간글씨로 바꾸기
         }
-    
+
     }
 
     /*
@@ -166,7 +169,7 @@ export default class ToDoScreen extends Component {
         description: show Calendar modal
     */
     toggleCalendarModal = (flag, text) => {
-        if(flag == 'fresh') this.getCurrentDate(); // 현재 날짜로 초기화
+        if (flag == 'fresh') this.getCurrentDate(); // 현재 날짜로 초기화
         // else if(flag == 'save'){
         //     this.setState({final_date: text})
         // }
@@ -190,6 +193,12 @@ export default class ToDoScreen extends Component {
         this.state.color = Color;
     }
 
+    setCalDate(cal_year, cal_month, cal_date, cal_day) {
+        year = cal_year;
+        month = cal_month;
+        date = cal_date;
+        day = cal_day;
+    }
 
     /*
     * @name: getCurrentDate
@@ -221,7 +230,7 @@ export default class ToDoScreen extends Component {
         // this.setState({final_date : result.final_date}); 
         this.state.end_date = result.final_date;
         result.am_pm == '오전' ? result.am_pm_i = 0 : 1;
-        
+
         // console.log("dd");
         // console.log(result.final_date);
         // console.log("i: ",result.am_pm_i);
@@ -230,73 +239,90 @@ export default class ToDoScreen extends Component {
     getSelectedInfo = async () => {
 
         // 기존 할일 불러오기
-        const path_todolist = "/todolist/getModifyData/" + this.state.email+"/"+this.state.uuid;
+        const path_todolist = "/todolist/getModifyData/" + this.state.email + "/" + this.state.uuid;
         const response_todolist = (await getApi("ApiToDoList", path_todolist))[0];
 
         // 기존 내용으로 변수 갱신
         result.final_date = response_todolist.end_date;
         result.am_pm == '오전' ? result.am_pm_i = 0 : 1;
-        this.setState({"title":response_todolist.title})
-        if(this.state.description != null) this.setState({"description":response_todolist.description});
-        this.setState({"color":response_todolist.color});
+        this.setState({ "title": response_todolist.title })
+        if (this.state.description != null) this.setState({ "description": response_todolist.description });
+        this.setState({ "color": response_todolist.color });
         // console.log("R: ",response_todolist);
-        
+
     }
 
-     deleteThisCalendar = async() => {
+    deleteThisCalendar = async () => {
         console.log("삭제버튼");
         console.log(this.state.email);
         console.log(this.state.uuid);
-    //     const data = await API.del("ApiToDoList","/object/"+this.state.email+"/"+this.state.uuid).then(response => {
-    //         // Add your code here
-    //         console.log('deleted');
-    //       }).catch(error => {
-    //         console.log("error",error.response);
-    //       });
-    //    console.log(data);
-       this.props.navigation.navigate("Home");
+        //     const data = await API.del("ApiToDoList","/object/"+this.state.email+"/"+this.state.uuid).then(response => {
+        //         // Add your code here
+        //         console.log('deleted');
+        //       }).catch(error => {
+        //         console.log("error",error.response);
+        //       });
+        //    console.log(data);
+        this.props.navigation.navigate("Home");
     }
+
+    onDayPress = (day) => {
+        this.setState({ selected: day.dateString });
+    }
+
+    /*
+        name:  changeYearMonth
+        description: change year, month of header, calendar modal
+    */
+    changeYearMonth = (calendar) => {
+        this.setState({ Calendarheader_month: calendar });
+        this.setState({ year: calendar.toString('yyyy') });
+        this.setState({ month: change_month(calendar.toString('MM')) });
+        console.log(calendar);
+
+    }
+
 
     // AddScreen: 일정(0), 할일(1) (전달된 파라미터에 따라 다른 view 생성하기!!!)
     render() {
         //  const params = this.props.navigation.state;
         //  const itemId = params ? params.itemId : null;
 
-            const isLoggedIn = !this.state.isNew;
-            let deleteBtn = null;
-            let calendarBtn = null;
+        const isLoggedIn = !this.state.isNew;
+        let deleteBtn = null;
+        let calendarBtn = null;
 
-            // View 동적 생성(삭제버튼, 할일 수정 시 할일 버튼만 띄우기)
-            if(isLoggedIn){
-                deleteBtn  = <TouchableOpacity style={[styles.delete_btn]} onPress={this.deleteThisCalendar.bind(this)}>
-                                <Text style={styles.off}>삭제</Text>
-                            </TouchableOpacity>;
-                calendarBtn = null;
-            }else {
-                calendarBtn = <TouchableHighlight style={[styles.tab_btn, styles.off]} onPress={this.gotoAddScreen.bind(this)}>
-                                <Text style={styles.off}>일정</Text>
-                           </TouchableHighlight>;
-                deleteBtn = null;
-            }
+        // View 동적 생성(삭제버튼, 할일 수정 시 할일 버튼만 띄우기)
+        if (isLoggedIn) {
+            deleteBtn = <TouchableOpacity style={[styles.delete_btn]} onPress={this.deleteThisCalendar.bind(this)}>
+                <Text style={styles.off}>삭제</Text>
+            </TouchableOpacity>;
+            calendarBtn = null;
+        } else {
+            calendarBtn = <TouchableHighlight style={[styles.tab_btn, styles.off]} onPress={this.gotoAddScreen.bind(this)}>
+                <Text style={styles.off}>일정</Text>
+            </TouchableHighlight>;
+            deleteBtn = null;
+        }
 
-    
+
         return (
 
             <View style={styles.container}>
                 <View style={styles.nav}>
-                <View isLoggedIn = {isLoggedIn}>{calendarBtn}</View>
+                    <View isLoggedIn={isLoggedIn}>{calendarBtn}</View>
                     <TouchableHighlight style={[styles.tab_btn, styles.on]} >
                         <Text style={styles.on}>할일</Text>
                     </TouchableHighlight>
-                    <View isLoggedIn = {isLoggedIn}>{deleteBtn}</View> 
+                    <View isLoggedIn={isLoggedIn}>{deleteBtn}</View>
                 </View>
                 <View style={styles.mainText}>
                     {/* title */}
-                    <TextInput style={[common.font_small, styles.textForm]} 
-                               placeholder={'할일을 입력하세요'}
-                               onChangeText={(text) => { this.setState({title : text}) }}
-                               value = {this.state.title}
-                            //    {apiData :{title: text, description:this.state.apiData['description'], end_date: this.state.apiData['end_date'], color: this.state.apiData['color']}})
+                    <TextInput style={[common.font_small, styles.textForm]}
+                        placeholder={'할일을 입력하세요'}
+                        onChangeText={(text) => { this.setState({ title: text }) }}
+                        value={this.state.title}
+                    //    {apiData :{title: text, description:this.state.apiData['description'], end_date: this.state.apiData['end_date'], color: this.state.apiData['color']}})
                     ></TextInput>
                 </View>
                 <View style={styles.content}>
@@ -305,7 +331,7 @@ export default class ToDoScreen extends Component {
                         <Text style={[common.font_mid, common.font_gray]}>완료일</Text>
                         <TouchableOpacity onPress={() => { this.toggleCalendarModal() }}>
                             <Text style={[common.font_mid, common.font_bold]}>
-                            {result.final_date} </Text>
+                                {result.final_date} </Text>
                         </TouchableOpacity>
                     </View>
 
@@ -317,9 +343,7 @@ export default class ToDoScreen extends Component {
                             <View style={styles.modalCalendar}>
                                 <Calendar
                                     style={styles.calendar}
-                                    hideExtraDays
-                                    // 캘린더 날짜 선택 시, 해당 날짜로 year, month, date, day변수 변경
-                                    onDayPress= {(thisDay) => {this.onDayPress, year = thisDay.year, month = thisDay.month, date = thisDay.day, day = new Date(thisDay.dateString).getDay()}}
+                                    onDayPress={this.onDayPress}
                                     markedDates={{
                                         [this.state.selected]: {
                                             selected: true,
@@ -335,13 +359,15 @@ export default class ToDoScreen extends Component {
                                     }}
                                     calendar_flag={3}
                                     Calendarheader_month={this.state.Calendarheader_month}
+                                    setCalDate={this.setCalDate}
+                                    changeYearMonth={this.changeYearMonth}
                                 />
 
                             </View>
-                            <View style={styles.modalHourContainer}>  
+                            <View style={styles.modalHourContainer}>
                                 <View style={styles.modalAmPm} >
                                     <ScrollPicker
-                                        dataSource= {['오전','오후']} 
+                                        dataSource={['오전', '오후']}
                                         selectedIndex={result.am_pm_i} // 첫번째 인덱스는 무조건 선택 안됨.(시간, 분도 마찬가지)
                                         itemHeight={40}
                                         wrapperWidth={110}
@@ -356,7 +382,7 @@ export default class ToDoScreen extends Component {
                                             alert(result.am_pm);
                                         }}
                                         itemColor={Colors.darkPrimary}
-                                    />       
+                                    />
                                 </View>
                                 <View style={styles.modalHour} >
                                     <ScrollPicker
@@ -400,13 +426,14 @@ export default class ToDoScreen extends Component {
                                     </TouchableHighlight>
                                 </View>
                                 <View style={styles.modalSvButton}>
-                                    <TouchableHighlight onPress={() => { 
-                                            result = getDateString(year, day, month, date, hour, minute, result.am_pm);
-                                            this.setState({final_date : result.final_date});
-                                            this.setState({end_date: result.final_date})
-                                            this.toggleCalendarModal() }}>
-                                            <Text style={[common.font_mid, { color: Colors.darkPrimary }, { marginTop: wp("2%") }]} >저장</Text>
-                                            {/* 변수 확인용:  onPress = {(e) => {alert("최종: "+year+"년"+month+ "월"+date+"일"+day+ "요일"+ hour+ "시"+ minute+ "분"+ result.am_pm)}}  */}
+                                    <TouchableHighlight onPress={() => {
+                                        result = getDateString(year, day, month, date, hour, minute, result.am_pm);
+                                        this.setState({ final_date: result.final_date });
+                                        this.setState({ end_date: result.final_date })
+                                        this.toggleCalendarModal()
+                                    }}>
+                                        <Text style={[common.font_mid, { color: Colors.darkPrimary }, { marginTop: wp("2%") }]} >저장</Text>
+                                        {/* 변수 확인용:  onPress = {(e) => {alert("최종: "+year+"년"+month+ "월"+date+"일"+day+ "요일"+ hour+ "시"+ minute+ "분"+ result.am_pm)}}  */}
                                     </TouchableHighlight>
                                 </View>
                             </View>
@@ -419,17 +446,17 @@ export default class ToDoScreen extends Component {
                     {/* description */}
                     <View style={styles.content_element_sub}>
                         <MIcon name="file-document-outline" size={30} color={Colors.gray}></MIcon>
-                        <TextInput style={[common.font_small, styles.descriptionForm]} 
-                                   onChangeText={(text) => { this.setState( {description: text}) }}
-                                   placeholder={'설명'}
-                                   value = {this.state.description}></TextInput>
+                        <TextInput style={[common.font_small, styles.descriptionForm]}
+                            onChangeText={(text) => { this.setState({ description: text }) }}
+                            placeholder={'설명'}
+                            value={this.state.description}></TextInput>
                     </View>
 
                     <View style={styles.content_element_sub}>
                         <Icon name="ios-color-palette" size={30} color={Colors.gray}></Icon>
                         {/*color*/}
-                        <TouchableOpacity title="Theme" 
-                        style={[styles.theme_btn, { borderColor: getColor(this.state.color)}, { backgroundColor: getColor(this.state.color) }]} onPress={() => { this.toggleColorModal() }}
+                        <TouchableOpacity title="Theme"
+                            style={[styles.theme_btn, { borderColor: getColor(this.state.color) }, { backgroundColor: getColor(this.state.color) }]} onPress={() => { this.toggleColorModal() }}
                         >
                         </TouchableOpacity>
                         <Modal isVisible={this.state.ColorModalVisible} onBackdropPress={() => { this.toggleColorModal() }}>
