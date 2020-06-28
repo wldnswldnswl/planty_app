@@ -33,7 +33,7 @@ export default class ContentsScreen extends Component {
         return (
             <View style={styles.container}>
 
-                <MyActionBar title={this.state.title} back={true} prev={this.props} />
+                <MyActionBar title={this.state.title} back={true} support = {true} prev={this.props} />
 
                 <View style={[styles.content, common.ml4, common.mt4]}>
                     <Text style={[common.font_bold, common.font_title]}>

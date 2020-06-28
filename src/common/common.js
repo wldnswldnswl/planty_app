@@ -97,9 +97,9 @@ export function getDateString(year, day, month, date, hour, minute, is_am_pm) {
             result.am_pm = "오전";
             if (hour == 0) {
                 hour += 12;
-                hour_len = "";
+                hour_len = "0";
             }
-            hour_len = "0";
+            hour_len = "";
         }
         else if (hour > 11 && hour < 22) {
             result.am_pm = "오후";

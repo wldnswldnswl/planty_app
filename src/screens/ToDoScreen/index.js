@@ -133,20 +133,25 @@ export default class ToDoScreen extends Component {
         name:  gotoHomeScreen
         description: show Home Screen
     */
-    gotoHomeScreen() {
+    async gotoHomeScreen() {
         const params = {
             email: this.state.email,
             title: this.state.title,
             end_date: this.state.end_date,
             description: this.state.description,
-            color: this.state.color
+            color: this.state.color,
+            uuid : this.state.uuid
         }
 
         console.log("getToDoList: ", this.state.isNew);
+        console.log("params: ", params);
         // console.log(getApi('ApiToDoList','/todolist'));//&& params.end_date != null && params.end_date.trim() != ""
         if (params.title != null && params.title.trim() != "") {
-            if (this.state.isNew) postApi('ApiToDoList', '/todolist', params);
-            else postApi('ApiToDoList', '/todolist/updateData', params);
+            if (this.state.isNew) await postApi('ApiToDoList', '/todolist', params);
+            else {
+                const path = "/todolist/updateData/" +this.state.email+ "/" + this.state.uuid;
+                await postApi("ApiToDoList", path, params);
+            }
             this.props.navigation.navigate("Home");
 
         } else {

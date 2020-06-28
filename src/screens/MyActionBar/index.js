@@ -13,9 +13,9 @@ export default class MyActionBar extends Component{
 constructor(props) {
     super(props);
    
-    console.log("action: ",props);
     this.state = {
-        back : this.props.back
+        back : this.props.back,
+        support : this.props.support
     }
    
 }
@@ -26,7 +26,11 @@ constructor(props) {
     */
     gotoSideNav = () => {
          if(!this.state.back) this.props.prev.navigation.dispatch(DrawerActions.toggleDrawer());
-         else this.props.prev.navigation.navigate("Support");
+         else {
+             if(this.state.support) this.props.prev.navigation.navigate("Support");
+             else this.props.prev.navigation.navigate("Setting");
+            }
+
     }
 
      render(){ 

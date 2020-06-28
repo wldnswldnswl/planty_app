@@ -7,6 +7,7 @@ import HomeScreen from './HomeScreen';
 import ToDoListScreen from './ToDoListScreen';
 import ToDoScreen from './ToDoScreen';
 import AddScreen from './AddScreen';
+import NoticeScreen from './NoticeScreen';
 import DrawerScreen from './drawer';
 import {
     AsyncStorage
@@ -72,6 +73,7 @@ export default function MyStack() {
                 {/* 4. 고객지원 내용*/}
                 {/* <Stack.Screen name="ToDoList" component={ToDoListScreen} /> */}
                 <Stack.Screen name="Contents" component={ContentsScreen} />
+                <Stack.Screen name="Notice" component={NoticeScreen} />
             </Stack.Navigator>  
 
             

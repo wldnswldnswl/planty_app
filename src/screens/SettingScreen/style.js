@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen'; 
 import Colors from '../../../styles/colors' 
+import common from "../../../styles/common";
 
  // css
  const styles = StyleSheet.create({ 
@@ -54,6 +55,15 @@ import Colors from '../../../styles/colors'
         backgroundColor: 'white'
     },
 
+    logout_modal_container: {
+        width: 350,
+        height: 150,
+        left : wp('3%'),
+        right : wp('-3%'),
+        borderRadius: 3,
+        backgroundColor: 'white'
+    },
+
     modalTitle: {
         width: "100%",
         height:("20%"),
@@ -61,6 +71,13 @@ import Colors from '../../../styles/colors'
         marginTop: wp('2%'),
         borderTopLeftRadius:3,
         borderTopRightRadius:3
+    },
+
+    modalContents: {
+        flex:0.5,
+        alignItems:"center",
+        paddingVertical : hp('2%')
+
     },
 
     modalUp: {
@@ -87,6 +104,12 @@ import Colors from '../../../styles/colors'
         alignItems:"center",
         borderBottomLeftRadius:3,
         borderBottomRightRadius:3
+    },
+
+   Button: {
+        width: "50%",
+        height:"100%",
+        alignItems:"center"  
     }
 }) 
 

@@ -221,28 +221,28 @@ app.put(path, function(req, res) {
 * HTTP put method for insert object *
 *************************************/
 
-app.post(path+"/updateData", function(req, res) {
+app.post(path+"/updateData" + hashKeyPath + sortKeyPath, function(req, res) {
 
   if (userIdPresent) {
     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
   }
   
    let body = {
-    email : req.body.email, // 세션값
+    email : params['email'], // 세션값
     end_date : req.body.end_date,  // 필수입력
-    uuid :  null, // 필수입력
+    uuid : null, // 필수입력
     title : req.body.title, // 필수입력
     description : req.body.description == '' ? null :  req.body.description, // null이면 true가 push됨
     color : req.body.color // 필수입력
   }
 
-  body.uuid = body.end_date +"_"+ req.body.uuid.substring(23);
-
+  body.uuid = body.end_date +"_"+ req.apiGateway.event.requestContext.requestId;
+  
   let putItemParams = {
     TableName: tableName,
     Key:{
         "email" : body.email,
-        "uuid" : body.uuid
+        "uuid" : params['uuid']
     },
     UpdateExpression: "set uuid = :uuid, end_date= :end_date, title = :title, description = :description, color = :color",
     ExpressionAttributeValues:{

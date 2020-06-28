@@ -7,7 +7,7 @@ import {
     TouchableOpacity,
     Switch,
     Picker,
-    TouchableWithoutFeedback
+    AsyncStorage
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { DrawerActions } from 'react-navigation-drawer';
@@ -33,7 +33,10 @@ export default class CustomerSupportScreen extends Component {
         switchValue: true,
         isModalVisible: false,
         selectedDay: '일요일',
-        theme_color: '#2980b9'
+        theme_color: Colors._10,
+        isModalVisible: false,
+        isLogoutModalVisible: false,
+        isSecessionModalVisible :false
     };
 
     // functions
@@ -49,12 +52,35 @@ export default class CustomerSupportScreen extends Component {
         this.setState({ isModalVisible: !this.state.isModalVisible });
     }
 
+    toggleLogoutModal = () => {
+        this.setState({ isLogoutModalVisible: !this.state.isLogoutModalVisible });
+    }
+
+    toggleSecessionModal = () => {
+        this.setState({ isSecessionModalVisible: !this.state.isSecessionModalVisible });
+    }
+
     /*
         name:  setThemeColor
         description: set theme color
     */
     setThemeColor(Color) {
         this.state.theme_color = Color;
+    }
+
+    clearStorage = () => {
+        AsyncStorage.clear();
+        this.props.navigation.navigate("Login");
+    }
+
+    deleteThisMember = (email) => {
+        // /members/delete api 
+        this.props.navigation.navigate("Login");
+        // 어플 삭제 기능까지 있으면 좋을듯
+    }
+
+    goToNoticeScreen = () => {
+        this.props.navigation.navigate("Notice");
     }
 
     // SettingScreen : 캘린더
@@ -75,8 +101,53 @@ export default class CustomerSupportScreen extends Component {
                         {/* 계정관리  */}
                         <View style={[common.mv2]}>
                             <Text style={[common.font_small, common.mb1, common.font_gray]}>계정관리</Text>
-                            <Text style={[common.font_mid, common.font_bold, common.mb1]}>로그아웃</Text>
-                            <Text style={[common.font_mid, common.font_bold, common.mb1, { borderBottomWidth: 1, borderBottomColor: Colors.gray, paddingBottom: hp('2%') }]}>회원 탈퇴</Text>
+                            <TouchableOpacity  onPress={() => { this.toggleLogoutModal() }}><Text style={[common.font_mid, common.font_bold, common.mb1]}>로그아웃</Text></TouchableOpacity>
+                            <Modal isVisible={this.state.isLogoutModalVisible} onBackdropPress={() => { this.toggleLogoutModal() }}>
+                                    <View style={styles.logout_modal_container}>
+                                        <View style={styles.modalTitle}>
+                                            <Text style={[common.font_mid, common.font_bold, common.mb1, {color:Colors.gray}]}>로그아웃</Text>
+                                        </View>
+                                        <View style={styles.modalContents}>
+                                            <Text style={[common.font_mid, common.mb1, {color:Colors.gray}]}>로그아웃 하시겠습니까?</Text>
+                                        </View>
+
+                                        <View style = {{flexDirection : 'row', alignItems : 'center'}}>
+                                                <TouchableOpacity  style={[styles.Button]} onPress = {() => this.toggleLogoutModal()}>
+                                                    <Text style={[common.font_mid, { color: Colors.darkPrimary }]}>취소</Text>
+                                                </TouchableOpacity>
+                                                    <TouchableOpacity style={styles.Button} onPress = {() => {this.toggleLogoutModal(); this.clearStorage();}}>
+                                                <Text style={[common.font_mid, { color: Colors.darkPrimary }]}>확인</Text>
+                                                </TouchableOpacity>
+                                     </View>
+                                    </View>
+                                    
+                            </Modal>
+                            
+                            <TouchableOpacity  onPress={() => { this.toggleSecessionModal() }}>
+                                <Text style={[common.font_mid, common.font_bold, common.mb1, { borderBottomWidth: 1, borderBottomColor: Colors.gray, paddingBottom: hp('2%') }]}>회원 탈퇴</Text>
+                            </TouchableOpacity>
+                            <Modal isVisible={this.state.isSecessionModalVisible} onBackdropPress={() => { this.toggleSecessionModal() }}>
+                                    <View style={[styles.logout_modal_container,{height:200}]}>
+                                        <View style={styles.modalTitle}>
+                                            <Text style={[common.font_mid, common.font_bold, common.mb1, {color:Colors.gray}]}>회원탈퇴</Text>
+                                        </View>
+                                        <View style={styles.modalContents}>
+                                            <Text style={[common.font_mid, common.mb1, {color:Colors.gray}]}> PLANTY를 탈퇴하시겠습니까?</Text> 
+                                            <Text style={[common.font_small, common.mb1, {color:Colors.gray}]}>모든 정보를 삭제합니다.</Text>
+                                        </View>      
+
+                                        <View style = {{flexDirection : 'row', alignItems : 'center'}}>
+                                                <TouchableOpacity  style={[styles.Button]} onPress = {() => this.toggleSecessionModal()}>
+                                                    <Text style={[common.font_mid, { color: Colors.darkPrimary }]}>취소</Text>
+                                                </TouchableOpacity>
+                                                <TouchableOpacity style={styles.Button} onPress = {() => {this.toggleSecessionModal(); this.deleteThisMember(this.state.email);}}>
+                                                    <Text style={[common.font_mid, { color: Colors.darkPrimary }]}>확인</Text>
+                                                </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                   
+                            </Modal>
+
                         </View>
 
                         {/* 캘린더 설정  */}
@@ -148,8 +219,13 @@ export default class CustomerSupportScreen extends Component {
                             {/* 제품정보  */}
                             <View style={[common.mv2]}>
                                 <Text style={[common.font_small, common.mb1, common.font_gray]}>제품정보</Text>
-                                <Text style={[common.font_mid, common.font_bold, common.mb1]}>버전정보</Text>
-                                <Text style={[common.font_mid, common.font_bold, common.mb1, { paddingBottom: hp('2%') }]}>공지사항</Text>
+                                <View style = {{flexDirection : 'row', width: "100%" }}>
+                                    <Text style={[common.font_mid, common.font_bold, common.mb1,{flex: 7}]}>버전정보</Text>
+                                    <Text style={[common.font_small, common.mb1, {flex:1}]}>v1.0.0</Text>
+                                </View>
+                                <TouchableOpacity onPress = { () => {this.goToNoticeScreen()}} style = {{width:wp('100%')}}>
+                                    <Text style={[common.font_mid, common.font_bold, common.mb1, { paddingBottom: hp('2%') }]}>공지사항</Text>
+                                </TouchableOpacity>
                             </View>
 
                     </ScrollView>
