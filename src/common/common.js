@@ -227,6 +227,8 @@ export function getColor(index) {
         case 11:
             color = Colors._11;
             break;
+        default:
+            color = index;
 
     }
 

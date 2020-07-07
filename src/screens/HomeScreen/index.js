@@ -54,7 +54,8 @@ export default class HomeScreen extends Component {
             email: "",
             CalendarList: [],
             TodoList: [],
-            nickname: this.props.route.params.nickname
+            nickname: this.props.route.params.nickname,
+            list_chg: true
         }
 
         // this.gotoAddScreen = this.gotoAddScreen.bind(this);
@@ -71,6 +72,7 @@ export default class HomeScreen extends Component {
                 }
             }
         });
+        console.log("homescreen");
     }
 
     onDayPress = (day) => {
@@ -232,7 +234,7 @@ export default class HomeScreen extends Component {
 
     render() {
 
-        //할일 목록들 day_list에 맵핑
+        //할일 목록들 todo_list에 맵핑
         const todo_list = this.state.TodoList.map(todo_list => {
             return (
                 <View style={styles.daymodalcontent} onStartShouldSetResponder={() => { this.gotoToDoScreen(false, todo_list.uuid); this.toggleCalendarModal(); }}>
@@ -247,7 +249,7 @@ export default class HomeScreen extends Component {
             )
         })
 
-        //일정 목록들 day_list에 맵핑
+        //일정 목록들 calendar_list에 맵핑
         const calendar_list = this.state.CalendarList.map(calendar_list => {
             if (calendar_list.start_date.slice(0, 10) == calendar_list.end_date.slice(0, 10)) {
                 return (
@@ -388,6 +390,7 @@ export default class HomeScreen extends Component {
                         setDateModal={this.setDateModal}
                         gotoAddScreen={this.gotoAddScreen}
                         changePickerModal={this.changePickerModal}
+                        list_chg={this.state.list_chg}
                     />
 
                 </View>
