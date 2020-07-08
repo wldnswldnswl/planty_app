@@ -287,9 +287,18 @@ export default class AddScreen extends Component {
         console.log("R: ", response_calendarlist);
     }
 
-    deleteThisCalendar = () => {
+    deleteThisCalendar = async () => {
+        const data = await API.del("ApiCalendar","/calendar/object/"+this.state.email+"/"+this.state.uuid).then(response => {
+            // Add your code here
+            console.log('deleted');
+            // 달력 초기화 필요
+            this.props.navigation.navigate("Home");
+          }).catch(error => {
+            console.log("error",error.response);
+          });
+       console.log(data);    
+}
 
-    }
 
     /*
         name:  changeYearMonth
@@ -319,7 +328,7 @@ export default class AddScreen extends Component {
 
         // View 동적 생성(삭제버튼, 캘린더 수정 시 캘린더 버튼만 띄우기)
         if (isLoggedIn) {
-            deleteBtn = <TouchableOpacity style={[styles.delete_btn]} onPress={this.deleteThisCalendar(this)}>
+            deleteBtn = <TouchableOpacity style={[styles.delete_btn]} onPress={this.deleteThisCalendar.bind(this)}>
                 <Text style={styles.off}>삭제</Text>
             </TouchableOpacity>;
             todoBtn = null;

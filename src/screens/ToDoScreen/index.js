@@ -258,17 +258,15 @@ export default class ToDoScreen extends Component {
     }
 
     deleteThisCalendar = async () => {
-        console.log("삭제버튼");
-        console.log(this.state.email);
-        console.log(this.state.uuid);
-        //     const data = await API.del("ApiToDoList","/object/"+this.state.email+"/"+this.state.uuid).then(response => {
-        //         // Add your code here
-        //         console.log('deleted');
-        //       }).catch(error => {
-        //         console.log("error",error.response);
-        //       });
-        //    console.log(data);
-        this.props.navigation.navigate("Home");
+            const data = await API.del("ApiToDoList","/todolist/object/"+this.state.email+"/"+this.state.uuid).then(response => {
+                // Add your code here
+                console.log('deleted');
+                // 달력 초기화 필요
+                this.props.navigation.navigate("Home");
+              }).catch(error => {
+                console.log("error",error.response);
+              });
+           console.log(data);    
     }
 
     onDayPress = (day) => {
