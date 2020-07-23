@@ -128,7 +128,7 @@ export default class AddScreen extends Component {
        name:  gotoHomeScreen
        description: show Home Screen
    */
-    gotoHomeScreen() {
+    async gotoHomeScreen() {
 
         const params = {
             email: this.state.email,
@@ -141,11 +141,18 @@ export default class AddScreen extends Component {
             repeat: this.state.repeat
         }
 
-        // console.log(params);
-        // console.log("getCalendar: ");
-        // console.log(getApi('ApiCalendar','/calendar'));//&& params.end_date != null && params.end_date.trim() != ""
         if (params.title != null && params.title.trim() != "") {
-            postApi('ApiCalendar', '/calendar', params);
+            await postApi('ApiCalendar', '/calendar', params);
+
+            if(!this.state.isNew) {
+                params['uuid'] = this.state.uuid;
+                const data = await API.del("ApiCalendar","/calendar/object/"+this.state.email+"/"+this.state.uuid).then(response => {
+
+                // 달력 초기화 필요
+                  }).catch(error => {
+                    console.log("error",error.response);
+                  });
+            }
             this.props.navigation.navigate("Home", {list_chg: true});
         } else {
             alert("일정을 입력하세요"); // 나중에 비동기 이용해 빨간글씨로 바꾸기
@@ -288,8 +295,6 @@ export default class AddScreen extends Component {
 
     deleteThisCalendar = async () => {
         const data = await API.del("ApiCalendar","/calendar/object/"+this.state.email+"/"+this.state.uuid).then(response => {
-            // Add your code here
-            console.log('deleted');
             // 달력 초기화 필요
             this.props.navigation.navigate("Home");
           }).catch(error => {
