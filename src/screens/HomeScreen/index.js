@@ -36,7 +36,7 @@ export default class HomeScreen extends Component {
 
     constructor(props) {
         super(props);
-
+        
         selected: undefined
         this.state = {
             PickerModalVisible: false,
@@ -54,8 +54,7 @@ export default class HomeScreen extends Component {
             email: "",
             CalendarList: [],
             TodoList: [],
-            nickname: this.props.route.params.nickname,
-            list_chg: true
+            nickname: this.props.route.params.nickname
         }
 
         // this.gotoAddScreen = this.gotoAddScreen.bind(this);
@@ -205,7 +204,7 @@ export default class HomeScreen extends Component {
             this.setState({ TodoList: response_todolist });
             this.setState({ CalendarList: response_calendarlist });
         }
-
+        
     }
 
     /*
@@ -233,6 +232,8 @@ export default class HomeScreen extends Component {
     // HomeScreen : 캘린더
 
     render() {
+
+        const list_chg = this.props.route.params.list_chg;
 
         //할일 목록들 todo_list에 맵핑
         const todo_list = this.state.TodoList.map(todo_list => {
@@ -390,7 +391,7 @@ export default class HomeScreen extends Component {
                         setDateModal={this.setDateModal}
                         gotoAddScreen={this.gotoAddScreen}
                         changePickerModal={this.changePickerModal}
-                        list_chg={this.state.list_chg}
+                        list_chg={list_chg}
                     />
 
                 </View>

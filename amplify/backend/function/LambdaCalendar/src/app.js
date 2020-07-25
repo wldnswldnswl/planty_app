@@ -119,7 +119,7 @@ app.get(path + "/getCurrentDayList" + hashKeyPath + sortKeyPath, function(req, r
   let getItemParams = {
     TableName: tableName,
     ProjectionExpression: "color, end_date, start_date, title, #uuid",
-    KeyConditionExpression: "#email = :email AND begins_with(#uuid, :uuid)",
+    KeyConditionExpression: "#email = :email AND begins_with(#uuid, :uuid) ",
     ExpressionAttributeNames:{
       "#email": "email",
       "#uuid": "uuid"

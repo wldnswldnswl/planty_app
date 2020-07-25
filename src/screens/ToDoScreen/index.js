@@ -152,7 +152,7 @@ export default class ToDoScreen extends Component {
                 const path = "/todolist/updateData/" +this.state.email+ "/" + this.state.uuid;
                 await postApi("ApiToDoList", path, params);
             }
-            this.props.navigation.navigate("Home");
+            this.props.navigation.navigate("Home",  {screen: "Home", params: {list_chg: true}});
 
         } else {
             alert("할 일을 입력하세요"); // 나중에 비동기 이용해 빨간글씨로 바꾸기
@@ -166,7 +166,7 @@ export default class ToDoScreen extends Component {
     */
     Back() {
         // this.props.navigation.goBack(); // 로 하면 스택에 쌓인 할일/일정 페이지들이 나옴
-        this.props.navigation.navigate("Home");
+        this.props.navigation.navigate("Home",  {screen: "Home", params: {list_chg: false}});
     }
 
     /*
