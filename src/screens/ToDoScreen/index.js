@@ -137,20 +137,22 @@ export default class ToDoScreen extends Component {
         const params = {
             email: this.state.email,
             title: this.state.title,
-            end_date: this.state.end_date,
+            end_date: result.final_date,
             description: this.state.description,
-            color: this.state.color,
-            uuid : this.state.uuid
+            color: this.state.color
         }
 
-        console.log("getToDoList: ", this.state.isNew);
-        console.log("params: ", params);
-        // console.log(getApi('ApiToDoList','/todolist'));//&& params.end_date != null && params.end_date.trim() != ""
         if (params.title != null && params.title.trim() != "") {
-            if (this.state.isNew) await postApi('ApiToDoList', '/todolist', params);
-            else {
-                const path = "/todolist/updateData/" +this.state.email+ "/" + this.state.uuid;
-                await postApi("ApiToDoList", path, params);
+             
+            await postApi('ApiToDoList', '/todolist', params);
+
+            if(!this.state.isNew) {
+                params['uuid'] = this.state.uuid;
+                const data = await API.del("ApiToDoList","/todolist/object/"+this.state.email+"/"+this.state.uuid).then(response => {          
+                    // 달력 초기화 필요
+                  }).catch(error => {
+                    console.log("error",error.response);
+                  });
             }
             this.props.navigation.navigate("Home",  {screen: "Home", params: {list_chg: true}});
 
@@ -232,13 +234,8 @@ export default class ToDoScreen extends Component {
 
         this.state.Calendarheader_month = route.params.calendarheader_month;
         this.final_date = result.final_date; // 출력날짜 상태 변경
-        // this.setState({final_date : result.final_date}); 
-        this.state.end_date = result.final_date;
         result.am_pm == '오전' ? result.am_pm_i = 0 : 1;
 
-        // console.log("dd");
-        // console.log(result.final_date);
-        // console.log("i: ",result.am_pm_i);
     }
 
     getSelectedInfo = async () => {
@@ -258,17 +255,13 @@ export default class ToDoScreen extends Component {
     }
 
     deleteThisCalendar = async () => {
-        console.log("삭제버튼");
-        console.log(this.state.email);
-        console.log(this.state.uuid);
-        //     const data = await API.del("ApiToDoList","/object/"+this.state.email+"/"+this.state.uuid).then(response => {
-        //         // Add your code here
-        //         console.log('deleted');
-        //       }).catch(error => {
-        //         console.log("error",error.response);
-        //       });
-        //    console.log(data);
-        this.props.navigation.navigate("Home");
+            const data = await API.del("ApiToDoList","/todolist/object/"+this.state.email+"/"+this.state.uuid).then(response => {
+                // 달력 초기화 필요
+                this.props.navigation.navigate("Home");
+              }).catch(error => {
+                console.log("error",error.response);
+              });
+           console.log(data);    
     }
 
     onDayPress = (day) => {
@@ -362,7 +355,7 @@ export default class ToDoScreen extends Component {
                                         selectedDayTextColor: "black",
                                         todayTextColor: Colors.darkPrimary,
                                     }}
-                                    calendar_flag={3}
+                                    calendarFlag={3}
                                     Calendarheader_month={this.state.Calendarheader_month}
                                     setCalDate={this.setCalDate}
                                     changeYearMonth={this.changeYearMonth}

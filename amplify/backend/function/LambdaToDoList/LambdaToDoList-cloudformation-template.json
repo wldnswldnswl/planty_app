@@ -71,7 +71,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "amplify-plantyapp-dev-42358-deployment",
-					"S3Key": "amplify-builds/LambdaToDoList-4d5061586e38634a6759-build.zip"
+					"S3Key": "amplify-builds/LambdaToDoList-594d5835734a7172532b-build.zip"
 				}
 			}
 		},

@@ -26,7 +26,7 @@ import ReactNativePickerModule from 'react-native-picker-module';
 import ScrollPicker, { scrollToIndex } from 'react-native-wheel-scroll-picker';
 import { Calendar } from 'react-native-calendars';
 
-import { getApi, postApi, getDateString, getColor } from '../../common/common'
+import { getApi, postApi, getDateString, getColor, change_month } from '../../common/common'
 
 //styles
 import common from '../../../styles/common';
@@ -128,7 +128,7 @@ export default class AddScreen extends Component {
        name:  gotoHomeScreen
        description: show Home Screen
    */
-    gotoHomeScreen() {
+    async gotoHomeScreen() {
 
         const params = {
             email: this.state.email,
@@ -141,12 +141,19 @@ export default class AddScreen extends Component {
             repeat: this.state.repeat
         }
 
-        // console.log(params);
-        // console.log("getCalendar: ");
-        // console.log(getApi('ApiCalendar','/calendar'));//&& params.end_date != null && params.end_date.trim() != ""
         if (params.title != null && params.title.trim() != "") {
-            postApi('ApiCalendar', '/calendar', params);
-            this.props.navigation.navigate("Home", {screen: "Home", params: {list_chg: true}});
+            await postApi('ApiCalendar', '/calendar', params);
+
+            if(!this.state.isNew) {
+                params['uuid'] = this.state.uuid;
+                const data = await API.del("ApiCalendar","/calendar/object/"+this.state.email+"/"+this.state.uuid).then(response => {
+
+                // 달력 초기화 필요
+                  }).catch(error => {
+                    console.log("error",error.response);
+                  });
+            }
+            this.props.navigation.navigate("Home", {list_chg: true});
         } else {
             alert("일정을 입력하세요"); // 나중에 비동기 이용해 빨간글씨로 바꾸기
         }
@@ -286,9 +293,16 @@ export default class AddScreen extends Component {
         console.log("R: ", response_calendarlist);
     }
 
-    deleteThisCalendar = () => {
+    deleteThisCalendar = async () => {
+        const data = await API.del("ApiCalendar","/calendar/object/"+this.state.email+"/"+this.state.uuid).then(response => {
+            // 달력 초기화 필요
+            this.props.navigation.navigate("Home");
+          }).catch(error => {
+            console.log("error",error.response);
+          });
+       console.log(data);    
+}
 
-    }
 
     /*
         name:  changeYearMonth
@@ -318,7 +332,7 @@ export default class AddScreen extends Component {
 
         // View 동적 생성(삭제버튼, 캘린더 수정 시 캘린더 버튼만 띄우기)
         if (isLoggedIn) {
-            deleteBtn = <TouchableOpacity style={[styles.delete_btn]} onPress={this.deleteThisCalendar(this)}>
+            deleteBtn = <TouchableOpacity style={[styles.delete_btn]} onPress={this.deleteThisCalendar.bind(this)}>
                 <Text style={styles.off}>삭제</Text>
             </TouchableOpacity>;
             todoBtn = null;
@@ -381,7 +395,7 @@ export default class AddScreen extends Component {
                                             selectedDayTextColor: "black",
                                             todayTextColor: Colors.darkPrimary,
                                         }}
-                                        calendar_flag={3}
+                                        calendarFlag={3}
                                         Calendarheader_month={this.state.Calendarheader_month}
                                         setCalDate={this.setCalDate}
                                         changeYearMonth={this.changeYearMonth}
@@ -491,7 +505,7 @@ export default class AddScreen extends Component {
                                             selectedDayTextColor: "black",
                                             todayTextColor: Colors.darkPrimary,
                                         }}
-                                        calendar_flag={3}
+                                        calendarFlag={3}
                                         Calendarheader_month={this.state.Calendarheader_month}
                                         setCalDate={this.setCalDate}
                                         changeYearMonth={this.changeYearMonth}

@@ -139,10 +139,10 @@ export default class HomeScreen extends Component {
     }
 
     /*
-        name:  setPickerModal
+        name:  changeHeaderModal
         description: set year,month in pickerModal when press the header
     */
-    setPickerModal() {
+   changeHeaderModal() {
         this.setState({ PickerYear: this.state.year });
         this.setState({ PickerMonth: this.state.month });
     }
@@ -296,7 +296,7 @@ export default class HomeScreen extends Component {
                         onPress={this.gotoSideNav.bind(this)}
                     ></Icon>
 
-                    <TouchableOpacity onPress={() => { this.togglePickerModal(); this.setPickerModal() }}>
+                    <TouchableOpacity onPress={() => { this.togglePickerModal(); this.changeHeaderModal() }}>
                         <Text style={[common.font_title, { color: Colors.gray }]}>{this.state.year}.{this.state.month}</Text>
                     </TouchableOpacity>
                     <Modal isVisible={this.state.PickerModalVisible} onBackdropPress={() => { this.togglePickerModal() }} >
@@ -318,7 +318,7 @@ export default class HomeScreen extends Component {
 
                                 <Calendar
                                     style={styles.calendar}
-                                    calendar_flag={2}
+                                    calendarFlag={2}
                                     onDayPress={this.onDayPress}
                                     Calendarheader_month={this.state.Calendarheader_month}
                                     markedDates={{
@@ -371,7 +371,7 @@ export default class HomeScreen extends Component {
                                 selectedDotColor: "orange"
                             }
                         }}
-                        calendar_flag={1}
+                        calendarFlag={1}
 
                         theme={{
                             "stylesheet.calendar.header": {

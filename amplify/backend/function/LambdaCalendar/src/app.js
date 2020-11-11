@@ -281,7 +281,10 @@ app.delete(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
 
   let removeItemParams = {
     TableName: tableName,
-    Key: params
+    Key: {
+      "email" : params["email"],
+      "uuid" : params["uuid"]
+    }
   }
   dynamodb.delete(removeItemParams, (err, data)=> {
     if(err) {
