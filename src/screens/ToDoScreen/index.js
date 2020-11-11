@@ -257,7 +257,7 @@ export default class ToDoScreen extends Component {
     deleteThisCalendar = async () => {
             const data = await API.del("ApiToDoList","/todolist/object/"+this.state.email+"/"+this.state.uuid).then(response => {
                 // 달력 초기화 필요
-                this.props.navigation.navigate("Home");
+                this.props.navigation.navigate("Home", {screen: "Home", params: {list_chg: false}});
               }).catch(error => {
                 console.log("error",error.response);
               });
