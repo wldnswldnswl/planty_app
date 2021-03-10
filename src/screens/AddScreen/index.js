@@ -296,12 +296,12 @@ export default class AddScreen extends Component {
     deleteThisCalendar = async () => {
         const data = await API.del("ApiCalendar","/calendar/object/"+this.state.email+"/"+this.state.uuid).then(response => {
             // 달력 초기화 필요
-            this.props.navigation.navigate("Home");
+            this.props.navigation.navigate("Home", {screen: "Home", params: {list_chg: true}});
           }).catch(error => {
             console.log("error",error.response);
           });
        console.log(data);    
-}
+    }
 
 
     /*
