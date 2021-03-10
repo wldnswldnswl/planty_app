@@ -6,7 +6,7 @@ Planty는 사용자의 일정과 할 일을 관리해주는 모바일 애플리�
 
 ## 💻 실행 방법
 cmd 창을 열어 해당 명령어들을 순차적으로 입력합니다.
-<pre><code>git clone https://github.com/maywngml/planty_app.git</code></pre>
+<pre><code>git clone https://github.com/wldnswldnswl/planty_app.git</code></pre>
 <pre><code>cd planty_app</code></pre>
 <pre><code>npm install</code></pre>
 - Android 버전 실행
